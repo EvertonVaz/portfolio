@@ -1,10 +1,10 @@
 defmodule Messaging.Consumer do
   def wait_for_messages do
-    host = System.get_env("RABBITMQ_HOST") || "rabbitmq"
+    host = System.get_env("VITE_RABBITMQ_HOST") || "rabbitmq"
     {:ok, connection} = AMQP.Connection.open(host: host)
     {:ok, channel} = AMQP.Channel.open(connection)
 
-    queue_command = System.get_env("QUEUE_COMMAND") || "commands"
+    queue_command = System.get_env("VITE_QUEUE_COMMAND") || "commands"
 
     AMQP.Queue.declare(channel, queue_command)
     AMQP.Basic.consume(channel, queue_command, nil, no_ack: true)
@@ -26,12 +26,12 @@ defmodule Messaging.Consumer do
   end
 
   defp process_message(payload) do
-    queue_response = System.get_env("QUEUE_RESPONSE") || "responses"
-    
+    queue_response = System.get_env("VITE_QUEUE_RESPONSE") || "responses"
+
     case Messaging.Sanitizer.sanitize(payload) do
       {:ok, valid_msg} ->
         result = Messaging.Executer.execute(valid_msg)
-        result = Messaging.Sanitizer.sinitize_response(result, valid_msg)
+        result = Messaging.Sanitizer.sanitize_response(result, valid_msg)
         Messaging.Producer.publish(queue_response, result)
 
       {:error, reason} ->

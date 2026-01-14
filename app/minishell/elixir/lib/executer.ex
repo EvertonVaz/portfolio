@@ -5,7 +5,9 @@ defmodule Messaging.Executer do
     # Usando System.cmd para rodar o shell customizado
     # Passamos o comando via STDIN usando um pipe para o minishell
     try do
-      {output, _exit_code} = System.shell("echo '#{command}' | #{@minishell_path}", stderr_to_stdout: true)
+      {output, _exit_code} =
+        System.shell("echo '#{command}' | #{@minishell_path}", stderr_to_stdout: true)
+
       String.trim(output)
     rescue
       e ->
@@ -13,6 +15,5 @@ defmodule Messaging.Executer do
         Messaging.Producer.publish("responses", error_message)
         error_message
     end
-
   end
 end

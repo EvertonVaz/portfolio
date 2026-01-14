@@ -1,6 +1,6 @@
 defmodule Messaging.Producer do
   def publish(queue, message) do
-    host = System.get_env("RABBITMQ_HOST") || "rabbitmq"
+    host = System.get_env("VITE_RABBITMQ_HOST") || "rabbitmq"
     {:ok, connection} = AMQP.Connection.open(host: host)
     {:ok, channel} = AMQP.Channel.open(connection)
 

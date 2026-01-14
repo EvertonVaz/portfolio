@@ -15,18 +15,24 @@ defmodule Messaging.Sanitizer do
     |> Enum.any?(fn word -> word in @restricted_words end)
   end
 
-  def sinitize_response(message, command) do
+  def sanitize_response(message, command) do
+    ansi_regex = ~r/\x1b\[[0-9;]*[a-zA-Z]/
+
     message
     |> String.replace(["@minishell $>", "exit", command], "")
+    |> String.replace(ansi_regex, "")
+    |> String.split("\n", trim: true)
+    |> format_output()
     |> String.trim()
-    |> String.split("\n")
-    |> (fn
-      [first | rest] when length(rest) > 1 ->
-        {mid, [last]} = Enum.split(rest, -1)
-        "#{first} #{Enum.join(mid, ", ")} #{last}"
-
-      list ->
-        Enum.join(list, "")
-    end).()
   end
+
+  defp format_output([]), do: ""
+  defp format_output([single]), do: single
+
+  defp format_output([first | rest]) when length(rest) > 1 do
+    {mid, [last]} = Enum.split(rest, -1)
+    "#{first} #{Enum.join(mid, ", ")} #{last}"
+  end
+
+  defp format_output(list), do: Enum.join(list, "")
 end
