@@ -19,5 +19,14 @@ defmodule Messaging.Sanitizer do
     message
     |> String.replace(["@minishell $>", "exit", command], "")
     |> String.trim()
+    |> String.split("\n")
+    |> (fn
+      [first | rest] when length(rest) > 1 ->
+        {mid, [last]} = Enum.split(rest, -1)
+        "#{first} #{Enum.join(mid, ", ")} #{last}"
+
+      list ->
+        Enum.join(list, "")
+    end).()
   end
 end

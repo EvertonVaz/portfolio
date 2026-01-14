@@ -5,7 +5,6 @@ defmodule Messaging.Consumer do
     {:ok, channel} = AMQP.Channel.open(connection)
 
     queue_command = System.get_env("QUEUE_COMMAND") || "commands"
-    queue_response = System.get_env("QUEUE_RESPONSE") || "responses"
 
     AMQP.Queue.declare(channel, queue_command)
     AMQP.Basic.consume(channel, queue_command, nil, no_ack: true)
@@ -27,6 +26,8 @@ defmodule Messaging.Consumer do
   end
 
   defp process_message(payload) do
+    queue_response = System.get_env("QUEUE_RESPONSE") || "responses"
+    
     case Messaging.Sanitizer.sanitize(payload) do
       {:ok, valid_msg} ->
         result = Messaging.Executer.execute(valid_msg)
