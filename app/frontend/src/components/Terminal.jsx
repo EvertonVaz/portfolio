@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useRabbitMQ } from '../hooks/useRabbitMQ';
+import { parseResponse } from '../utils/parser';
 
 const Terminal = () => {
     const [history, setHistory] = useState([
@@ -9,38 +11,50 @@ const Terminal = () => {
     const [input, setInput] = useState('');
     const terminalRef = useRef(null);
 
+    // Callback para processar mensagens recebidas do backend
+    const onMessageReceived = useCallback((msg) => {
+        const parsedWords = parseResponse(msg);
+        const content = parsedWords.length > 0 ? parsedWords.join(' ') : msg;
+
+        setHistory(prev => [...prev, { type: 'output', content }]);
+    }, []);
+
+    const { connected, sendCommand } = useRabbitMQ(onMessageReceived);
+
     const handleCommand = (e) => {
         if (e.key === 'Enter') {
-            const cmd = input.trim().toLowerCase();
-            const newHistory = [...history, { type: 'input', content: input }];
+            const cmd = input.trim();
+            if (cmd === '') return;
 
-            switch (cmd) {
-                case 'help':
-                    newHistory.push({ type: 'output', content: 'AVAILABLE COMMANDS: ABOUT, WORK, SKILLS, CLEAR, CONTACT' });
-                    break;
-                case 'about':
-                    newHistory.push({ type: 'output', content: 'DYNAMIC PROFILE: PUNK ENTHUSIAST, INDIE SUPPORTER, MATH & PHYSICS ADMIRER.' });
-                    break;
-                case 'work':
-                    newHistory.push({ type: 'output', content: 'LOADING PORTFOLIO ITEMS... [ERROR: DATABASE NOT CONNECTED]' });
-                    break;
-                case 'skills':
-                    newHistory.push({ type: 'output', content: 'C, C++, REACT, VITE, TAILWIND, REBELLION, LOGIC.' });
-                    break;
-                case 'clear':
-                    setHistory([]);
-                    setInput('');
-                    return;
-                case 'contact':
-                    newHistory.push({ type: 'output', content: 'EMAIL: CONTACT@BORN2CODE.RESISTENCE' });
-                    break;
-                default:
-                    if (cmd !== '') {
-                        newHistory.push({ type: 'output', content: `COMMAND NOT FOUND: ${cmd}` });
-                    }
+            const lowerCmd = cmd.toLowerCase();
+
+            // Comandos locais (clear e help)
+            if (lowerCmd === 'clear') {
+                setHistory([]);
+                setInput('');
+                return;
             }
 
-            setHistory(newHistory);
+            if (lowerCmd === 'help') {
+                setHistory(prev => [
+                    ...prev,
+                    { type: 'input', content: cmd },
+                    { type: 'output', content: 'LOCAL COMMANDS: HELP, CLEAR' },
+                    { type: 'output', content: 'REMOTE COMMANDS: LS, WHOAMI, PWD, ETC (VIA MINISHELL)' }
+                ]);
+                setInput('');
+                return;
+            }
+
+            // Enviar comando para o backend via RabbitMQ
+            setHistory(prev => [...prev, { type: 'input', content: cmd }]);
+
+            if (connected) {
+                sendCommand(cmd);
+            } else {
+                setHistory(prev => [...prev, { type: 'output', content: '[ERROR: TERMINAL NOT CONNECTED TO BACKEND]' }]);
+            }
+
             setInput('');
         }
     };
