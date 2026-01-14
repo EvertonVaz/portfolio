@@ -1,0 +1,117 @@
+@import "tailwindcss";
+
+@theme {
+  --color-dark: #0a0a0a;
+  --color-accent-pink: #ff007f;
+  --color-accent-green: #39ff14;
+  --color-accent-blue: #00f5ff;
+
+  --font-sans: "Inter", "Outfit", "system-ui", "sans-serif";
+  --font-mono: "JetBrains Mono", "monospace";
+
+  /* Custom component variables */
+  --punk-shadow-size: 4px;
+  --punk-shadow-color: #ffffff;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-dark);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+@layer components {
+
+  /* Reusable Punk Aesthetics */
+  .punk-card {
+    @apply p-8 border-2 border-white bg-dark relative overflow-hidden;
+    box-shadow: var(--punk-shadow-size) var(--punk-shadow-size) 0px var(--punk-shadow-color);
+  }
+
+  .punk-card-glass {
+    @apply p-8 border border-white/20 bg-black/40 backdrop-blur-sm transition-all duration-300;
+  }
+
+  .punk-card-glass:hover {
+    @apply border-white;
+  }
+
+  .section-title {
+    @apply text-4xl font-black uppercase mb-12 flex items-center gap-4;
+  }
+
+  .hero-title {
+    @apply text-6xl md:text-9xl font-black tracking-tighter uppercase mb-4;
+  }
+
+  .hero-title:hover {
+    text-shadow: 2px 0 var(--color-accent-pink), -2px 0 var(--color-accent-blue);
+  }
+
+  .punk-button {
+    @apply px-10 py-4 bg-white text-black font-black uppercase tracking-tighter transition-all duration-300 transform;
+    box-shadow: 8px 8px 0px #333;
+  }
+
+  .punk-button:hover {
+    @apply bg-accent-pink text-white -translate-y-1;
+    box-shadow: 8px 8px 0px var(--color-accent-pink);
+  }
+
+  .punk-button:active {
+    @apply translate-y-0 shadow-none;
+  }
+
+  .glitch-hover:hover {
+    text-shadow: 2px 0 var(--color-accent-pink), -2px 0 var(--color-accent-blue);
+  }
+
+  .terminal-container {
+    @apply bg-black border-2 border-white flex flex-col h-[500px];
+    box-shadow: 4px 4px 0px #ffffff;
+  }
+}
+
+/* Base custom styles */
+.punk-border {
+  border: 2px solid #ffffff;
+}
+
+.punk-shadow {
+  box-shadow: var(--punk-shadow-size) var(--punk-shadow-size) 0px var(--punk-shadow-color);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Utility for hiding scrollbar but allowing scroll */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
