@@ -1,10 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Work = () => {
+    const { t } = useTranslation();
+
     const projects = [
-        { id: '01', title: 'Transcending Logic', tag: 'C/C++', desc: 'Exploring fractals and mathematical patterns via low-level graphics.' },
-        { id: '02', title: 'Independent Noise', tag: 'React', desc: 'A platform for the underground indie scene.' },
-        { id: '03', title: 'Resistence Code', tag: 'Security', desc: 'Ethical hacking and systems analysis for the 42 community.' },
+        { id: '01', title: t('work.projects.p01.title'), tag: 'C/C++', desc: t('work.projects.p01.desc') },
+        { id: '02', title: t('work.projects.p02.title'), tag: 'React', desc: t('work.projects.p02.desc') },
+        { id: '03', title: t('work.projects.p03.title'), tag: 'Security', desc: t('work.projects.p03.desc') },
     ];
 
     return (
@@ -26,7 +29,7 @@ const Work = () => {
                                 {project.desc}
                             </p>
                             <button className="text-xs font-bold uppercase tracking-widest border-b-2 border-accent-green hover:text-accent-green transition-all pb-1 cursor-pointer">
-                                view project
+                                {t('work.view_project')}
                             </button>
                         </div>
                     </div>

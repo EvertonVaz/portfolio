@@ -1,12 +1,15 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import Work from '../components/Work';
 
 const WorkPage = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="py-24">
       <div className="max-w-6xl mx-auto px-8">
         <h2 className="section-title">
-          work.archives <span className="text-xs font-mono text-white/30">(03 items)</span>
+          {t('work.title')} <span className="text-xs font-mono text-white/30">{t('work.items_count', { count: 3 })}</span>
         </h2>
         <Work />
       </div>

@@ -1,18 +1,27 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const HeroCards = () => {
+  const { t } = useTranslation();
+
   const cards = [
     {
-      label: '# DISCIPLINE:',
-      content: 'PUNK. HARDCORE. INDEPENDENT.',
+      label: t('hero.tag_discipline'),
+      content: t('hero.tag_discipline_content'),
       colorClass: 'bg-accent-pink',
       labelColor: 'text-accent-pink'
     },
     {
-      label: '# LOGIC:',
-      content: 'MATH. PHYSICS. FRACTALS.',
+      label: t('hero.tag_logic'),
+      content: t('hero.tag_logic_content'),
       colorClass: 'bg-accent-green',
       labelColor: 'text-accent-green'
+    },
+    {
+      label: t('hero.tag_vision'),
+      content: t('hero.tag_vision_content'),
+      colorClass: 'bg-accent-blue',
+      labelColor: 'text-accent-blue'
     }
   ];
 

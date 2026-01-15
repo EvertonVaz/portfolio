@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRabbitMQ } from '../../hooks/useRabbitMQ';
 import { parseResponse } from '../../utils/parser';
 
 const Terminal = () => {
+    const { t } = useTranslation();
     const [history, setHistory] = useState([
-        { type: 'output', content: 'INITIALIZING MINISHELL...' },
-        { type: 'output', content: 'WELCOME A PROJECT OF 42 SÃO PAULO.' },
+        { type: 'output', content: t('terminal.initializing') },
+        { type: 'output', content: t('terminal.welcome') },
     ]);
     const [input, setInput] = useState('');
     const terminalRef = useRef(null);
@@ -36,8 +38,8 @@ const Terminal = () => {
                 setHistory(prev => [
                     ...prev,
                     { type: 'input', content: cmd },
-                    { type: 'output', content: 'LOCAL COMMANDS: HELP, CLEAR' },
-                    { type: 'output', content: 'REMOTE COMMANDS: "ls", "pwd", "echo", "cat", "exit", "whoami"' }
+                    { type: 'output', content: t('terminal.local_commands') },
+                    { type: 'output', content: t('terminal.remote_commands') }
                 ]);
                 setInput('');
                 return;
@@ -48,7 +50,7 @@ const Terminal = () => {
             if (connected) {
                 sendCommand(cmd);
             } else {
-                setHistory(prev => [...prev, { type: 'output', content: '[ERROR: TERMINAL NOT CONNECTED TO BACKEND]' }]);
+                setHistory(prev => [...prev, { type: 'output', content: t('terminal.error_not_connected') }]);
             }
 
             setInput('');
@@ -95,7 +97,6 @@ const Terminal = () => {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={handleCommand}
                             className="flex-1 bg-transparent border-none outline-none text-white font-mono lowercase"
-                            autoFocus
                         />
                     </div>
                 </div>
