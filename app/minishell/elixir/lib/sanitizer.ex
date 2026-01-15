@@ -1,31 +1,35 @@
 defmodule Messaging.Sanitizer do
-  @restricted_words [
-    "sudo", "rm", "chmod", "chown", "mkfs", "hosts",
-    "getent", "ip", "hostname", "resolv.conf", "curl", "nmap",
-    "wget", "dd", "fdisk", "parted", "ifconfig", "systemctl", "service",
-    "shutdown", "reboot", "poweroff", "halt", "init", "telinit", "useradd",
-    "userdel", "groupadd", "groupdel", "passwd", "su", "sudoers",
-    "iptables", "ufw", "firewalld", "mount", "umount", "lsblk", "python",
-    "python3", "perl", "ruby", "java", "javac", "gcc", "g++", "make",
-    "docker", "kubectl", "helm", "aws", "az", "gcloud", "terraform",
-    kill", "pkill", "xargs", "netstat", "ss", "tcpdump", "strace"
-  ]
+  @permitted_words ["ls", "pwd", "echo", "cat", "exit", "clear", "whoami"]
 
   def sanitize(message) do
-    case contains_restricted?(message) do
-      true -> {:error, "Permission denied"}
-      false -> {:ok, message}
+    case contains_permitted?(message) do
+      false -> {:error, "Permission denied"}
+      true -> {:ok, message}
     end
   end
 
-  defp contains_restricted?(message) do
+  defp contains_permitted?(message) do
     message
-    |> String.downcase()
-    |> String.split()
-    |> Enum.any?(fn word -> word in @restricted_words end)
+    |> String.split(~r/&&|\|\||\||;/)
+    |> Enum.map(&String.trim/1)
+    |> Enum.all?(&permitted_command?/1)
   end
 
-  def sanitize_response(message, command) do
+  defp permitted_command?(part) do
+    case String.split(part) do
+      [command | _args] -> String.downcase(command) in @permitted_words
+      _ -> false
+    end
+  end
+
+  def sanitize_response(message, command) when is_binary(message) do
+    case String.valid?(message) do
+      true -> do_sanitize_response(message, command)
+      false -> "Arquivo binário detectado. O conteúdo não pode ser exibido."
+    end
+  end
+
+  defp do_sanitize_response(message, command) do
     ansi_regex = ~r/\x1b\[[0-9;]*[a-zA-Z]/
 
     message

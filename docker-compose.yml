@@ -32,7 +32,11 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./app/minishell/elixir/_build/prod:/src
-      - ./app/minishell/minishell:/src/minishell
+      - ./app/minishell/elixir/minishell:/src/minishell
+    develop:
+      watch:
+        - action: restart
+          path: ./src
     env_file:
       - ./envs/.env.production
     depends_on:

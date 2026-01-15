@@ -22,13 +22,10 @@
 		"vscode": {
 			"extensions": [
 				"cweijan.vscode-database-client2",
-				"ms-python.black-formatter",
-				"ms-python.python",
-				"ms-python.debugpy",
 				"gruntfuggly.todo-tree",
-				"naumovs.color-highlight",
 				"bradlc.vscode-tailwindcss",
-				"mechatroner.rainbow-csv"
+				"naumovs.color-highlight",
+				"elixir-lsp.elixir-ls"
 			]
 		}
 	}
