@@ -19,7 +19,6 @@ export const useRabbitMQ = (onMessageReceived) => {
                 console.log('Connected to RabbitMQ via WebStomp');
                 setConnected(true);
 
-                // Subscribe to response queue
                 client.subscribe(`/queue/${QUEUE_RESPONSE}`, (message) => {
                     if (message.body) {
                         onMessageReceived(message.body);

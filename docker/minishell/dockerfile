@@ -1,17 +1,7 @@
-FROM debian:12
+FROM debian:12-slim
 
 RUN apt update && apt install -y build-essential
-RUN apt install -y zsh curl gnupg git nano sqlite3 libsqlite3-dev libreadline-dev
-RUN apt install -y libssl-dev libncurses5-dev automake autoconf libxml2-utils unzip
-RUN rm -rf /var/lib/apt/lists/*
-
-ENV MISE_INSTALL_PATH=/usr/local/bin/mise
-RUN curl https://mise.jdx.dev/install.sh | sh
-ENV MISE_DATA_DIR=/opt/mise
-ENV PATH="/opt/mise/shims:$PATH"
-ENV ELIXIR_ERL_OPTIONS="+fnu"
-
-RUN mise use --global erlang@latest elixir@latest
+RUN apt install -y nano libreadline-dev
 
 COPY ./scripts/start.sh /start/start.sh
 RUN chmod +x /start/start.sh
@@ -21,6 +11,6 @@ RUN apt update && apt install -y sudo && \
 
 WORKDIR /src
 
-# USER user
+USER user
 
 CMD ["/start/start.sh"]

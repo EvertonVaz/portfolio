@@ -9,7 +9,7 @@ services:
       - ${HOME}/.zsh_history:/root/.zsh_history
       - ./:/src
     env_file:
-      - ./envs/.env.development
+      - ./envs/.env.production
 
   nginx:
     restart: always
@@ -22,6 +22,8 @@ services:
       - "8888:80"
     env_file:
       - ./envs/.env.production
+    depends_on:
+      - minishell
 
   minishell:
     restart: always
@@ -29,7 +31,12 @@ services:
       context: ./docker/minishell
       dockerfile: Dockerfile
     volumes:
-      - ./app/minishell/dist:/src
+      - ./app/minishell/elixir/_build/prod:/src
+      - ./app/minishell/minishell:/src/minishell
+    env_file:
+      - ./envs/.env.production
+    depends_on:
+      - rabbitmq
 
   rabbitmq:
     restart: always

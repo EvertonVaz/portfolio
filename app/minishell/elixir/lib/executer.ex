@@ -1,5 +1,5 @@
 defmodule Messaging.Executer do
-  @minishell_path "/src/app/minishell/minishell"
+  @minishell_path "./minishell"
 
   def execute(command) do
     # Usando System.cmd para rodar o shell customizado

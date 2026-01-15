@@ -7,5 +7,4 @@ source ~/.bashrc
 
 mise use --global erlang@latest elixir@latest
 
-tail -f /dev/null
-
+rel/messaging/bin/messaging start
