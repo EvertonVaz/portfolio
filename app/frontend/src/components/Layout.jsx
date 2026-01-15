@@ -9,7 +9,7 @@ const Layout = ({ children }) => {
             {/* Background patterns */}
             <div className="fixed inset-0 pointer-events-none z-0 opacity-20">
                 {/* Subtle Grid */}
-                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[40px_40px]"></div>
 
                 {/* Fractal-like math shapes (SVG) */}
                 <svg className="absolute top-[-10%] right-[-10%] w-1/2 h-1/2 text-white opacity-10 animate-pulse" viewBox="0 0 100 100">
