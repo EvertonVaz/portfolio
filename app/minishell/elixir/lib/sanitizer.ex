@@ -24,8 +24,8 @@ defmodule Messaging.Sanitizer do
 
   def sanitize_response(message, command) when is_binary(message) do
     case String.valid?(message) do
-      true -> do_sanitize_response(message, command)
-      false -> "Arquivo binário detectado. O conteúdo não pode ser exibido."
+      true ->  {:ok, do_sanitize_response(message, command)}
+      false -> {:error, "Arquivo binário detectado. O conteúdo não pode ser exibido."}
     end
   end
 

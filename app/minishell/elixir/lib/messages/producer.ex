@@ -16,9 +16,4 @@ defmodule Messaging.Producer do
         IO.puts(" [!] Failed to publish message to '#{queue}': #{inspect(reason)}")
     end
   end
-
-  # Mantendo retrocompatibilidade para testes rápidos se necessário
-  def send_hello do
-    publish("hello", "Hello World em Elixir!")
-  end
 end

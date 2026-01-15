@@ -1,9 +1,7 @@
-defmodule Messaging.Executer do
+defmodule Messaging.Executor do
   @minishell_path "./minishell"
 
   def execute(command) do
-    # Usando System.cmd para rodar o shell customizado
-    # Passamos o comando via STDIN usando um pipe para o minishell
     try do
       {output, _exit_code} =
         System.shell("echo '#{command}' | #{@minishell_path}", stderr_to_stdout: true)

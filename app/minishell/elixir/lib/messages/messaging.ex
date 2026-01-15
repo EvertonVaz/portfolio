@@ -15,9 +15,8 @@ defmodule Messaging do
   def process(payload) do
     case Messaging.Sanitizer.sanitize(payload) do
       {:ok, valid_msg} ->
-        result = Messaging.Executer.execute(valid_msg)
-        result = Messaging.Sanitizer.sanitize_response(result, valid_msg)
-        {:ok, result}
+        result = Messaging.Executor.execute(valid_msg)
+        Messaging.Sanitizer.sanitize_response(result, valid_msg)
 
       {:error, reason} ->
         {:error, reason}

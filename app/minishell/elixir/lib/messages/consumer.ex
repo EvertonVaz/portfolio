@@ -20,7 +20,6 @@ defmodule Messaging.Consumer do
 
       {:error, reason} ->
         IO.puts(" [!] Failed to connect to RabbitMQ: #{inspect(reason)}")
-        # Optionally exit or keep retrying depending on the error type
         :timer.sleep(5000)
         wait_for_messages()
     end
@@ -31,24 +30,10 @@ defmodule Messaging.Consumer do
       {:basic_deliver, payload, _meta} ->
         IO.puts(" [x] Received command: #{payload}")
 
-        process_message(payload)
+        Messaging.Processor.process_message(payload)
 
         receive_messages()
     end
   end
 
-  defp process_message(payload) do
-    queue_response = System.get_env("VITE_QUEUE_RESPONSE") || "responses"
-
-    case Messaging.Sanitizer.sanitize(payload) do
-      {:ok, valid_msg} ->
-        result = Messaging.Executer.execute(valid_msg)
-        result = Messaging.Sanitizer.sanitize_response(result, valid_msg)
-        Messaging.Producer.publish(queue_response, result)
-
-      {:error, reason} ->
-        IO.puts(" [!] Sanitization error: #{reason}")
-        Messaging.Producer.publish(queue_response, reason)
-    end
-  end
 end

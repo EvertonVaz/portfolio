@@ -5,7 +5,7 @@ defmodule Messaging.VerifyBinaryTest do
   describe "sanitize_response" do
     test "Testing with valid UTF-8 string..." do
       valid_string = "Hello, world!"
-      assert Sanitizer.sanitize_response(valid_string, "cat") == "Hello, world!"
+      assert Sanitizer.sanitize_response(valid_string, "cat") == {:ok, "Hello, world!"}
     end
 
     test "Testing with binary data (invalid UTF-8)..." do
@@ -13,7 +13,7 @@ defmodule Messaging.VerifyBinaryTest do
       binary_data = <<0x7F, 0x45, 0x4C, 0x46, 0xFF, 0xFE, 0xFD>>
 
       assert Sanitizer.sanitize_response(binary_data, "cat") ==
-               "Arquivo binário detectado. O conteúdo não pode ser exibido."
+               {:error, "Arquivo binário detectado. O conteúdo não pode ser exibido."}
     end
   end
 end
