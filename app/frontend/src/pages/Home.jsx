@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import Layout from './components/Layout'
-import Terminal from './components/Terminal/Terminal'
+import Terminal from './components/Terminal'
 import Work from './components/Work'
 import Hacklog from './components/Hacklog'
 
-function App() {
+function Home() {
   return (
-    <Layout>
+    <>
       {/* Home / Hero Section */}
-      <section id="home" className="flex flex-col items-center justify-center p-8 text-center ">
-        <div className="max-w-2xl w-full">
+      <section id="home" className="flex flex-col items-center justify-center p-8 text-center min-h-[90vh]">
+        <div className="max-w-4xl w-full">
           {/* <h1 className="hero-title">
             code is<br />resistence
           </h1> */}
@@ -53,19 +53,19 @@ function App() {
       </section>
 
       {/* Work Section */}
-      {/* <section id="work" className="py-24">
+      <section id="work" className="py-24">
         <div className="max-w-6xl mx-auto px-8">
           <h2 className="section-title">
             work.archives <span className="text-xs font-mono text-white/30">(03 items)</span>
           </h2>
           <Work />
         </div>
-      </section> */}
+      </section>
 
       {/* Hacklog Section */}
-      {/* <section id="hacklog" className="py-24 bg-white/5 border-y border-white/10">
+      <section id="hacklog" className="py-24 bg-white/5 border-y border-white/10">
         <Hacklog />
-      </section> */}
+      </section>
 
       {/* Contact Placeholder */}
       <section id="contact" className="py-32 flex flex-col items-center justify-center text-center">
@@ -76,9 +76,8 @@ function App() {
           etovaz.web@google.com
         </a>
       </section>
-
-    </Layout>
-  )
+      </>
+    )
 }
 
-export default App
+export default Home

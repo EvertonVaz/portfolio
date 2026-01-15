@@ -1,17 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useRabbitMQ } from '../hooks/useRabbitMQ';
-import { parseResponse } from '../utils/parser';
+import { useRabbitMQ } from '../../hooks/useRabbitMQ';
+import { parseResponse } from '../../utils/parser';
 
 const Terminal = () => {
     const [history, setHistory] = useState([
-        { type: 'output', content: 'INITIALIZING BORN2CODE_OS...' },
-        { type: 'output', content: 'WELCOME GRADUATE OF 42 SÃO PAULO.' },
-        { type: 'output', content: 'TYPE "HELP" FOR AVAILABLE COMMANDS.' },
+        { type: 'output', content: 'INITIALIZING MINISHELL...' },
+        { type: 'output', content: 'WELCOME A PROJECT OF 42 SÃO PAULO.' },
     ]);
     const [input, setInput] = useState('');
     const terminalRef = useRef(null);
 
-    // Callback para processar mensagens recebidas do backend
     const onMessageReceived = useCallback((msg) => {
         const parsedWords = parseResponse(msg);
         const content = parsedWords.length > 0 ? parsedWords.join(' ') : msg;
@@ -28,7 +26,6 @@ const Terminal = () => {
 
             const lowerCmd = cmd.toLowerCase();
 
-            // Comandos locais (clear e help)
             if (lowerCmd === 'clear') {
                 setHistory([]);
                 setInput('');
@@ -40,13 +37,12 @@ const Terminal = () => {
                     ...prev,
                     { type: 'input', content: cmd },
                     { type: 'output', content: 'LOCAL COMMANDS: HELP, CLEAR' },
-                    { type: 'output', content: 'REMOTE COMMANDS: LS, WHOAMI, PWD, ETC (VIA MINISHELL)' }
+                    { type: 'output', content: 'REMOTE COMMANDS: "ls", "pwd", "echo", "cat", "exit", "whoami"' }
                 ]);
                 setInput('');
                 return;
             }
 
-            // Enviar comando para o backend via RabbitMQ
             setHistory(prev => [...prev, { type: 'input', content: cmd }]);
 
             if (connected) {

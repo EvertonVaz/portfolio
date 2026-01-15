@@ -10,10 +10,10 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center mix-blend-difference">
+        <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-zinc-900/1 backdrop-blur-sm border-b border-white/10">
             <div className="text-2xl font-black tracking-tighter uppercase whitespace-nowrap">
-                <span className="bg-white text-black px-2 mr-1">42</span>
-                <span className="text-white">EV</span>
+                <span className="bg-white text-black px-2 mr-1"></span>
+                <span className="text-white">Everton Vaz</span>
             </div>
 
             <ul className="hidden md:flex gap-8 group">

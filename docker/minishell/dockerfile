@@ -6,11 +6,6 @@ RUN apt install -y nano libreadline-dev
 COPY ./scripts/start.sh /start/start.sh
 RUN chmod +x /start/start.sh
 
-RUN apt update && apt install -y sudo && \
-    useradd -m -s /bin/zsh user
-
 WORKDIR /src
-
-USER user
 
 CMD ["/start/start.sh"]
