@@ -13,14 +13,7 @@ defmodule Messaging do
 
   """
   def process(payload) do
-    case Messaging.Sanitizer.sanitize(payload) do
-      {:ok, valid_msg} ->
-        result = Messaging.Executor.execute(valid_msg)
-        Messaging.Sanitizer.sanitize_response(result, valid_msg)
-
-      {:error, reason} ->
-        {:error, reason}
-    end
+    Messaging.Services.CommandProcessor.process(payload)
   end
 
   def hello do

@@ -20,7 +20,7 @@ defmodule Messaging.Router do
     if is_same_origin and has_custom_header do
       conn
     else
-      Logger.warn("[SECURITY] Tentativa de acesso bloqueada ao /token. Origin: #{inspect(get_req_header(conn, "sec-fetch-site"))}")
+      Logger.warning("[SECURITY] Tentativa de acesso bloqueada ao /token. Origin: #{inspect(get_req_header(conn, "sec-fetch-site"))}")
       conn |> send_resp(403, "Forbidden") |> halt()
     end
   end

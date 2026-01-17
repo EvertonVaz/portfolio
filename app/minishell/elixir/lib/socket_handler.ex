@@ -13,7 +13,7 @@ defmodule Messaging.SocketHandler do
   def handle_in({text, [opcode: :text]}, state) do
     Logger.info("[SOCKET] Comando recebido: #{text}")
 
-    response = Messaging.Processor.process_message(text)
+    response = Messaging.Services.CommandProcessor.process(text)
 
     {:reply, :ok, {:text, response}, state}
   end

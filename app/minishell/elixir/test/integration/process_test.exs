@@ -1,23 +1,27 @@
 defmodule Messaging.ProcessTest do
   use ExUnit.Case
 
-  describe "Executor/1" do
+  describe "CommandProcessor.process/1" do
     test "allows permitted single commands" do
-      assert {:ok, output} = Messaging.process("ls -la")
+      output = Messaging.process("ls -la")
+      assert is_binary(output)
       assert output =~ "minishell"
-      assert {:ok, output} = Messaging.process("pwd")
+
+      output = Messaging.process("pwd")
       assert output =~ "/"
     end
 
     test "rejects forbidden commands" do
-      assert {:error, _reason} = Messaging.process("rm -rf /")
-      assert {:error, _reason} = Messaging.process("shutdown now")
+      output = Messaging.process("rm -rf /")
+      assert output == "Error: Permission denied"
+
+      output = Messaging.process("shutdown now")
+      assert output == "Error: Permission denied"
     end
 
     test "handles command read binary data" do
-      assert {:error, output} = Messaging.process("cat minishell")
-      assert byte_size(output) > 0
+      output = Messaging.process("cat minishell")
+      assert output == "Arquivo binário detectado. O conteúdo não pode ser exibido."
     end
-
   end
 end
