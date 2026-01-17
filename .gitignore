@@ -1,4 +1,6 @@
 _old_assets/
+deploy/
+envs/
 
 # The directory Mix will write compiled artifacts to.
 /_build/

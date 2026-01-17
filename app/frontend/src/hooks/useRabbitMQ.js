@@ -18,7 +18,11 @@ export const useRabbitMQ = (onMessageReceived) => {
 
         try {
             const baseUrl = window.location.origin;
-            const tokenResponse = await fetch(`${baseUrl}/token`);
+            const tokenResponse = await fetch(`${baseUrl}/token`, {
+                headers: {
+                    'x-terminal-request': 'true'
+                }
+            });
             const { token } = await tokenResponse.json();
 
             if (!token) throw new Error('Falha ao obter token');
