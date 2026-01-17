@@ -11,12 +11,14 @@ back-build:
 front:
 	cd ./app/frontend && npm run dev - --host
 
-docker-up: docker-down docker-logs
-	docker-compose -f ./deploy/docker-compose.prod-test.yml up -d --build
+DOCKER_COMPOSE = docker compose
+COMPOSE_FILE = ./deploy/docker-compose.prod-test.yml
+
+docker-up: docker-down
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d --build
 
 docker-down:
-	clear
-	docker-compose -f ./deploy/docker-compose.prod-test.yml down --rmi all -v
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down --rmi all -v
 
 docker-logs:
-	docker-compose -f ./deploy/docker-compose.prod-test.yml logs -f
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
