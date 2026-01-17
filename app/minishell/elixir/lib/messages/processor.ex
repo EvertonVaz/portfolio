@@ -1,24 +1,17 @@
 defmodule Messaging.Processor do
   def process_message(payload) do
-
     Messaging.Sanitizer.sanitize(payload)
-    |> after_sanitaze()
+    |> after_sanitize()
   end
 
-  defp after_sanitaze({:ok, valid_msg}) do
+  defp after_sanitize({:ok, valid_msg}) do
     result = Messaging.Executor.execute(valid_msg)
+    # Retorna o resultado higienizado para o socket
     Messaging.Sanitizer.sanitize_response(result, valid_msg)
-    |> before_response()
+    |> elem(1)
   end
 
-  defp after_sanitaze({:error, reason}) do
-    before_response({:error, reason})
+  defp after_sanitize({:error, reason}) do
+    "Error: #{reason}"
   end
-
-  defp before_response({_, message}) do
-    queue = System.get_env("VITE_QUEUE_RESPONSE") || "responses"
-
-    Messaging.Producer.publish(queue, message)
-  end
-
 end

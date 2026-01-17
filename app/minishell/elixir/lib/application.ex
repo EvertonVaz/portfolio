@@ -3,9 +3,12 @@ defmodule Messaging.Application do
 
   @impl true
   def start(_type, _args) do
+    # Configura a porta do servidor (default 4000)
+    port = String.to_integer(System.get_env("PORT") || "4000")
+
     children = [
-      # Inicia o consumidor como uma Task supervisionada
-      {Task, fn -> Messaging.Consumer.wait_for_messages() end}
+      # Inicia o servidor Bandit com o nosso Router
+      {Bandit, plug: Messaging.Router, port: port}
     ]
 
     opts = [strategy: :one_for_one, name: Messaging.Supervisor]

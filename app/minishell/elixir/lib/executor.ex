@@ -9,9 +9,7 @@ defmodule Messaging.Executor do
       String.trim(output)
     rescue
       e ->
-        error_message = "Error executing minishell: #{inspect(e)}"
-        Messaging.Producer.publish("responses", error_message)
-        error_message
+        "Error executing minishell: #{inspect(e)}"
     end
   end
 end

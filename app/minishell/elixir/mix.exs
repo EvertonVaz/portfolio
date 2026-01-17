@@ -22,7 +22,11 @@ defmodule Messaging.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:amqp, "~> 4.0"}
+      {:bandit, "~> 1.6"},
+      {:websock_adapter, "~> 0.5"},
+      {:joken, "~> 2.6"},
+      {:jason, "~> 1.4"}, # Necessário para JSON no Elixir
+      {:corsica, "~> 2.1"}
     ]
   end
 end
