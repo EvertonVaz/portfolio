@@ -1,11 +1,12 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 /**
  * Componente de Cartão de Projeto Individual.
  * SRP: Responsável apenas pela exibição de um único projeto.
  */
-const ProjectCard = ({ id, title, tag, desc }) => {
+const ProjectCard = ({ id, title, tag, desc, path, type }) => {
     const { t } = useTranslation();
 
     return (
@@ -28,9 +29,15 @@ const ProjectCard = ({ id, title, tag, desc }) => {
                     {desc}
                 </p>
 
-                <button className="self-start text-xs font-bold uppercase tracking-widest border-b-2 border-accent-green hover:text-accent-green transition-all pb-1 cursor-pointer">
-                    {t('work.view_project')}
-                </button>
+                {type === 'internal' ? (
+                    <Link to={path} className="self-start text-xs font-bold uppercase tracking-widest border-b-2 border-accent-green hover:text-accent-green transition-all pb-1 cursor-pointer">
+                        {t('work.view_project')}
+                    </Link>
+                ) : (
+                    <button className="self-start text-xs font-bold uppercase tracking-widest border-b-2 border-accent-green hover:text-accent-green transition-all pb-1 cursor-pointer">
+                        {t('work.view_project')}
+                    </button>
+                )}
             </div>
         </div>
     );

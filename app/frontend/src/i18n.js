@@ -32,16 +32,22 @@ const resources = {
                 view_project: 'view project',
                 projects: {
                     p01: {
-                        title: 'Transcending Logic',
-                        desc: 'Exploring fractals and mathematical patterns via low-level graphics.',
+                        title: 'Minishell',
+                        desc: 'A minimalist Unix shell implementation in C, exploring process management and parsing.',
+                        path: '/terminal',
+                        type: 'internal'
                     },
                     p02: {
-                        title: 'Independent Noise',
-                        desc: 'A platform for the underground indie scene.',
+                        title: 'Transcending Logic',
+                        desc: 'Exploring fractals and mathematical patterns via low-level graphics.',
+                        path: '#',
+                        type: 'external'
                     },
                     p03: {
-                        title: 'Resistance Code',
-                        desc: 'Ethical hacking and systems analysis for the 42 community.',
+                        title: 'Independent Noise',
+                        desc: 'A platform for the underground indie scene.',
+                        path: '#',
+                        type: 'external'
                     }
                 }
             },
@@ -86,16 +92,22 @@ const resources = {
                 view_project: 'ver projeto',
                 projects: {
                     p01: {
-                        title: 'Transcending Logic',
-                        desc: 'Explorando fractais e padrões matemáticos via gráficos de baixo nível.',
+                        title: 'Minishell',
+                        desc: 'Uma implementação minimalista de um shell Unix em C, explorando gerenciamento de processos e parsing.',
+                        path: '/terminal',
+                        type: 'internal'
                     },
                     p02: {
-                        title: 'Som Independente',
-                        desc: 'Uma plataforma para a cena indie underground.',
+                        title: 'Transcending Logic',
+                        desc: 'Explorando fractais e padrões matemáticos via gráficos de baixo nível.',
+                        path: '#',
+                        type: 'external'
                     },
                     p03: {
-                        title: 'Resistance Code',
-                        desc: 'Hacking ético e análise de sistemas para a comunidade 42.',
+                        title: 'Som Independente',
+                        desc: 'Uma plataforma para a cena indie underground.',
+                        path: '#',
+                        type: 'external'
                     }
                 }
             },
@@ -114,14 +126,14 @@ const resources = {
 };
 
 i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
-    fallbackLng: 'pt',
-    interpolation: {
-      escapeValue: false,
-    }
-  });
+    .use(LanguageDetector)
+    .use(initReactI18next)
+    .init({
+        resources,
+        fallbackLng: 'pt',
+        interpolation: {
+            escapeValue: false,
+        }
+    });
 
 export default i18n;

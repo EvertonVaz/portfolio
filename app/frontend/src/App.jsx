@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout'
 import ScrollSection from './components/shared/ScrollSection'
 import Home from './pages/Home'
@@ -15,21 +15,24 @@ function App() {
   return (
     <Router>
       <Layout>
-        <ScrollSection id="home">
-          <Home />
-        </ScrollSection>
+        <Routes>
+          <Route path="/" element={
+            <>
+              <ScrollSection id="home">
+                <Home />
+              </ScrollSection>
 
-        <ScrollSection id="terminal">
-          <TerminalPage />
-        </ScrollSection>
+              <ScrollSection id="work">
+                <WorkPage />
+              </ScrollSection>
 
-        <ScrollSection id="work">
-          <WorkPage />
-        </ScrollSection>
-
-        <ScrollSection id="contact">
-          <ContactPage />
-        </ScrollSection>
+              <ScrollSection id="contact">
+                <ContactPage />
+              </ScrollSection>
+            </>
+          } />
+          <Route path="/terminal" element={<TerminalPage />} />
+        </Routes>
       </Layout>
     </Router>
   )
