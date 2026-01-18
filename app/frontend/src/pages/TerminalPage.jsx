@@ -1,6 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Terminal from '../components/Terminal/Terminal';
+import { GithubCTA } from '../components/Buttons/GithubCTA';
+import MinishellArchitecture from '../components/Terminal/MinishellArchitecture';
 
 /**
  * Componente de Cabeçalho da página Terminal.
@@ -23,25 +25,6 @@ const TerminalHeader = () => {
 };
 
 /**
- * Componente de link para o GitHub no rodapé da seção.
- */
-const GithubCTA = () => {
-  const { t } = useTranslation();
-  return (
-    <div className="max-w-6xl mx-auto px-8 mt-12 text-center">
-      <a
-        href="https://github.com/evertonvaz/minishell"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block px-6 py-2 bg-accent-green text-black font-mono font-bold rounded hover:bg-opacity-90 transition"
-      >
-        {t('terminal.github_link')}
-      </a>
-    </div>
-  );
-};
-
-/**
  * Página do TerminalLab.
  * SRP: Apenas orquestra o Cabeçalho, o Terminal e o CTA.
  */
@@ -51,7 +34,8 @@ const TerminalPage = () => {
       <div className="max-w-6xl mx-auto px-8">
         <TerminalHeader />
         <Terminal />
-        <GithubCTA />
+        <MinishellArchitecture />
+        <GithubCTA url="https://github.com/evertonvaz/minishell" />
       </div>
     </section>
   );

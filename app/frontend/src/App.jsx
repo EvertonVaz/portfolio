@@ -4,6 +4,7 @@ import Layout from './components/Layout'
 import ScrollSection from './components/shared/ScrollSection'
 import Home from './pages/Home'
 import TerminalPage from './pages/TerminalPage'
+import FractalPage from './pages/FractalPage'
 import WorkPage from './pages/WorkPage'
 import ContactPage from './pages/ContactPage'
 
@@ -32,6 +33,7 @@ function App() {
             </>
           } />
           <Route path="/terminal" element={<TerminalPage />} />
+          <Route path="/fractals" element={<FractalPage />} />
         </Routes>
       </Layout>
     </Router>

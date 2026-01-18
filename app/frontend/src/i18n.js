@@ -38,10 +38,10 @@ const resources = {
                         type: 'internal'
                     },
                     p02: {
-                        title: 'Transcending Logic',
-                        desc: 'Exploring fractals and mathematical patterns via low-level graphics.',
-                        path: '#',
-                        type: 'external'
+                        title: 'Fractal Explorer',
+                        desc: 'An interactive visualization tool for Mandelbrot and Julia sets, built with HTML5 Canvas and React.',
+                        path: '/fractals',
+                        type: 'internal'
                     },
                     p03: {
                         title: 'Independent Noise',
@@ -50,6 +50,24 @@ const resources = {
                         type: 'external'
                     }
                 }
+            },
+            fractals: {
+                title: 'fractal.explorer',
+                description: 'Explore mathematical beauty through interactive fractals.',
+                type_label: 'Fractal Type',
+                mandelbrot: 'Mandelbrot Set',
+                julia: 'Julia Set',
+                coordinates: 'Coordinates',
+                real: 'Real (Re)',
+                imaginary: 'Imaginary (Im)',
+                zoom: 'Zoom',
+                iterations: 'Iterations',
+                precision: 'Precision',
+                standard: 'STANDARD',
+                high_res: 'HIGH_RES',
+                status: 'status_active',
+                back_to_work: 'back to archives',
+                lab_obs: 'Click or drag on the canvas to explore (experimental).'
             },
             terminal: {
                 initializing: 'INITIALIZING MINISHELL...',
@@ -60,6 +78,15 @@ const resources = {
                 lab_description: 'This project is an implementation of a minimalist Unix shell developed in C, as part of the 42 curriculum. The goal is to replicate the basic functionality of Bash, handling command reading, parsing, execution and process management.',
                 lab_obs: 'Note: Few commands are released on the backend, type help to see the full list.',
                 github_link: 'GitHub Repository',
+                architecture_title: 'System Architecture',
+                architecture_subtitle: 'How the Minishell interacts with the Portfolio',
+                architecture_frontend: 'Modern Frontend',
+                architecture_bff: 'High-Performance BFF',
+                architecture_core: 'Unix Core',
+                architecture_desc_frontend: 'React interface capturing user input and displaying terminal output in real-time.',
+                architecture_desc_bff: 'Elixir/Phoenix layer managing secure WebSocket connections and process spawning.',
+                architecture_desc_core: 'The original C implementation of Minishell, executing native Unix commands.',
+                architecture_info_footer: '[SYSTEM_INFO]: communication is bidirectional. the elixir bff acts as a process supervisor, maintaining system stability and ensuring each command runs in its own isolated environment before returning the result to the browser.',
             }
         }
     },
@@ -98,10 +125,10 @@ const resources = {
                         type: 'internal'
                     },
                     p02: {
-                        title: 'Transcending Logic',
-                        desc: 'Explorando fractais e padrões matemáticos via gráficos de baixo nível.',
-                        path: '#',
-                        type: 'external'
+                        title: 'Fractal Explorer',
+                        desc: 'Uma ferramenta de visualização interativa para os conjuntos de Mandelbrot e Julia, construída com HTML5 Canvas e React.',
+                        path: '/fractals',
+                        type: 'internal'
                     },
                     p03: {
                         title: 'Som Independente',
@@ -110,6 +137,24 @@ const resources = {
                         type: 'external'
                     }
                 }
+            },
+            fractals: {
+                title: 'fractal.explorer',
+                description: 'Explore a beleza matemática através de fractais interativos.',
+                type_label: 'Tipo de Fractal',
+                mandelbrot: 'Conjunto de Mandelbrot',
+                julia: 'Conjunto de Julia',
+                coordinates: 'Coordenadas',
+                real: 'Real (Re)',
+                imaginary: 'Imaginário (Im)',
+                zoom: 'Zoom',
+                iterations: 'Iterações',
+                precision: 'Precisão',
+                standard: 'PADRÃO',
+                high_res: 'ALTA_RES',
+                status: 'status_ativo',
+                back_to_work: 'voltar aos arquivos',
+                lab_obs: 'Clique ou arraste no canvas para explorar (experimental).'
             },
             terminal: {
                 initializing: 'INICIALIZANDO MINISHELL...',
@@ -120,6 +165,15 @@ const resources = {
                 lab_description: 'Este projeto é uma implementação de um shell Unix minimalista desenvolvido em C, como parte do currículo da 42. O objetivo é replicar o funcionamento básico do Bash, lidando com a leitura de comandos, parsing, execução e gerenciamento de processos.',
                 lab_obs: 'Obs.: Poucos comandos estão liberados no backend, digite help para ver a lista completa.',
                 github_link: 'Repositório GitHub',
+                architecture_title: 'Arquitetura do Sistema',
+                architecture_subtitle: 'Como o Minishell interage com o Portfólio',
+                architecture_frontend: 'Frontend Moderno',
+                architecture_bff: 'BFF de Alta Performance',
+                architecture_core: 'Coração Unix',
+                architecture_desc_frontend: 'Interface em React capturando inputs e exibindo outputs do terminal em tempo real.',
+                architecture_desc_bff: 'Camada Elixir/Phoenix gerenciando conexões seguras via WebSockets e execução de processos.',
+                architecture_desc_core: 'A implementação original do Minishell em C, executando comandos Unix nativos.',
+                architecture_info_footer: '[SYSTEM_INFO]: a comunicação é bidirecional. o bff em elixir atua como um supervisor de processos, mantendo a estabilidade do sistema e garantindo que cada comando execute em seu próprio ambiente isolado antes de retornar o resultado para o navegador.',
             }
         }
     }
