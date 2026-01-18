@@ -1,8 +1,20 @@
 import React from 'react';
+import astronautImg from '../assets/astronaut.png';
+import logo42Img from '../assets/logo42.png';
 
 const FractalBackground = () => {
     return (
-        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-10">
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-10 select-none">
+            {/* Astronauta Flutuante */}
+            <div className="absolute top-[15%] right-[15%] w-[15vw] h-[15vw] animate-[float_12s_ease-in-out_infinite] rotate-12">
+                <img src={astronautImg} alt="" className="w-full h-full object-contain" />
+            </div>
+
+            {/* Logo 42 Distante */}
+            <div className="absolute bottom-[20%] left-[15%] w-[10vw] h-[10vw] animate-[float_15s_ease-in-out_infinite_reverse] opacity-50">
+                <img src={logo42Img} alt="" className="w-full h-full object-contain" />
+            </div>
+
             {/* Fractal-like rotating geometry */}
             <div className="absolute top-[20%] left-[10%] w-[40vw] h-[40vw] animate-[spin_60s_linear_infinite]">
                 <svg viewBox="0 0 100 100" className="w-full h-full text-white">
@@ -24,6 +36,13 @@ const FractalBackground = () => {
             {/* Binary rain-like column snippet */}
             <div className="absolute top-0 right-[20%] h-full w-px bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
             <div className="absolute top-0 left-[30%] h-full w-px bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
+
+            <style jsx>{`
+                @keyframes float {
+                    0%, 100% { transform: translateY(0) rotate(12deg); }
+                    50% { transform: translateY(-20px) rotate(15deg); }
+                }
+            `}</style>
         </div>
     );
 };

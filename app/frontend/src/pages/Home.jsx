@@ -1,23 +1,30 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import HeroBanner from '../components/home/HeroBanner'
-import ProfileDescription from '../components/home/ProfileDescription'
+import HeroBanner from '../components/HeroSession/HeroBanner'
+import HeroCards from '../components/HeroSession/HeroCards'
 
 /**
- * Página Inicial (Home).
- * Refatorada para orquestrar componentes especializados.
+ * Página Inicial (Home) - Redesign "Terminal Identity".
  */
 function Home() {
   return (
-    <section className="flex flex-col items-center justify-center p-8 text-center scroll-mt-24 min-h-[80vh]">
+    <section className="flex flex-col items-center justify-center px-4 py-16 md:py-24 text-center scroll-mt-24 min-h-[90vh]">
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="max-w-4xl w-full"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="w-full"
       >
         <HeroBanner />
-        <ProfileDescription />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="w-full"
+      >
+        <HeroCards />
       </motion.div>
     </section>
   )
