@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { useFractalRenderer } from '../../hooks/useFractalRenderer';
 import FractalViewport from './subcomponents/FractalViewport';
 import FractalControls from './subcomponents/FractalControls';
-import { GithubCTA } from '../Buttons/GithubCTA';
 
 /**
  * FractalExplorer - Orquestrador Principal (WebGL Version).
@@ -64,7 +63,6 @@ const FractalExplorer = () => {
     }, []);
 
     return (
-        <>
         <div className="flex flex-col xl:flex-row gap-12 items-start justify-center">
             <FractalViewport
                 params={params}
@@ -78,8 +76,6 @@ const FractalExplorer = () => {
                 onReset={handleReset}
             />
         </div>
-        <GithubCTA url="https://github.com/EvertonVaz/fractol" />
-        </>
     );
 };
 
