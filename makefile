@@ -8,6 +8,9 @@ front-build:
 back-build:
 	cd ./app/backend/elixir && MIX_ENV=prod mix release --overwrite
 
+test:
+	cd ./app/backend/elixir && mix test --cover
+
 front:
 	cd ./app/frontend && npm run dev - --host
 
