@@ -6,7 +6,7 @@ const Footer = () => {
 
             {/* Left: Copyright */}
             <div className="p-2 text-center md:text-left md:pl-4 border-b md:border-b-0 border-white/5">
-                © 2026 EVERTON VAZ // CODE_RESISTANCE
+                © 2026 EVERTON VAZ // CODE_IS_RESISTANCE
             </div>
 
             {/* Center: System Metrics (Fake) */}

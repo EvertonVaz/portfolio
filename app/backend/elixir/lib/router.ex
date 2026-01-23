@@ -2,15 +2,16 @@ defmodule Messaging.Router do
   use Plug.Router
   require Logger
 
-  plug Plug.Logger
+  plug(Plug.Logger)
   # Libera CORS de forma controlada
-  plug Corsica,
+  plug(Corsica,
     origins: "*",
     allow_headers: ["content-type", "x-terminal-request"]
+  )
 
-  plug :fetch_query_params
-  plug :match
-  plug :dispatch
+  plug(:fetch_query_params)
+  plug(:match)
+  plug(:dispatch)
 
   # Middleware para blindar o endpoint de token
   defp validate_terminal_request(conn, _opts) do
@@ -20,7 +21,10 @@ defmodule Messaging.Router do
     if is_same_origin and has_custom_header do
       conn
     else
-      Logger.warning("[SECURITY] Tentativa de acesso bloqueada ao /token. Origin: #{inspect(get_req_header(conn, "sec-fetch-site"))}")
+      Logger.warning(
+        "[SECURITY] Tentativa de acesso bloqueada ao /token. Origin: #{inspect(get_req_header(conn, "sec-fetch-site"))}"
+      )
+
       conn |> send_resp(403, "Forbidden") |> halt()
     end
   end
@@ -33,6 +37,7 @@ defmodule Messaging.Router do
 
   defp do_get_token(conn) do
     token = Messaging.Auth.generate_token()
+
     conn
     |> put_resp_content_type("application/json")
     |> send_resp(200, Jason.encode!(%{token: token}))
