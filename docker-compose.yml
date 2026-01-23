@@ -8,6 +8,7 @@ services:
       - ${HOME}/.p10k.zsh:/root/.p10k.zsh
       - ${HOME}/.zsh_history:/root/.zsh_history
       - ./:/src
+      - ${HOME}/.gemini:/root/.gemini
     env_file:
       - ./envs/.env.production
 
@@ -23,30 +24,20 @@ services:
     env_file:
       - ./envs/.env.production
     depends_on:
-      - minishell
+      - backend
 
-  minishell:
+  backend:
     restart: always
     build:
-      context: ./docker/minishell
+      context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
-      - ./app/minishell/elixir/_build/prod:/src
-      - ./app/minishell/elixir/minishell:/src/minishell
+      - ./app/backend/elixir/_build/prod:/src
     develop:
       watch:
         - action: restart
           path: ./src
     env_file:
       - ./envs/.env.production
-    depends_on:
-      - rabbitmq
 
-  rabbitmq:
-    restart: always
-    build:
-      context: ./docker/rabbitmq
-      dockerfile: Dockerfile
-    ports:
-      - "15672:15672"
 
