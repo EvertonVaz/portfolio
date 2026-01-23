@@ -10,15 +10,18 @@ import MinishellArchitecture from '../components/MinishellArchitecture';
 const TerminalHeader = () => {
   const { t } = useTranslation();
   return (
-    <div className="max-w-2xl mx-auto text-center mb-12">
-      <h2 className="section-title">
-        <span className="text-accent-green">_</span> terminal_lab
+    <div className="max-w-3xl mx-auto text-center mb-16 relative">
+      <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 text-[120px] font-black text-white/5 pointer-events-none select-none">
+        TERM
+      </div>
+      <h2 className="text-4xl md:text-5xl font-black uppercase mb-6 flex items-center justify-center gap-4 text-punk-green tracking-tighter">
+        <span className="animate-pulse">_</span> terminal_lab
       </h2>
-      <p className="font-mono text-white/80 mb-4">
+      <p className="font-mono text-white/80 mb-4 text-lg border-l-2 border-punk-green pl-4 text-left md:text-center md:border-l-0 md:border-b-2 md:pb-4 border-white/10 inline-block">
         {t('terminal.lab_description')}
       </p>
-      <p className="font-mono text-white/60 text-sm">
-        {t('terminal.lab_obs')}
+      <p className="font-mono text-punk-green/60 text-xs uppercase tracking-widest mt-2">
+        // {t('terminal.lab_obs')}
       </p>
     </div>
   );

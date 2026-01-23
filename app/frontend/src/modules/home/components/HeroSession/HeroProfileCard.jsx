@@ -27,31 +27,32 @@ const HeroProfileCard = ({
     children
 }) => {
     return (
-        <div className="group relative">
-            {/* Glow Effect */}
-            <div className={`absolute -inset-0.5 ${glowGradient} rounded-lg blur opacity-20 group-hover:opacity-40 transition duration-1000`}></div>
+        <div className="group relative h-full">
+            {/* Brutalist Shadow/Glow (Offset) */}
+            <div className={`absolute top-2 left-2 w-full h-full border border-white/10 bg-punk-gray/50 -z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1`}></div>
 
-            <div className={`relative punk-card-glass rounded-lg p-8 h-full border border-white/10 ${borderHover} transition-all duration-500`}>
+            {/* Main Card Container */}
+            <div className={`relative bg-punk-bg/90 p-8 h-full border-2 border-white/20 hover:border-white transition-all duration-300 ${borderHover}`}>
                 {/* Badge */}
                 <div className="flex items-center justify-between mb-6">
-                    <span className={`px-3 py-1 ${badgeColor} rounded-full text-[10px] font-mono uppercase tracking-widest`}>
+                    <span className={`px-2 py-1 ${badgeColor} text-[10px] font-mono uppercase tracking-widest border border-current`}>
                         {badge}
                     </span>
-                    <span className="text-[10px] font-mono text-white/20">{index}</span>
+                    <span className="text-[10px] font-mono text-white/20">//{index}</span>
                 </div>
 
                 {/* Título */}
-                <h3 className="text-2xl font-bold text-white mb-4 tracking-tight">
-                    <span className={titleColor}>_</span>{title}
+                <h3 className="text-2xl font-black text-white mb-4 tracking-tight uppercase">
+                    <span className={`mr-2 ${titleColor}`}>&gt;</span>{title}
                 </h3>
 
                 {/* Descrição */}
-                <p className="text-white/60 text-sm font-mono leading-relaxed mb-8">
+                <p className="text-white/60 text-sm font-mono leading-relaxed mb-8 border-l-2 border-white/10 pl-4">
                     <Trans
                         i18nKey={i18nKey}
                         components={{
-                            1: <span className="text-accent-green font-bold" />,
-                            3: <span className="text-accent-pink font-bold" />
+                            1: <span className="text-punk-green font-bold" />,
+                            3: <span className="text-punk-pink font-bold" />
                         }}
                     >
                         {fallbackDesc}
@@ -59,7 +60,13 @@ const HeroProfileCard = ({
                 </p>
 
                 {/* Conteúdo Adicional */}
-                {children}
+                <div className="mt-auto">
+                    {children}
+                </div>
+
+                {/* Decorative Corner */}
+                <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-white/40"></div>
+                <div className="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 border-white/40"></div>
             </div>
         </div>
     );

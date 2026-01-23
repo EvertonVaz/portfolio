@@ -19,26 +19,26 @@ const HeroCards = () => {
           badge="creative_profile"
           index="01"
           title="soul.config"
-          titleColor="text-accent-pink"
+          titleColor="text-punk-pink"
           i18nKey="hero.description"
           fallbackDesc="Engenheiro de Software apaixonado por sistemas complexos, a música por trás do código e a estética indie."
-          glowGradient="bg-gradient-to-r from-accent-pink to-accent-blue"
-          badgeColor="bg-accent-pink/10 border border-accent-pink/20 text-accent-pink"
-          borderHover="hover:border-accent-pink/50"
+          glowGradient="bg-punk-pink"
+          badgeColor="text-punk-pink border-punk-pink/50"
+          borderHover="hover:border-punk-pink"
         >
           {/* Creative Stats */}
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/5">
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-accent-pink">{t('hero.stat_phi')}</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase">{t('hero.stat_aesthetics')}</span>
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10 border-dashed">
+            <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300">
+              <span className="block text-2xl font-black text-punk-pink">{t('hero.stat_phi')}</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">{t('hero.stat_aesthetics')}</span>
             </div>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-white">{t('hero.stat_diy')}</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase">{t('hero.stat_mindset')}</span>
+            <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300 delay-75">
+              <span className="block text-2xl font-black text-white">{t('hero.stat_diy')}</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">{t('hero.stat_mindset')}</span>
             </div>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-accent-blue">{t('hero.stat_freq')}</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase">{t('hero.stat_resonance')}</span>
+            <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300 delay-100">
+              <span className="block text-2xl font-black text-punk-cyan">{t('hero.stat_freq')}</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">{t('hero.stat_resonance')}</span>
             </div>
           </div>
         </HeroProfileCard>
@@ -48,26 +48,26 @@ const HeroCards = () => {
           badge="professional_profile"
           index="02"
           title="career.log"
-          titleColor="text-accent-green"
+          titleColor="text-punk-green"
           i18nKey="hero.professional_desc"
           fallbackDesc="Desenvolvedor backend."
-          glowGradient="bg-gradient-to-r from-accent-green to-accent-blue"
-          badgeColor="bg-accent-green/10 border border-accent-green/20 text-accent-green"
-          borderHover="hover:border-accent-green/50"
+          glowGradient="bg-punk-green"
+          badgeColor="text-punk-green border-punk-green/50"
+          borderHover="hover:border-punk-green"
         >
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/5">
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-accent-green">7+</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase">anos exp</span>
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10 border-dashed">
+            <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300">
+              <span className="block text-2xl font-black text-punk-green">7+</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">anos exp</span>
             </div>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-white">42</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase">são paulo</span>
+            <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300 delay-75">
+              <span className="block text-2xl font-black text-white">42</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">são paulo</span>
             </div>
-            <div className="text-center">
-              <span className="block text-2xl font-bold text-accent-blue">∞</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase">curiosidade</span>
+            <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300 delay-100">
+              <span className="block text-2xl font-black text-punk-cyan">∞</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">curiosidade</span>
             </div>
           </div>
         </HeroProfileCard>

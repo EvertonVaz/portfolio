@@ -1,30 +1,64 @@
 @import "tailwindcss";
 
 @theme {
-  --color-dark: #0a0a0a;
-  --color-accent-pink: #ff007f;
-  --color-accent-green: #39ff14;
-  --color-accent-blue: #00f5ff;
+  /* Cyberpunk / Brutalist Color Palette */
+  --color-punk-bg: #050505;
+  --color-punk-gray: #18181b;
+  --color-punk-green: #39ff14;
+  /* Acid Green */
+  --color-punk-pink: #ff00ff;
+  /* Hot Pink */
+  --color-punk-cyan: #00ffff;
+  /* Cyan */
 
+  /* Legacy Aliases (Seamless Transition) */
+  --color-dark: var(--color-punk-bg);
+  --color-accent-pink: var(--color-punk-pink);
+  --color-accent-green: var(--color-punk-green);
+  --color-accent-blue: var(--color-punk-cyan);
+
+  /* Typography */
+  --font-mono: "Space Mono", monospace;
   --font-sans: "Inter", "Outfit", "system-ui", "sans-serif";
-  --font-mono: "JetBrains Mono", "monospace";
+
+  /* Animations */
+  --animate-glitch: glitch 1s linear infinite;
+
+  @keyframes glitch {
+
+    2%,
+    64% {
+      transform: translate(2px, 0) skew(0deg);
+    }
+
+    4%,
+    60% {
+      transform: translate(-2px, 0) skew(0deg);
+    }
+
+    62% {
+      transform: translate(0, 0) skew(5deg);
+    }
+  }
 
   /* Custom component variables */
   --punk-shadow-size: 4px;
   --punk-shadow-color: #ffffff;
 }
 
+/* Global Reset & Base Styles */
 :root {
+  background-color: var(--color-punk-bg);
+  color: white;
+  font-family: var(--font-mono);
   color-scheme: dark;
 }
 
 body {
   margin: 0;
-  padding: 0;
-  background-color: var(--color-dark);
-  color: #ffffff;
-  font-family: var(--font-sans);
   overflow-x: hidden;
+  background-color: var(--color-punk-bg);
+  color: white;
 }
 
 @layer components {
@@ -37,6 +71,16 @@ body {
 
   .punk-card-glass {
     @apply p-8 border border-white/20 bg-black/40 backdrop-blur-sm transition-all duration-300;
+  }
+
+  /* Utility for hiding scrollbar but allowing scroll */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 
   .punk-card-glass:hover {
@@ -88,6 +132,20 @@ body {
   box-shadow: var(--punk-shadow-size) var(--punk-shadow-size) 0px var(--punk-shadow-color);
 }
 
+/* Utilities for Brutalism */
+.brutal-border {
+  border: 1px solid var(--color-punk-gray);
+  border-radius: 0px;
+}
+
+.punk-glow-green {
+  text-shadow: 0 0 10px var(--color-punk-green);
+}
+
+.punk-glow-pink {
+  text-shadow: 0 0 10px var(--color-punk-pink);
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -104,14 +162,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
-
-/* Utility for hiding scrollbar but allowing scroll */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
 }

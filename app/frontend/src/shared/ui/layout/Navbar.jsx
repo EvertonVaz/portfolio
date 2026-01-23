@@ -16,32 +16,33 @@ const Navbar = () => {
     ];
 
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 p-6 flex justify-between items-center bg-zinc-900/90 backdrop-blur-sm border-b border-white/10">
+        <nav className="fixed top-0 left-0 w-full z-50 p-4 lg:px-8 flex justify-between items-center bg-punk-bg/95 border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
             {/* Responsabilidade: Brand/Logo */}
             <Logo />
 
             <div className="flex items-center gap-8">
                 {/* Responsabilidade: Social Interaction */}
-                <SocialLinks className="hidden sm:flex border-r border-white/10 pr-8" />
+                <SocialLinks className="hidden sm:flex border-r border-white/10 pr-8 opacity-50 hover:opacity-100 transition-opacity" />
 
                 {/* Responsabilidade: Navigation Actions */}
                 <div className="flex items-center gap-8">
                     <NavItems
                         items={menuItems}
-                        className="hidden md:flex gap-8 group items-center"
+                        className="hidden md:flex gap-8 group items-center font-mono text-xs uppercase tracking-widest text-white/60"
+                        itemClass="hover:text-punk-green hover:underline decoration-punk-green underline-offset-4 transition-all"
                     />
 
                     {/* Responsabilidade: Localization */}
-                    <div className="hidden md:block">
+                    <div className="hidden md:block border-l border-white/10 pl-8">
                         <LanguageSwitcher />
                     </div>
                 </div>
             </div>
 
             {/* Mobile View - Responsividade mantida de forma limpa */}
-            <div className="md:hidden flex items-center gap-3">
+            <div className="md:hidden flex items-center gap-4">
                 <LanguageSwitcher mobile />
-                <button className="text-white font-mono text-xs uppercase tracking-widest">
+                <button className="text-white font-mono text-xs uppercase tracking-widest border border-white/20 px-3 py-2 hover:bg-white hover:text-black transition-colors">
                     [ menu ]
                 </button>
             </div>

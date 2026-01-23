@@ -16,8 +16,20 @@ const Work = () => {
     ];
 
     return (
-        <div className="w-full max-w-6xl mx-auto p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+        <div className="w-full max-w-7xl mx-auto p-8 lg:p-12 mb-24">
+            {/* Section Header */}
+            <div className="flex items-end justify-between mb-16 border-b-2 border-white/10 pb-4">
+                <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
+                    {t('work.title')}
+                </h2>
+                <div className="hidden md:block text-right">
+                    <span className="block text-xs font-mono text-punk-green mb-1"> SYSTEM.PROJECTS.LOADED </span>
+                    <span className="block h-1 w-32 bg-punk-green animate-pulse"></span>
+                </div>
+            </div>
+
+            {/* Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
                 {projects.map((project) => (
                     <ProjectCard
                         key={project.id}
