@@ -1,12 +1,12 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Layout from './components/Layout'
-import ScrollSection from './components/shared/ScrollSection'
-import Home from './pages/Home'
-import TerminalPage from './pages/TerminalPage'
-import FractalPage from './pages/FractalPage'
-import WorkPage from './pages/WorkPage'
-import ContactPage from './pages/ContactPage'
+import Layout from './shared/ui/layout/Layout'
+import ScrollSection from './shared/ui/ScrollSection'
+import Home from './modules/home/pages/Home'
+import TerminalPage from './modules/terminal/pages/TerminalPage'
+import FractalPage from './modules/fractal/pages/FractalPage'
+import WorkPage from './modules/portfolio/pages/WorkPage'
+import ContactPage from './modules/portfolio/pages/ContactPage'
 
 /**
  * Componente Principal da Aplicação.

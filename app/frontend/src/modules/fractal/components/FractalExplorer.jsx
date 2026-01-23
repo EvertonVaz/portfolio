@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useFractalRenderer } from '../../hooks/useFractalRenderer';
+import { useFractalRenderer } from '../hooks/useFractalRenderer';
 import FractalViewport from './subcomponents/FractalViewport';
 import FractalControls from './subcomponents/FractalControls';
 

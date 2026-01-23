@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRabbitMQ } from '../../hooks/useRabbitMQ';
-import { useCommandHistory } from '../../hooks/useCommandHistory';
-import { parseResponse } from '../../utils/parser';
+import { useRabbitMQ } from '../../../shared/hooks/useRabbitMQ';
+import { useCommandHistory } from '../hooks/useCommandHistory';
+import { parseResponse } from '../domain/parser';
 import TerminalHistory from './TerminalHistory';
 import TerminalInput from './TerminalInput';
 

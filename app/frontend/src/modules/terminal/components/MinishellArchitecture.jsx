@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ArchitectureLayer from '../UI/Architecture/ArchitectureLayer';
-import ArchitectureConnector from '../UI/Architecture/ArchitectureConnector';
+import ArchitectureLayer from '../../../shared/ui/Architecture/ArchitectureLayer';
+import ArchitectureConnector from '../../../shared/ui/Architecture/ArchitectureConnector';
 
 /**
  * MinishellArchitecture - Explicação visual da estrutura do projeto.

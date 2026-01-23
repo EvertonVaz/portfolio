@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Terminal from '../components/Terminal/Terminal';
-import { GithubCTA } from '../components/Buttons/GithubCTA';
-import MinishellArchitecture from '../components/Terminal/MinishellArchitecture';
+import Terminal from '../components/Terminal';
+import { GithubCTA } from '../../../shared/ui/GithubCTA';
+import MinishellArchitecture from '../components/MinishellArchitecture';
 
 /**
  * Componente de Cabeçalho da página Terminal.

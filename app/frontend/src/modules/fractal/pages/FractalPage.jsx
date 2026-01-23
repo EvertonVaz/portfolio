@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import FractalExplorer from '../components/Fractal/FractalExplorer';
-import FractalArchitecture from '../components/Fractal/subcomponents/FractalArchitecture';
-import { GithubCTA } from '../components/Buttons/GithubCTA';
+import FractalExplorer from '../components/FractalExplorer';
+import FractalArchitecture from '../components/subcomponents/FractalArchitecture';
+import { GithubCTA } from '../../../shared/ui/GithubCTA';
 
 const FractalPage = () => {
     const { t } = useTranslation();

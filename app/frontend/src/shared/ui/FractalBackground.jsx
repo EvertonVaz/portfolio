@@ -1,6 +1,6 @@
 import React from 'react';
-import astronautImg from '../assets/astronaut.png';
-import logo42Img from '../assets/logo42.png';
+import astronautImg from '../../assets/astronaut.png';
+import logo42Img from '../../assets/logo42.png';
 
 const FractalBackground = () => {
     return (

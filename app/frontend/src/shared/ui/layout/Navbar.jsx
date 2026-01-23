@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import Logo from './shared/Logo';
-import SocialLinks from './shared/SocialLinks';
-import NavItems from './shared/NavItems';
-import LanguageSwitcher from './shared/LanguageSwitcher';
+import Logo from '../Logo';
+import SocialLinks from '../SocialLinks';
+import NavItems from '../NavItems';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 const Navbar = () => {
     const { t } = useTranslation();

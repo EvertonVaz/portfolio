@@ -1,8 +1,8 @@
 import React from 'react';
 import Navbar from './Navbar';
-import Footer from './layout/Footer';
-import BackgroundPatterns from './layout/BackgroundPatterns';
-import FractalBackground from './FractalBackground';
+import Footer from './Footer';
+import BackgroundPatterns from './BackgroundPatterns';
+import FractalBackground from '../FractalBackground';
 
 /**
  * Orquestrador do Layout Global.

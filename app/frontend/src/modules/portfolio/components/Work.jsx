@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import ProjectCard from './work/ProjectCard';
+import ProjectCard from './ProjectCard';
 
 /**
  * Componente Workflow (Seção de Projetos).
