@@ -1,9 +1,9 @@
-defmodule Messaging.MixProject do
+defmodule Portfolio.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :messaging,
+      app: :portfolio,
       version: "0.1.0",
       elixir: "~> 1.19",
       start_permanent: Mix.env() == :prod,
@@ -15,7 +15,7 @@ defmodule Messaging.MixProject do
   def application do
     [
       extra_applications: [:logger],
-      mod: {Messaging.Application, []}
+      mod: {Portfolio.Application, []}
     ]
   end
 
@@ -25,7 +25,8 @@ defmodule Messaging.MixProject do
       {:bandit, "~> 1.6"},
       {:websock_adapter, "~> 0.5"},
       {:joken, "~> 2.6"},
-      {:jason, "~> 1.4"}, # Necessário para JSON no Elixir
+      # Necessário para JSON no Elixir
+      {:jason, "~> 1.4"},
       {:corsica, "~> 2.1"}
     ]
   end

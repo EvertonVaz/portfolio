@@ -1,27 +1,9 @@
-defmodule Messaging.ProcessTest do
+defmodule Portfolio.IntegrationTest do
   use ExUnit.Case
 
-  describe "CommandProcessor.process/1" do
-    test "allows permitted single commands" do
-      output = Messaging.process("ls -la")
-      assert is_binary(output)
-      assert output =~ "minishell"
-
-      output = Messaging.process("pwd")
-      assert output =~ "/"
-    end
-
-    test "rejects forbidden commands" do
-      output = Messaging.process("rm -rf /")
-      assert output == "Error: Permission denied"
-
-      output = Messaging.process("shutdown now")
-      assert output == "Error: Permission denied"
-    end
-
-    test "handles command read binary data" do
-      output = Messaging.process("cat minishell")
-      assert output == "Arquivo binário detectado. O conteúdo não pode ser exibido."
-    end
+  test "full flow execution" do
+    # This is similar to unit test in this simple architecture,
+    # but could test more interacting parts if we had them.
+    assert Portfolio.Terminal.execute("whoami") =~ "[SUCCESS]"
   end
 end

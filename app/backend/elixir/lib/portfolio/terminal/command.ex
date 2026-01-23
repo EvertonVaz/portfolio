@@ -1,6 +1,6 @@
-defmodule Messaging.Domain.Command do
+defmodule Portfolio.Terminal.Command do
   @moduledoc """
-  Domain struct representing a command execution context.
+  Represents a command execution context in the Portfolio Terminal.
   """
   defstruct [:input, :raw_output, :formatted_output, :error]
 
