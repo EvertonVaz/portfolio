@@ -7,4 +7,4 @@ source ~/.bashrc
 
 mise use --global erlang@latest elixir@latest
 
-rel/messaging/bin/messaging start
+./rel/portfolio/bin/portfolio start

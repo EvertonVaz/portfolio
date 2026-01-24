@@ -12,7 +12,7 @@ const Work = () => {
     const projects = [
         { id: '01', title: t('work.projects.p01.title'), tag: 'C/C++', desc: t('work.projects.p01.desc'), path: t('work.projects.p01.path'), type: t('work.projects.p01.type') },
         { id: '02', title: t('work.projects.p02.title'), tag: 'JSX/Math', desc: t('work.projects.p02.desc'), path: t('work.projects.p02.path'), type: t('work.projects.p02.type') },
-        { id: '03', title: t('work.projects.p03.title'), tag: 'React', desc: t('work.projects.p03.desc'), path: t('work.projects.p03.path'), type: t('work.projects.p03.type') },
+        { id: '03', title: t('work.projects.p03.title'), tag: 'Elixir/C', desc: t('work.projects.p03.desc'), path: t('work.projects.p03.path'), type: t('work.projects.p03.type') },
     ];
 
     return (

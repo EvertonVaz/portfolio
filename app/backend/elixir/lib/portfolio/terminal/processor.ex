@@ -23,6 +23,9 @@ defmodule Portfolio.Terminal.Processor do
       ["about"] ->
         %{command | raw_output: about_text()}
 
+      ["philosophers_client_init"] ->
+        %{command | raw_output: "Philosophers simulation context initialized."}
+
       ["philosophers" | args] ->
         if caller_pid do
           case validate_philosophers_args(args) do

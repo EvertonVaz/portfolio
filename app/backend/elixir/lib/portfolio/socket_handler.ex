@@ -5,7 +5,10 @@ defmodule Portfolio.SocketHandler do
 
   # WebSock behaviour is implicitly used via WebSockAdapter
 
-  def init(_args) do
+  require Logger
+
+  def init(args) do
+    Logger.info("[SocketHandler] New connection established with args: #{inspect(args)}")
     {:ok, []}
   end
 

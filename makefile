@@ -12,7 +12,10 @@ test:
 	cd ./app/backend/elixir && mix test --cover
 
 front:
-	cd ./app/frontend && npm run dev - --host
+	cd ./app/frontend && npm run dev -- --host
+
+back:
+	cd ./app/backend/elixir && mix run --no-halt
 
 DOCKER_COMPOSE = docker compose
 COMPOSE_FILE = ./deploy/docker-compose.prod-test.yml

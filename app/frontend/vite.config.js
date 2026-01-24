@@ -8,4 +8,19 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  server: {
+    proxy: {
+      '/token': 'http://localhost:4000',
+      '/ws': {
+        target: 'http://localhost:4000',
+        ws: true,
+        changeOrigin: true
+      },
+      '/socket': {
+        target: 'http://localhost:4000',
+        ws: true,
+        changeOrigin: true
+      }
+    }
+  }
 })

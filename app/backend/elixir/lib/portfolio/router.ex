@@ -23,18 +23,38 @@ defmodule Portfolio.Router do
     end
   end
 
+  require Logger
+
   # Main WebSocket for Terminal
   get "/ws" do
-    conn
-    |> WebSockAdapter.upgrade(Portfolio.SocketHandler, [], timeout: 60_000)
-    |> halt()
+    token = get_req_header(conn, "sec-websocket-protocol") |> List.first()
+    Logger.info("[Router] WebSocket request to /ws with token: #{inspect(token)}")
+
+    if Portfolio.Auth.validate_token(token) do
+      conn
+      |> put_resp_header("sec-websocket-protocol", token)
+      |> WebSockAdapter.upgrade(Portfolio.SocketHandler, [], timeout: 60_000)
+      |> halt()
+    else
+      Logger.warning("[Router] Connection rejected for /ws: Invalid token")
+      send_resp(conn, 401, "Unauthorized")
+    end
   end
 
-  # WebSocket for Philosophers (maintaining backward compatibility with my recent change)
+  # Dedicated WebSocket for Philosophers
   get "/socket" do
-    conn
-    |> WebSockAdapter.upgrade(Portfolio.SocketHandler, [], timeout: 60_000)
-    |> halt()
+    token = get_req_header(conn, "sec-websocket-protocol") |> List.first()
+    Logger.info("[Router] WebSocket request to /socket with token: #{inspect(token)}")
+
+    if Portfolio.Auth.validate_token(token) do
+      conn
+      |> put_resp_header("sec-websocket-protocol", token)
+      |> WebSockAdapter.upgrade(Portfolio.SocketHandler, [], timeout: 60_000)
+      |> halt()
+    else
+      Logger.warning("[Router] Connection rejected for /socket: Invalid token")
+      send_resp(conn, 401, "Unauthorized")
+    end
   end
 
   match _ do

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useRabbitMQ } from '../../../shared/hooks/useRabbitMQ';
+import { useBackend } from '../../../shared/hooks/useBackend';
 import { useCommandHistory } from '../hooks/useCommandHistory';
 import { parseResponse } from '../domain/parser';
 import TerminalHistory from './TerminalHistory';
@@ -24,13 +24,18 @@ const Terminal = () => {
     // Gestão de histórico delegada ao Hook (SOLID: SRP)
     const { addToHistory, navigateUp, navigateDown } = useCommandHistory();
 
-    const onMessageReceived = useCallback((msg) => {
-        const parsedWords = parseResponse(msg);
-        const content = parsedWords.length > 0 ? parsedWords.join(' ') : msg;
-        setHistoryLines(prev => [...prev, { type: 'output', content }]);
-    }, []);
+    const { connected, send: sendCommand, on, off } = useBackend('/ws', { useToken: true });
 
-    const { connected, sendCommand } = useRabbitMQ(onMessageReceived);
+    useEffect(() => {
+        const handleMessage = (msg) => {
+            const parsedWords = parseResponse(msg);
+            const content = parsedWords.length > 0 ? parsedWords.join(' ') : msg;
+            setHistoryLines(prev => [...prev, { type: 'output', content }]);
+        };
+
+        on('message', handleMessage);
+        return () => off('message', handleMessage);
+    }, [on, off]);
 
     const focusInput = () => inputRef.current?.focus();
 

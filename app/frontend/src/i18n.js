@@ -54,10 +54,10 @@ const resources = {
                         type: 'internal'
                     },
                     p03: {
-                        title: 'Independent Noise',
-                        desc: 'A platform for the underground indie scene.',
-                        path: '#',
-                        type: 'external'
+                        title: 'Dining Philosophers',
+                        desc: 'A multithreading simulation in C and Elixir, solving the classic deadlock problem with GenServers.',
+                        path: '/philosophers',
+                        type: 'internal'
                     }
                 }
             },
@@ -106,6 +106,33 @@ const resources = {
                 architecture_desc_bff: 'Elixir/Phoenix layer managing secure WebSocket connections and process spawning.',
                 architecture_desc_core: 'The original C implementation of Minishell, executing native Unix commands.',
                 architecture_info_footer: '[SYSTEM_INFO]: communication is bidirectional. the elixir bff acts as a process supervisor, maintaining system stability and ensuring each command runs in its own isolated environment before returning the result to the browser.',
+            },
+            philosophers: {
+                title: 'Process Monitor',
+                subtitle: 'Deadlock Detection System v1.0',
+                status_online: 'SYSTEM ONLINE',
+                status_offline: 'DISCONNECTED',
+                no_processes: 'NO ACTIVE PROCESSES',
+                legend_title: 'Legend',
+                legend_thinking: 'Thinking',
+                legend_eating: 'Eating',
+                legend_waiting: 'Waiting',
+                legend_terminated: 'Terminated',
+                control_title: 'Simulation Parameters',
+                label_philosophers: 'Philosophers',
+                label_die: 'Time to Die (s)',
+                label_eat: 'Time to Eat (s)',
+                label_sleep: 'Time to Sleep (s)',
+                btn_connecting: 'Connecting...',
+                btn_start: 'Initialize Sequence',
+                card_status_thinking: 'THINKING',
+                card_status_eating: 'EATING',
+                card_status_sleeping: 'SLEEPING',
+                card_status_waiting: 'WAITING',
+                card_status_dead: 'TERMINATED',
+                card_initializing: 'Initializing...',
+                log_title: 'System Stream',
+                log_waiting: 'Waiting for process output...'
             }
         }
     },
@@ -160,10 +187,10 @@ const resources = {
                         type: 'internal'
                     },
                     p03: {
-                        title: 'Som Independente',
-                        desc: 'Uma plataforma para a cena indie underground.',
-                        path: '#',
-                        type: 'external'
+                        title: 'Dining Philosophers',
+                        desc: 'Uma simulação de multithreading em C e Elixir, resolvendo o clássico problema de deadlock com GenServers.',
+                        path: '/philosophers',
+                        type: 'internal'
                     }
                 }
             },
@@ -212,6 +239,33 @@ const resources = {
                 architecture_desc_bff: 'Camada Elixir/Phoenix gerenciando conexões seguras via WebSockets e execução de processos.',
                 architecture_desc_core: 'A implementação original do Minishell em C, executando comandos Unix nativos.',
                 architecture_info_footer: '[SYSTEM_INFO]: a comunicação é bidirecional. o bff em elixir atua como um supervisor de processos, mantendo a estabilidade do sistema e garantindo que cada comando execute em seu próprio ambiente isolado antes de retornar o resultado para o navegador.',
+            },
+            philosophers: {
+                title: 'Monitor de Processos',
+                subtitle: 'Sistema de Detecção de Deadlock v1.0',
+                status_online: 'SISTEMA ONLINE',
+                status_offline: 'DESCONECTADO',
+                no_processes: 'SEM PROCESSOS ATIVOS',
+                legend_title: 'Legenda',
+                legend_thinking: 'Pensando',
+                legend_eating: 'Comendo',
+                legend_waiting: 'Aguardando',
+                legend_terminated: 'Terminado',
+                control_title: 'Parâmetros da Simulação',
+                label_philosophers: 'Filósofos',
+                label_die: 'Tempo p/ Morrer (s)',
+                label_eat: 'Tempo p/ Comer (s)',
+                label_sleep: 'Tempo p/ Dormir (s)',
+                btn_connecting: 'Conectando...',
+                btn_start: 'Iniciar Sequência',
+                card_status_thinking: 'PENSANDO',
+                card_status_eating: 'COMENDO',
+                card_status_sleeping: 'DORMINDO',
+                card_status_waiting: 'AGUARDANDO',
+                card_status_dead: 'TERMINADO',
+                card_initializing: 'Inicializando...',
+                log_title: 'Stream do Sistema',
+                log_waiting: 'Aguardando saída do processo...'
             }
         }
     }
