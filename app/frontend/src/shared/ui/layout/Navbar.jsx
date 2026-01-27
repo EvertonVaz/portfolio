@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Logo from '../Logo';
-import SocialLinks from '../SocialLinks';
+import SocialLinks from '../social/SocialLinks';
 import NavItems from '../NavItems';
 import LanguageSwitcher from '../LanguageSwitcher';
 

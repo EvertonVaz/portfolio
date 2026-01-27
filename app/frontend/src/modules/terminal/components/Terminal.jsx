@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useBackend } from '../../../shared/hooks/useBackend';
+import { useTerminalSocket } from '../hooks/useTerminalSocket';
 import { useCommandHistory } from '../hooks/useCommandHistory';
 import { parseResponse } from '../domain/parser';
 import TerminalHistory from './TerminalHistory';
@@ -24,7 +24,8 @@ const Terminal = () => {
     // Gestão de histórico delegada ao Hook (SOLID: SRP)
     const { addToHistory, navigateUp, navigateDown } = useCommandHistory();
 
-    const { connected, send: sendCommand, on, off } = useBackend('/ws', { useToken: true });
+    // Gestão de conexão delegada ao Hook especializado
+    const { isConnected: connected, send: sendCommand, on, off } = useTerminalSocket();
 
     useEffect(() => {
         const handleMessage = (msg) => {

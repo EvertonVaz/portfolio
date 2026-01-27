@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import FractalExplorer from '../components/FractalExplorer';
 import FractalArchitecture from '../components/subcomponents/FractalArchitecture';
-import { GithubCTA } from '../../../shared/ui/GithubCTA';
+import { GithubCTA } from '../../../shared/ui/social/GithubCTA';
 
 const FractalPage = () => {
     const { t } = useTranslation();

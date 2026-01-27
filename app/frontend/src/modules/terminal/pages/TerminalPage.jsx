@@ -1,8 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import Terminal from '../components/Terminal';
-import { GithubCTA } from '../../../shared/ui/GithubCTA';
 import MinishellArchitecture from '../components/MinishellArchitecture';
+import { GithubCTA } from '../../../shared/ui/social/GithubCTA';
+import ConnectionStatus from '../../../shared/ui/status/ConnectionStatus';
+import { useTerminalSocket } from '../hooks/useTerminalSocket';
 
 /**
  * Componente de Cabeçalho da página Terminal.
@@ -10,7 +12,7 @@ import MinishellArchitecture from '../components/MinishellArchitecture';
 const TerminalHeader = () => {
   const { t } = useTranslation();
   return (
-    <div className="max-w-3xl mx-auto text-center mb-16 relative">
+    <div className="max-w-3xl mx-auto text-center mb-4 relative">
       <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 text-[120px] font-black text-white/5 pointer-events-none select-none">
         TERM
       </div>
@@ -32,10 +34,17 @@ const TerminalHeader = () => {
  * SRP: Apenas orquestra o Cabeçalho, o Terminal e o CTA.
  */
 const TerminalPage = () => {
+  const { isConnected } = useTerminalSocket();
+
   return (
     <section className="py-24">
       <div className="max-w-6xl mx-auto px-8">
         <TerminalHeader />
+
+        <div className="flex justify-center">
+          <ConnectionStatus isConnected={isConnected} />
+        </div>
+
         <Terminal />
         <MinishellArchitecture />
         <GithubCTA url="https://github.com/evertonvaz/minishell" />
