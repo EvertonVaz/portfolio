@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
  * Hook universal para comunicação com o backend via WebSocket.
  * Suporta múltiplos endpoints, autenticação via token e sistema de eventos.
  *
- * @param {string} endpoint - O path do websocket (ex: '/ws' ou '/socket')
+ * @param {string} endpoint - O path do websocket (ex: '/minishell' ou '/philosophers')
  * @param {Object} options - Configurações adicionais
  * @param {boolean} options.useToken - Se deve buscar um token de autenticação
  * @param {boolean} options.autoConnect - Se deve conectar automaticamente no mount

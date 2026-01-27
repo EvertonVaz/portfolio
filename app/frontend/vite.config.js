@@ -11,12 +11,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/token': 'http://localhost:4000',
-      '/ws': {
+      '/minishell': {
         target: 'http://localhost:4000',
         ws: true,
         changeOrigin: true
       },
-      '/socket': {
+      '/philosophers': {
         target: 'http://localhost:4000',
         ws: true,
         changeOrigin: true

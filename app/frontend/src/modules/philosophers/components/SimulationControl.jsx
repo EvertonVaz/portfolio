@@ -6,9 +6,9 @@ export default function SimulationControl({ onStart, disabled }) {
     const { t } = useTranslation();
     const [params, setParams] = useState({
         n: 5,
-        die: 0.8,
-        eat: 0.2,
-        sleep: 0.2
+        die: 2,
+        eat: 1,
+        sleep: 1
     });
 
     const handleSubmit = (e) => {

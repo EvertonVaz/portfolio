@@ -5,8 +5,8 @@ export function usePhilosophersSocket() {
     const [logs, setLogs] = useState([]);
     const [philosophers, setPhilosophers] = useState({});
 
-    // Conecta ao endpoint dedicado /socket com token
-    const { connected: isConnected, send, on, off } = useBackend('/socket', {
+    // Conecta ao endpoint dedicado /philosophers com token
+    const { connected: isConnected, send, on, off } = useBackend('/philosophers', {
         useToken: true
     });
 
@@ -15,7 +15,8 @@ export function usePhilosophersSocket() {
         const { philo_id, action, time } = data;
 
         // Add to logs
-        setLogs(prev => [...prev.slice(-49), `[${time}ms] Philo ${philo_id}: ${action}`]);
+        const localTime = new Date().toLocaleTimeString();
+        setLogs(prev => [...prev.slice(-49), `[${localTime}] Philo ${philo_id}: ${action} (at ${time}ms)`]);
 
         // Update philosopher state
         setPhilosophers(prev => {
@@ -58,7 +59,7 @@ export function usePhilosophersSocket() {
                     setLogs(prev => [...prev, `[SYSTEM] Simulation exited with status: ${payload.status}`]);
                 } else {
                     // Maybe standard terminal output
-                    if (typeof payload === 'string' && payload.includes('[SUCCESS]')) {
+                    if (typeof payload === 'string') {
                         // Ignore command echoing
                     }
                 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './shared/ui/layout/Layout'
 import ScrollSection from './shared/ui/ScrollSection'
 import Home from './modules/home/pages/Home'
