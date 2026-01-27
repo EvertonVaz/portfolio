@@ -8,23 +8,29 @@ export default function SimulationControl({ onStart, disabled }) {
         n: 5,
         die: 2,
         eat: 1,
-        sleep: 1
+        sleep: 1,
+        must_eat: 3
     });
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onStart(params.n, params.die, params.eat, params.sleep);
+        onStart(params.n, params.die, params.eat, params.sleep, params.must_eat);
     };
 
     return (
-        <div className="p-6 rounded-lg border border-gray-800 bg-gray-900/50 backdrop-blur-md">
-            <div className="flex items-center gap-2 mb-6 text-gray-400">
-                <Settings className="w-4 h-4" />
-                <h3 className="text-sm font-mono uppercase tracking-wider">{t('philosophers.control_title')}</h3>
+        <div className="punk-card-glass relative overflow-hidden group">
+            {/* Design Decorative Element */}
+            <div className="absolute top-0 right-0 w-16 h-16 bg-punk-cyan/5 -rotate-45 translate-x-8 -translate-y-8 group-hover:bg-punk-cyan/10 transition-colors"></div>
+
+            <div className="flex items-center gap-3 mb-8 border-b border-white/10 pb-4">
+                <Settings className="w-4 h-4 text-punk-cyan animate-pulse" />
+                <h3 className="text-sm font-mono uppercase tracking-[0.2em] text-white/90">
+                    {t('philosophers.control_title')}
+                </h3>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <Input
                         label={t('philosophers.label_philosophers')}
                         value={params.n}
@@ -49,14 +55,23 @@ export default function SimulationControl({ onStart, disabled }) {
                         onChange={v => setParams({ ...params, sleep: v })}
                         step="0.1"
                     />
+                    <div className="sm:col-span-2">
+                        <Input
+                            label={t('philosophers.label_must_eat') || "Philosopher Quota (Must Eat)"}
+                            value={params.must_eat}
+                            onChange={v => setParams({ ...params, must_eat: v })}
+                            min="2"
+                            description={t('philosophers.must_eat_desc') || "Encerrar após cada um comer X vezes (min: 2)"}
+                        />
+                    </div>
                 </div>
 
                 <button
                     type="submit"
                     disabled={disabled}
-                    className="w-full mt-4 group relative px-4 py-3 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/50 text-blue-400 rounded transition-all duration-300 flex items-center justify-center gap-2 font-mono text-sm uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full mt-6 flex items-center justify-center gap-3 px-6 py-4 bg-white text-black font-black uppercase tracking-tighter hover:bg-punk-cyan hover:text-black transition-all duration-300 disabled:opacity-30 disabled:cursor-not-allowed group"
                 >
-                    <Play className="w-4 h-4" />
+                    <Play className={`w-4 h-4 ${!disabled && 'group-hover:scale-125 transition-transform'}`} />
                     {disabled ? t('philosophers.btn_connecting') : t('philosophers.btn_start')}
                 </button>
             </form>
@@ -64,17 +79,25 @@ export default function SimulationControl({ onStart, disabled }) {
     );
 }
 
-function Input({ label, value, onChange, ...props }) {
+function Input({ label, value, onChange, description, ...props }) {
     return (
-        <div className="space-y-1">
-            <label className="text-[10px] font-mono text-gray-500 uppercase">{label}</label>
+        <div className="space-y-2">
+            <div className="flex justify-between items-center">
+                <label className="text-[10px] font-mono text-white/40 uppercase tracking-widest">{label}</label>
+                {props.min && <span className="text-[9px] text-white/20 font-mono">MIN: {props.min}</span>}
+            </div>
             <input
                 type="number"
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full bg-black/40 border border-gray-700 rounded px-3 py-2 text-sm text-gray-200 font-mono focus:border-blue-500/50 focus:outline-none transition-colors"
+                className="w-full bg-punk-bg border border-white/10 px-4 py-3 text-sm text-white font-mono focus:border-punk-cyan/50 focus:ring-1 focus:ring-punk-cyan/20 focus:outline-none transition-all"
                 {...props}
             />
+            {description && (
+                <p className="text-[9px] font-mono text-punk-cyan/40 leading-relaxed italic">
+                    // {description}
+                </p>
+            )}
         </div>
     )
 }

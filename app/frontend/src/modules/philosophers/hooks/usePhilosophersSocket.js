@@ -56,6 +56,19 @@ export function usePhilosophersSocket() {
                 if (payload.type === 'philosophers_update') {
                     handleUpdate(payload.data);
                 } else if (payload.type === 'philosophers_exit') {
+                    const isSuccess = payload.status === 0;
+                    if (isSuccess) {
+                        setPhilosophers(prev => {
+                            const newState = { ...prev };
+                            Object.keys(newState).forEach(id => {
+                                if (newState[id].status !== 'dead') {
+                                    newState[id].status = 'satisfied';
+                                    newState[id].lastAction = 'Simulation Complete: Target Reached';
+                                }
+                            });
+                            return newState;
+                        });
+                    }
                     setLogs(prev => [...prev, `[SYSTEM] Simulation exited with status: ${payload.status}`]);
                 } else {
                     // Maybe standard terminal output
@@ -73,14 +86,16 @@ export function usePhilosophersSocket() {
         return () => off('message', handleMessage);
     }, [on, off, handleUpdate]);
 
-    const startSimulation = (n, die, eat, sleep) => {
+    const startSimulation = (n, die, eat, sleep, mustEat) => {
         if (isConnected) {
             // Clear previous state
             setLogs([]);
             setPhilosophers({});
 
             // Send command
-            const cmd = `philosophers ${n} ${die} ${eat} ${sleep}`;
+            const cmd = mustEat
+                ? `philosophers ${n} ${die} ${eat} ${sleep} ${mustEat}`
+                : `philosophers ${n} ${die} ${eat} ${sleep}`;
             send(cmd);
         }
     };
