@@ -1,5 +1,5 @@
 import React from 'react'
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import Layout from './shared/ui/layout/Layout'
 import ScrollSection from './shared/ui/ScrollSection'
 import Home from './modules/home/pages/Home'
@@ -8,6 +8,7 @@ import FractalPage from './modules/fractal/pages/FractalPage'
 import WorkPage from './modules/portfolio/pages/WorkPage'
 import ContactPage from './modules/portfolio/pages/ContactPage'
 import PhilosophersPage from './modules/philosophers/pages/PhilosophersPage'
+import ScrollToTop from './shared/ui/ScrollToTop'
 
 /**
  * Componente Principal da Aplicação.
@@ -16,6 +17,7 @@ import PhilosophersPage from './modules/philosophers/pages/PhilosophersPage'
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Layout>
         <Routes>
           <Route path="/" element={

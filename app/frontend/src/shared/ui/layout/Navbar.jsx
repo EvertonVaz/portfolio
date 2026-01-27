@@ -9,10 +9,10 @@ const Navbar = () => {
     const { t } = useTranslation();
 
     const menuItems = [
-        { name: t('nav.home'), path: '/#home' },
-        { name: t('nav.work'), path: '/#work' },
+        { name: t('nav.home'), path: '/' },
+        { name: t('nav.work'), path: '/work' },
         { name: t('nav.terminal'), path: '/terminal' },
-        { name: t('nav.contact'), path: '/#contact' },
+        { name: t('nav.contact'), path: '/contact' },
     ];
 
     return (
