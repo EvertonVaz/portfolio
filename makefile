@@ -20,6 +20,9 @@ back:
 DOCKER_COMPOSE = docker compose
 COMPOSE_FILE = ./deploy/docker-compose.prod-test.yml
 
+deploy:
+	bash ./deploy/deploy.sh
+
 docker-up: docker-down
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d --build
 

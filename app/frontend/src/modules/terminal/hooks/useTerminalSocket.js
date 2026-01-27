@@ -5,7 +5,7 @@ import { useBackend } from '../../../shared/hooks/useBackend';
  * Centraliza a lógica para evitar conexões duplicadas e facilitar o acesso ao status.
  */
 export function useTerminalSocket() {
-    const { connected: isConnected, send, on, off } = useBackend('/minishell', {
+    const { connected: isConnected, send, on, off } = useBackend('/ws/minishell', {
         useToken: true
     });
 

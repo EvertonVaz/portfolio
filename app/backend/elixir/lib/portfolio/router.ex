@@ -5,11 +5,7 @@ defmodule Portfolio.Router do
   plug(:match)
   plug(:dispatch)
 
-  get "/" do
-    send_resp(conn, 200, "Portfolio Backend API")
-  end
-
-  get "/token" do
+  get "/api/token" do
     case Portfolio.Auth.validate_request(conn) do
       {:ok, _} ->
         token = Portfolio.Auth.generate_token()
@@ -26,7 +22,7 @@ defmodule Portfolio.Router do
   require Logger
 
   # Main WebSocket for Terminal
-  get "/minishell" do
+  get "/ws/minishell" do
     token = get_req_header(conn, "sec-websocket-protocol") |> List.first()
     Logger.info("[Router] WebSocket request to /minishell with token: #{inspect(token)}")
 
@@ -43,7 +39,7 @@ defmodule Portfolio.Router do
   end
 
   # Dedicated WebSocket for Philosophers
-  get "/philosophers" do
+  get "/ws/philosophers" do
     token = get_req_header(conn, "sec-websocket-protocol") |> List.first()
     Logger.info("[Router] WebSocket request to /philosophers with token: #{inspect(token)}")
 

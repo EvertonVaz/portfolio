@@ -6,7 +6,7 @@ export function usePhilosophersSocket() {
     const [philosophers, setPhilosophers] = useState({});
 
     // Conecta ao endpoint dedicado /philosophers com token
-    const { connected: isConnected, send, on, off } = useBackend('/philosophers', {
+    const { connected: isConnected, send, on, off } = useBackend('/ws/philosophers', {
         useToken: true
     });
 

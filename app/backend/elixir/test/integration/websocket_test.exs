@@ -10,7 +10,7 @@ defmodule Portfolio.WebSocketTest do
 
   describe "WebSocket authentication" do
     test "GET /minishell returns 401 when token is missing" do
-      conn = %{conn(:get, "/minishell") | host: "localhost"}
+      conn = %{conn(:get, "/ws/minishell") | host: "localhost"}
       conn = Router.call(conn, @opts)
 
       assert conn.status == 401
@@ -19,7 +19,7 @@ defmodule Portfolio.WebSocketTest do
 
     test "GET /minishell fails with invalid token" do
       conn =
-        %{conn(:get, "/minishell") | host: "localhost"}
+        %{conn(:get, "/ws/minishell") | host: "localhost"}
         |> put_req_header("sec-websocket-protocol", "invalid-token")
 
       conn = Router.call(conn, @opts)
@@ -29,7 +29,7 @@ defmodule Portfolio.WebSocketTest do
     end
 
     test "GET /philosophers returns 401 when token is missing" do
-      conn = %{conn(:get, "/philosophers") | host: "localhost"}
+      conn = %{conn(:get, "/ws/philosophers") | host: "localhost"}
       conn = Router.call(conn, @opts)
 
       assert conn.status == 401
@@ -38,7 +38,7 @@ defmodule Portfolio.WebSocketTest do
 
     test "GET /philosophers fails with invalid token" do
       conn =
-        %{conn(:get, "/philosophers") | host: "localhost"}
+        %{conn(:get, "/ws/philosophers") | host: "localhost"}
         |> put_req_header("sec-websocket-protocol", "invalid-token")
 
       conn = Router.call(conn, @opts)
@@ -49,7 +49,7 @@ defmodule Portfolio.WebSocketTest do
 
     test "GET /philosophers passes auth with valid token" do
       conn =
-        %{conn(:get, "/philosophers") | host: "localhost"}
+        %{conn(:get, "/ws/philosophers") | host: "localhost"}
         |> put_req_header("sec-websocket-protocol", @valid_token)
         |> put_req_header("upgrade", "websocket")
         |> put_req_header("connection", "upgrade")

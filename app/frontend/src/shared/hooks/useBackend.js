@@ -59,7 +59,7 @@ export const useBackend = (endpoint, options = {}) => {
 
             let token = null;
             if (useToken) {
-                const tokenResponse = await fetch(`${baseUrl}/token`, {
+                const tokenResponse = await fetch(`${baseUrl}/api/token`, {
                     headers: { 'x-terminal-request': 'true' }
                 });
                 const authData = await tokenResponse.json();

@@ -10,7 +10,7 @@ defmodule Portfolio.Terminal.CmdExecutor do
     executable_path = Path.expand("./minishell")
 
     # Simple whitelist for safety - in a real app this would be more robust
-    allowed_commands = ["echo", "date", "whoami", "ls", "cat", "env", "help"]
+    allowed_commands = ["echo", "date", "whoami", "ls", "cat", "help"]
 
     cmd_part = command |> String.split() |> List.first()
 
