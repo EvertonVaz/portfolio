@@ -3,6 +3,7 @@ defmodule Portfolio.Philosophers.Simulation do
   GenServer that manages the execution of the Philosophers C binary.
   """
   use GenServer
+  require Logger
 
   alias Portfolio.Philosophers.Parser
 
@@ -26,30 +27,37 @@ defmodule Portfolio.Philosophers.Simulation do
     # Convert seconds to milliseconds
     converted_args = Portfolio.Philosophers.ArgsConverter.convert(args)
 
-    executable_path = Path.expand("../../../_build/prod/philosophers", __DIR__)
+    executable_path = Path.expand("./philosophers")
 
-    # Verify if binary exists, if not try a fallback or fail gracefully
-    # For now, we assume it exists or use a simple mock if needed for dev
-    cmd = executable_path
+    # Use stdbuf -oL to force line-buffering on stdout
+    # to ensure real-time log delivery via WebSocket.
+    cmd = "/usr/bin/stdbuf"
+    execution_args = ["-oL", executable_path] ++ converted_args
 
-    port = Port.open({:spawn_executable, cmd}, [:binary, :exit_status, args: converted_args])
+    Logger.info("[Simulation] Starting Port with cmd: #{cmd}, args: #{inspect(execution_args)}")
+
+    port = Port.open({:spawn_executable, cmd}, [:binary, :exit_status, args: execution_args])
 
     {:ok, %{port: port, caller: caller}}
   end
 
   @impl true
   def handle_info({port, {:data, data}}, %{port: port} = state) do
+    Logger.info("[Simulation] Received data: #{inspect(data)}")
+
     # Data might contain multiple lines
     data
     |> String.split("\n", trim: true)
     |> Enum.each(fn line ->
+      Logger.debug("[Simulation] Processing line: #{inspect(line)}")
+
       case Parser.parse(line) do
         {:ok, parsed} ->
+          Logger.debug("[Simulation] Parsed successfully: #{inspect(parsed)}")
           send_to_caller(state.caller, {:philosophers_update, parsed})
 
-        _ ->
-          # Maybe log raw output or ignored lines
-          :ok
+        {:error, reason} ->
+          Logger.warning("[Simulation] Parse error for line #{inspect(line)}: #{inspect(reason)}")
       end
     end)
 

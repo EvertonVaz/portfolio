@@ -9,17 +9,17 @@ defmodule Portfolio.WebSocketTest do
   @valid_token "valid-terminal-token"
 
   describe "WebSocket authentication" do
-    test "GET /ws returns 401 when token is missing" do
-      conn = %{conn(:get, "/ws") | host: "localhost"}
+    test "GET /minishell returns 401 when token is missing" do
+      conn = %{conn(:get, "/minishell") | host: "localhost"}
       conn = Router.call(conn, @opts)
 
       assert conn.status == 401
       assert conn.resp_body == "Unauthorized"
     end
 
-    test "GET /ws fails with invalid token" do
+    test "GET /minishell fails with invalid token" do
       conn =
-        %{conn(:get, "/ws") | host: "localhost"}
+        %{conn(:get, "/minishell") | host: "localhost"}
         |> put_req_header("sec-websocket-protocol", "invalid-token")
 
       conn = Router.call(conn, @opts)
@@ -28,17 +28,17 @@ defmodule Portfolio.WebSocketTest do
       assert conn.resp_body == "Unauthorized"
     end
 
-    test "GET /socket returns 401 when token is missing" do
-      conn = %{conn(:get, "/socket") | host: "localhost"}
+    test "GET /philosophers returns 401 when token is missing" do
+      conn = %{conn(:get, "/philosophers") | host: "localhost"}
       conn = Router.call(conn, @opts)
 
       assert conn.status == 401
       assert conn.resp_body == "Unauthorized"
     end
 
-    test "GET /socket fails with invalid token" do
+    test "GET /philosophers fails with invalid token" do
       conn =
-        %{conn(:get, "/socket") | host: "localhost"}
+        %{conn(:get, "/philosophers") | host: "localhost"}
         |> put_req_header("sec-websocket-protocol", "invalid-token")
 
       conn = Router.call(conn, @opts)
@@ -47,9 +47,9 @@ defmodule Portfolio.WebSocketTest do
       assert conn.resp_body == "Unauthorized"
     end
 
-    test "GET /socket passes auth with valid token" do
+    test "GET /philosophers passes auth with valid token" do
       conn =
-        %{conn(:get, "/socket") | host: "localhost"}
+        %{conn(:get, "/philosophers") | host: "localhost"}
         |> put_req_header("sec-websocket-protocol", @valid_token)
         |> put_req_header("upgrade", "websocket")
         |> put_req_header("connection", "upgrade")

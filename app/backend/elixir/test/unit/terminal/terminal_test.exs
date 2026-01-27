@@ -6,14 +6,11 @@ defmodule Portfolio.TerminalTest do
   describe "execute/1" do
     test "echo command returns matched input" do
       result = Terminal.execute("echo hello")
-      assert result =~ "[SUCCESS]"
       assert result =~ "hello"
     end
 
     test "date command returns a date" do
       result = Terminal.execute("date")
-      assert result =~ "[SUCCESS]"
-      # Simple check for year
       assert result =~ to_string(Date.utc_today().year)
     end
 

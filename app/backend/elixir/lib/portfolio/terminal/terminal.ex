@@ -8,7 +8,7 @@ defmodule Portfolio.Terminal do
   Executes a command string and returns the formatted output.
   Accepts an optional caller_pid for async updates.
   """
-  def execute(input, caller_pid \\ nil) do
-    Processor.process(input, caller_pid)
+  def execute(input) do
+    Processor.process(input)
   end
 end

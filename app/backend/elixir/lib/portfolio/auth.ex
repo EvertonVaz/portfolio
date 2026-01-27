@@ -9,8 +9,10 @@ defmodule Portfolio.Auth do
     "valid-terminal-token"
   end
 
+  require Logger
+
   def validate_token(token) do
-    # Validate the subprotocol token
+    Logger.debug("[Auth] Validating token: #{inspect(token)}")
     token == "valid-terminal-token"
   end
 

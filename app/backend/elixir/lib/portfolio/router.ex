@@ -26,33 +26,35 @@ defmodule Portfolio.Router do
   require Logger
 
   # Main WebSocket for Terminal
-  get "/ws" do
+  get "/minishell" do
     token = get_req_header(conn, "sec-websocket-protocol") |> List.first()
-    Logger.info("[Router] WebSocket request to /ws with token: #{inspect(token)}")
+    Logger.info("[Router] WebSocket request to /minishell with token: #{inspect(token)}")
 
     if Portfolio.Auth.validate_token(token) do
+      conn = if token, do: put_resp_header(conn, "sec-websocket-protocol", token), else: conn
+
       conn
-      |> put_resp_header("sec-websocket-protocol", token)
-      |> WebSockAdapter.upgrade(Portfolio.SocketHandler, [], timeout: 60_000)
+      |> WebSockAdapter.upgrade(PortfolioWeb.TerminalHandler, [], timeout: 60_000)
       |> halt()
     else
-      Logger.warning("[Router] Connection rejected for /ws: Invalid token")
+      Logger.warning("[Router] Connection rejected for /minishell: Invalid token")
       send_resp(conn, 401, "Unauthorized")
     end
   end
 
   # Dedicated WebSocket for Philosophers
-  get "/socket" do
+  get "/philosophers" do
     token = get_req_header(conn, "sec-websocket-protocol") |> List.first()
-    Logger.info("[Router] WebSocket request to /socket with token: #{inspect(token)}")
+    Logger.info("[Router] WebSocket request to /philosophers with token: #{inspect(token)}")
 
     if Portfolio.Auth.validate_token(token) do
+      conn = if token, do: put_resp_header(conn, "sec-websocket-protocol", token), else: conn
+
       conn
-      |> put_resp_header("sec-websocket-protocol", token)
-      |> WebSockAdapter.upgrade(Portfolio.SocketHandler, [], timeout: 60_000)
+      |> WebSockAdapter.upgrade(PortfolioWeb.PhilosophersHandler, [], timeout: 60_000)
       |> halt()
     else
-      Logger.warning("[Router] Connection rejected for /socket: Invalid token")
+      Logger.warning("[Router] Connection rejected for /philosophers: Invalid token")
       send_resp(conn, 401, "Unauthorized")
     end
   end

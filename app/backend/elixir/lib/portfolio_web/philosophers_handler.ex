@@ -1,28 +1,24 @@
-defmodule Portfolio.SocketHandler do
+defmodule PortfolioWeb.PhilosophersHandler do
   @moduledoc """
-  Handles WebSocket connections.
+  Handles WebSocket connections for the Dining Philosophers simulation.
   """
-
-  # WebSock behaviour is implicitly used via WebSockAdapter
-
   require Logger
 
   def init(args) do
-    Logger.info("[SocketHandler] New connection established with args: #{inspect(args)}")
+    Logger.info("[PhilosophersHandler] New connection established with args: #{inspect(args)}")
     {:ok, []}
   end
 
   def handle_in({text, _opcode}, state) do
-    # Execute command via Terminal Context, passing self() as caller_pid
-    # for async command support (like philosophers simulation)
-    response = Portfolio.Terminal.execute(text, self())
+    # Execute command via Philosophers Context
+    response = Portfolio.Philosophers.execute(text, self())
     {:push, {:text, response}, state}
   end
 
   # Handle messages sent from GenServers (like Philosophers Simulation)
-  # Expected format: {:philosophers_update, map}
   def handle_info({:philosophers_update, data}, state) do
-    # Convert map to JSON string (using Jason)
+    Logger.debug("[PhilosophersHandler] Received philosophers_update: #{inspect(data)}")
+
     json_response =
       Jason.encode!(%{
         type: "philosophers_update",
@@ -42,7 +38,7 @@ defmodule Portfolio.SocketHandler do
     {:push, {:text, json_response}, state}
   end
 
-  def handle_info(_, state) do
+  def handle_info(_msg, state) do
     {:ok, state}
   end
 
