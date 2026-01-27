@@ -1,37 +1,13 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePhilosophersSocket } from '../hooks/usePhilosophersSocket';
+import ModuleHeader from '../../../shared/ui/layout/ModuleHeader';
 import PhilosopherCard from '../components/PhilosopherCard';
 import SimulationControl from '../components/SimulationControl';
 import PhilosophersArchitecture from '../components/PhilosophersArchitecture';
 import { GithubCTA } from '../../../shared/ui/social/GithubCTA';
 import ConnectionStatus from '../../../shared/ui/status/ConnectionStatus';
 import ScrollSection from '../../../shared/ui/ScrollSection';
-
-/**
- * Cabeçalho estilizado para PhilosophersLab.
- */
-const PhilosophersHeader = () => {
-    const { t } = useTranslation();
-    return (
-        <div className="max-w-3xl mx-auto text-center mb-12 relative">
-            <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 text-[100px] font-black text-white/5 pointer-events-none select-none uppercase tracking-tighter">
-                Logic
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black uppercase mb-6 flex items-center justify-center gap-4 text-punk-cyan tracking-tighter">
-                <span className="animate-pulse">/</span> philosophers_lab
-            </h2>
-            <div className="punk-card-glass p-6 border-l-4 border-l-punk-cyan text-left mb-4">
-                <p className="font-mono text-white/80 text-sm leading-relaxed mb-4">
-                    {t('philosophers.lab_intro') || "O Dilema dos Filósofos Comilões é uma metáfora sobre a coexistência digital. Proposto por Dijkstra em '65, este quebra-cabeça de sincronização revela a fragilidade dos sistemas quando o egoísmo do recurso gera o silêncio do deadlock. Aqui, cada clique é um processo, cada garfo é um semáforo, e a sobrevivência depende da elegância do algoritmo contra a fome eterna."}
-                </p>
-                <p className="font-mono text-punk-cyan/60 text-[10px] uppercase tracking-[0.2em]">
-                    // {t('philosophers.lab_obs') || "OS_SINC_CHALLENGE // C_LANGUAGE_IMPLEMENTATION"}
-                </p>
-            </div>
-        </div>
-    );
-};
 
 export default function PhilosophersPage() {
     const { t } = useTranslation();
@@ -40,7 +16,12 @@ export default function PhilosophersPage() {
     return (
         <ScrollSection id="philosophers" className="py-24 text-white">
             <div className="max-w-7xl mx-auto px-6 md:px-12">
-                <PhilosophersHeader />
+                <ModuleHeader
+                    theme="philosophers"
+                    titleKey="philosophers.title"
+                    introKey="philosophers.lab_intro"
+                    obsKey="philosophers.lab_obs"
+                />
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
 

@@ -8,9 +8,13 @@ const resources = {
             nav: {
                 home: 'Home',
                 terminal: 'Terminal',
-                work: 'Work',
+                work: 'Works',
                 hacklog: 'Hacklog',
                 contact: 'Contact',
+            },
+            shared: {
+                architecture_title: 'System Architecture',
+                technical_specs: 'technical_specs',
             },
             hero: {
                 born2code: 'born2code',
@@ -89,6 +93,7 @@ const resources = {
                 architecture_info_footer: '[PROJECT_NOTE]: I also built a complete fractal project in pure C (linked below), utilizing the MiniLibX library to explore low-level graphics and performance before migrating to the web GPU context.',
             },
             terminal: {
+                title: 'terminal_lab',
                 initializing: 'INITIALIZING MINISHELL...',
                 welcome: 'WELCOME A PROJECT OF 42 SÃO PAULO.',
                 local_commands: 'LOCAL COMMANDS: HELP, CLEAR',
@@ -156,9 +161,13 @@ const resources = {
             nav: {
                 home: 'Início',
                 terminal: 'Terminal',
-                work: 'Trabalho',
+                work: 'Trabalhos',
                 hacklog: 'Hacklog',
                 contact: 'Contato',
+            },
+            shared: {
+                architecture_title: 'Arquitetura do Sistema',
+                technical_specs: 'especificacoes_tecnicas',
             },
             hero: {
                 born2code: 'born2code',
@@ -237,6 +246,7 @@ const resources = {
                 architecture_info_footer: '[NOTA_DO_PROJETO]: Eu também construí um projeto completo de fractais em C puro (link abaixo), utilizando a biblioteca MiniLibX para explorar computação gráfica de baixo nível e performance antes de migrar para a web.',
             },
             terminal: {
+                title: 'terminal_lab',
                 initializing: 'INICIALIZANDO MINISHELL...',
                 welcome: 'BEM-VINDO A UM PROJETO DA 42 SÃO PAULO.',
                 local_commands: 'COMANDOS LOCAIS: HELP, CLEAR',
@@ -256,7 +266,7 @@ const resources = {
                 architecture_info_footer: '[SYSTEM_INFO]: a comunicação é bidirecional. o bff em elixir atua como um supervisor de processos, mantendo a estabilidade do sistema e garantindo que cada comando execute em seu próprio ambiente isolado antes de retornar o resultado para o navegador.',
             },
             philosophers: {
-                title: 'Monitor de Processos',
+                title: 'philosophers_lab',
                 subtitle: 'Sistema de Detecção de Deadlock v1.0',
                 status_online: 'SISTEMA ONLINE',
                 status_offline: 'DESCONECTADO',
