@@ -42,18 +42,21 @@ export default function SimulationControl({ onStart, disabled }) {
                         value={params.die}
                         onChange={v => setParams({ ...params, die: v })}
                         step="1"
+                        min="1" max="5"
                     />
                     <Input
                         label={t('philosophers.label_eat')}
                         value={params.eat}
                         onChange={v => setParams({ ...params, eat: v })}
                         step="1"
+                        min="1" max="5"
                     />
                     <Input
                         label={t('philosophers.label_sleep')}
                         value={params.sleep}
                         onChange={v => setParams({ ...params, sleep: v })}
                         step="1"
+                        min="1" max="5"
                     />
                     <div className="sm:col-span-2">
                         <Input
