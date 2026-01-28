@@ -94,11 +94,6 @@ const FractalControls = ({ params, onChange, onReset }) => {
                 </div>
             )}
 
-            <div className="bg-accent-pink/5 border-l-2 border-accent-pink p-4 mt-8">
-                <p className="font-mono text-[10px] text-white/60 leading-relaxed uppercase">
-                    {t('fractals.lab_obs')}
-                </p>
-            </div>
         </div>
     );
 };

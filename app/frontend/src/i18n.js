@@ -72,7 +72,7 @@ const resources = {
             },
             fractals: {
                 title: 'fractal.explorer',
-                description: 'Explore mathematical beauty through interactive fractals.',
+                description: 'Recursive geometry and chaos theory. Navigate the infinite boundary between order and entropy in real-time.',
                 type_label: 'Fractal Type',
                 mandelbrot: 'Mandelbrot Set',
                 julia: 'Julia Set',
@@ -86,6 +86,7 @@ const resources = {
                 high_res: 'HIGH_RES',
                 status: 'status_active',
                 back_to_work: 'back to archives',
+                real_time_render: 'WebGL Real-time Rendering',
                 lab_obs: 'Click or drag on the canvas to explore (experimental).',
                 architecture_title: 'Performance Architecture',
                 architecture_subtitle: 'From High-Level UI to Low-Level GPU Shaders',
@@ -231,8 +232,8 @@ const resources = {
                 }
             },
             fractals: {
-                title: 'fractals_lab',
-                description: 'Explore a beleza matemática através de fractais interativos.',
+                title: 'fractal.explorer',
+                description: 'Geometria recursiva e teoria do caos. Navegue pela fronteira infinita entre a ordem e a entropia em tempo real.',
                 type_label: 'Tipo de Fractal',
                 mandelbrot: 'Conjunto de Mandelbrot',
                 julia: 'Conjunto de Julia',
@@ -246,6 +247,7 @@ const resources = {
                 high_res: 'ALTA_RES',
                 status: 'status_ativo',
                 back_to_work: 'voltar aos arquivos',
+                real_time_render: 'Renderização WebGL em Tempo Real',
                 lab_obs: 'Clique ou arraste no canvas para explorar (experimental).',
                 architecture_title: 'Arquitetura de Performance',
                 architecture_subtitle: 'Da Interface React aos Shaders de GPU',

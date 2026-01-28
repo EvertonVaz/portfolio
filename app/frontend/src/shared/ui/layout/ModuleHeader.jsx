@@ -41,11 +41,6 @@ const ModuleHeader = ({ theme = 'terminal', titleKey, introKey, obsKey }) => {
                 <p className="font-mono text-white/80 text-sm leading-relaxed mb-4">
                     {t(introKey)}
                 </p>
-                {obsKey && (
-                    <p className={`${config.color}/60 font-mono text-[10px] uppercase tracking-[0.2em]`}>
-                        // {t(obsKey)}
-                    </p>
-                )}
             </div>
         </div>
     );

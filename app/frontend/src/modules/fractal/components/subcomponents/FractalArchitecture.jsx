@@ -12,7 +12,7 @@ const FractalArchitecture = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="py-16">
+        <div className="mt-20 mb-6">
             <ArchitectureHeader
                 theme="fractals"
                 subtitleKey="fractals.architecture_subtitle"

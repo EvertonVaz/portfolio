@@ -5,7 +5,6 @@ import MinishellArchitecture from '../components/MinishellArchitecture';
 import { GithubCTA } from '../../../shared/ui/social/GithubCTA';
 import ConnectionStatus from '../../../shared/ui/status/ConnectionStatus';
 import { useTerminalSocket } from '../hooks/useTerminalSocket';
-
 import ModuleHeader from '../../../shared/ui/layout/ModuleHeader';
 
 /**
@@ -14,6 +13,7 @@ import ModuleHeader from '../../../shared/ui/layout/ModuleHeader';
  */
 const TerminalPage = () => {
   const { isConnected } = useTerminalSocket();
+  const { t } = useTranslation();
 
   return (
     <section className="py-24">
@@ -26,6 +26,9 @@ const TerminalPage = () => {
         />
 
         <div className="flex justify-center">
+          <p className="font-mono justify-center text-[10px] text-white/60 leading-relaxed uppercase mr-6">
+            {t('terminal.lab_obs')}
+          </p>
           <ConnectionStatus isConnected={isConnected} />
         </div>
 
