@@ -15,6 +15,14 @@ export default function SimulationControl({ onStart, disabled }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         onStart(params.n, params.die, params.eat, params.sleep, params.must_eat);
+
+        // Scroll to monitor with a slight delay to ensure UI readiness
+        setTimeout(() => {
+            const monitorElement = document.getElementById('simulation-monitor');
+            if (monitorElement) {
+                monitorElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 100);
     };
 
     return (

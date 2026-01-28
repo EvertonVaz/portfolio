@@ -27,7 +27,7 @@ export default function PhilosophersPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-24">
 
                     {/* Monitoring Grid - Left (wider) or Top */}
-                    <div className="lg:col-span-8 space-y-8">
+                    <div id="simulation-monitor" className="lg:col-span-8 space-y-8">
                         <div className="flex justify-between items-center border-b border-white/10 pb-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-3 h-3 bg-punk-cyan shadow-[0_0_8px_var(--color-punk-cyan)]"></div>
