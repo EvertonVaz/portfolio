@@ -15,6 +15,12 @@ const resources = {
             shared: {
                 architecture_title: 'System Architecture',
                 technical_specs: 'technical_specs',
+                name: 'Everton Vaz',
+                lang_switch: 'EN > PT',
+                footer_copyright: 'CODE_IS_RESISTANCE',
+                footer_status_online: 'STATUS: ONLINE',
+                footer_status_offline: 'STATUS: OFFLINE',
+                footer_loc: 'LOC: SAO_PAULO',
             },
             hero: {
                 born2code: 'born2code',
@@ -35,7 +41,6 @@ const resources = {
                 stat_phi: 'Φ',
                 stat_diy: 'DIY',
                 stat_freq: '432Hz',
-                under_construction: 'site under construction',
             },
             contact: {
                 title: 'get in touch',
@@ -99,6 +104,10 @@ const resources = {
                 local_commands: 'LOCAL COMMANDS: HELP, CLEAR',
                 remote_commands: 'REMOTE COMMANDS: "ls", "pwd", "echo", "cat", "exit", "whoami"',
                 error_not_connected: '[ERROR: TERMINAL NOT CONNECTED TO BACKEND]',
+                status_suspended: '[PROCESS SUSPENDED]',
+                status_resumed: '[PROCESS RESUMED]',
+                status_terminated: '[PROCESS TERMINATED]',
+                error_invalid: '[ERROR: INVALID COMMAND]',
                 lab_description: 'This project is an implementation of a minimalist Unix shell developed in C, as part of the 42 curriculum. The goal is to replicate the basic functionality of Bash, handling command reading, parsing, execution and process management.',
                 lab_obs: 'Note: Few commands are released on the backend, type help to see the full list.',
                 github_link: 'GitHub Repository',
@@ -113,8 +122,7 @@ const resources = {
                 architecture_info_footer: '[SYSTEM_INFO]: communication is bidirectional. the elixir bff acts as a process supervisor, maintaining system stability and ensuring each command runs in its own isolated environment before returning the result to the browser.',
             },
             philosophers: {
-                title: 'Process Monitor',
-                subtitle: 'Deadlock Detection System v1.0',
+                title: 'philosophers_lab',
                 status_online: 'SYSTEM ONLINE',
                 status_offline: 'DISCONNECTED',
                 no_processes: 'NO ACTIVE PROCESSES',
@@ -134,7 +142,6 @@ const resources = {
                 card_status_thinking: 'THINKING',
                 card_status_eating: 'EATING',
                 card_status_sleeping: 'SLEEPING',
-                card_status_waiting: 'WAITING',
                 card_status_dead: 'DIED',
                 card_status_satisfied: 'TERMINATED',
                 card_initializing: 'Initializing...',
@@ -168,6 +175,12 @@ const resources = {
             shared: {
                 architecture_title: 'Arquitetura do Sistema',
                 technical_specs: 'especificacoes_tecnicas',
+                name: 'Everton Vaz',
+                lang_switch: 'PT > EN',
+                footer_copyright: 'CODIGO_EH_RESISTENCIA',
+                footer_status_online: 'STATUS: ONLINE',
+                footer_status_offline: 'STATUS: OFFLINE',
+                footer_loc: 'LOC: SAO_PAULO',
             },
             hero: {
                 born2code: 'born2code',
@@ -188,7 +201,6 @@ const resources = {
                 stat_phi: 'Φ',
                 stat_diy: 'DIY',
                 stat_freq: '432Hz',
-                under_construction: 'site em construção',
             },
             contact: {
                 title: 'entre em contato',
@@ -219,7 +231,7 @@ const resources = {
                 }
             },
             fractals: {
-                title: 'fractal.explorer',
+                title: 'fractals_lab',
                 description: 'Explore a beleza matemática através de fractais interativos.',
                 type_label: 'Tipo de Fractal',
                 mandelbrot: 'Conjunto de Mandelbrot',
@@ -252,6 +264,10 @@ const resources = {
                 local_commands: 'COMANDOS LOCAIS: HELP, CLEAR',
                 remote_commands: 'COMANDOS REMOTOS: "ls", "pwd", "echo", "cat", "exit", "whoami"',
                 error_not_connected: '[ERRO: TERMINAL NÃO CONECTADO AO BACKEND]',
+                status_suspended: '[PROCESSO SUSPENSO]',
+                status_resumed: '[PROCESSO RETOMADO]',
+                status_terminated: '[PROCESSO TERMINADO]',
+                error_invalid: '[ERRO: COMANDO INVÁLIDO]',
                 lab_description: 'Este projeto é uma implementação de um shell Unix minimalista desenvolvido em C, como parte do currículo da 42. O objetivo é replicar o funcionamento básico do Bash, lidando com a leitura de comandos, parsing, execução e gerenciamento de processos.',
                 lab_obs: 'Obs.: Poucos comandos estão liberados no backend, digite help para ver a lista completa.',
                 github_link: 'Repositório GitHub',
@@ -267,7 +283,6 @@ const resources = {
             },
             philosophers: {
                 title: 'philosophers_lab',
-                subtitle: 'Sistema de Detecção de Deadlock v1.0',
                 status_online: 'SISTEMA ONLINE',
                 status_offline: 'DESCONECTADO',
                 no_processes: 'SEM PROCESSOS ATIVOS',
@@ -287,7 +302,6 @@ const resources = {
                 card_status_thinking: 'PENSANDO',
                 card_status_eating: 'COMENDO',
                 card_status_sleeping: 'DORMINDO',
-                card_status_waiting: 'AGUARDANDO',
                 card_status_dead: 'MORREU',
                 card_status_satisfied: 'TERMINADO',
                 card_initializing: 'Inicializando...',

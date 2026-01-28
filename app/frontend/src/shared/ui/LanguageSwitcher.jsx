@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 const LanguageSwitcher = ({ mobile = false }) => {
     const { i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const toggleLanguage = () => {
         const newLang = i18n.language.startsWith('pt') ? 'en' : 'pt';
@@ -32,7 +33,7 @@ const LanguageSwitcher = ({ mobile = false }) => {
         >
             <MdTranslate size={14} className="text-accent-pink group-hover:scale-110 transition-transform duration-300" />
             <span className="relative z-10 opacity-70 group-hover:opacity-100">
-                {isPt ? 'PT > EN' : 'EN > PT'}
+                {t('shared.lang_switch')}
             </span>
         </button>
     );

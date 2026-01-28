@@ -30,13 +30,22 @@ const Terminal = () => {
     useEffect(() => {
         const handleMessage = (msg) => {
             const parsedWords = parseResponse(msg);
-            const content = parsedWords.length > 0 ? parsedWords.join(' ') : msg;
+
+            // Localização de mensagens de status injetadas pelo backend/bff
+            const statusMap = {
+                '[PROCESS SUSPENDED]': t('terminal.status_suspended'),
+                '[PROCESS RESUMED]': t('terminal.status_resumed'),
+                '[PROCESS TERMINATED]': t('terminal.status_terminated'),
+                '[ERROR: INVALID COMMAND]': t('terminal.error_invalid')
+            };
+
+            const content = statusMap[msg] || (parsedWords.length > 0 ? parsedWords.join(' ') : msg);
             setHistoryLines(prev => [...prev, { type: 'output', content }]);
         };
 
         on('message', handleMessage);
         return () => off('message', handleMessage);
-    }, [on, off]);
+    }, [on, off, t]);
 
     const focusInput = () => inputRef.current?.focus();
 

@@ -22,14 +22,6 @@ const HeroBanner = () => {
 
     return (
         <div className="mb-24 text-center select-none">
-            {/* Status Badge */}
-            <div className="flex items-center justify-center gap-3 mb-8">
-                <span className="h-2 w-2 bg-punk-green animate-ping"></span>
-                <span className="text-[10px] font-mono text-punk-green/80 uppercase tracking-widest border border-punk-green/30 px-2 py-1">
-                    {t('hero.under_construction')}
-                </span>
-            </div>
-
             {/* Nome Principal - Glitch Effect (React Layered) */}
             <div className="relative inline-block group">
                 {/* Layer Red/Pink */}
@@ -50,8 +42,7 @@ const HeroBanner = () => {
             <div className="flex items-center justify-center gap-4 mt-4 h-8">
                 <span className="h-px flex-1 max-w-[60px] bg-gradient-to-r from-transparent to-punk-green/50"></span>
                 <span className="text-lg md:text-xl font-mono text-punk-green font-bold uppercase tracking-widest">
-                    {typedText}
-                    <span className="animate-pulse">_</span>
+                    <span className="animate-pulse">{typedText}</span>
                 </span>
                 <span className="h-px flex-1 max-w-[60px] bg-gradient-to-l from-transparent to-punk-green/50"></span>
             </div>

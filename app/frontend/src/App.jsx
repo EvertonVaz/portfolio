@@ -1,5 +1,4 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './shared/ui/layout/Layout'
 import ScrollSection from './shared/ui/ScrollSection'
 import Home from './modules/home/pages/Home'
@@ -35,6 +34,8 @@ function App() {
               </ScrollSection>
             </>
           } />
+          <Route path="/work" element={<Navigate to="/#work" replace />} />
+          <Route path="/contact" element={<Navigate to="/#contact" replace />} />
           <Route path="/terminal" element={<TerminalPage />} />
           <Route path="/fractals" element={<FractalPage />} />
           <Route path="/philosophers" element={<PhilosophersPage />} />

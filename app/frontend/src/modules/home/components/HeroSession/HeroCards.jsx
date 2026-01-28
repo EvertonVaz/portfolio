@@ -10,9 +10,9 @@ const HeroCards = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-4">
+    <div className="w-full max-w-5xl mx-auto px-4 mb-12">
       {/* Grid de Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 mb-12">
 
         {/* Card Esquerdo: Perfil Criativo */}
         <HeroProfileCard

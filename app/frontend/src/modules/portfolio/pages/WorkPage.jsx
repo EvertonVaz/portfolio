@@ -6,7 +6,7 @@ const WorkPage = () => {
   const { t } = useTranslation();
 
   return (
-    <section className="py-24">
+    <section className="">
       <div className="max-w-6xl mx-auto px-8">
         <h2 className="section-title">
           {t('work.title')} <span className="text-xs font-mono text-white/30">{t('work.items_count', { count: 3 })}</span>

@@ -1,12 +1,13 @@
-import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
+    const { t } = useTranslation();
     return (
         <footer className="fixed bottom-0 left-0 w-full z-50 bg-punk-bg border-t border-white/10 grid grid-cols-1 md:grid-cols-3 font-mono text-[10px] uppercase tracking-widest text-white/40 select-none">
 
             {/* Left: Copyright */}
             <div className="p-2 text-center md:text-left md:pl-4 border-b md:border-b-0 border-white/5">
-                © 2026 EVERTON VAZ // CODE_IS_RESISTANCE
+                © 2026 {t('shared.name')} // {t('shared.footer_copyright')}
             </div>
 
             {/* Center: System Metrics (Fake) */}
@@ -20,9 +21,9 @@ const Footer = () => {
             <div className="p-2 text-center md:text-right md:pr-4 flex justify-center md:justify-end gap-4">
                 <span className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-punk-green animate-pulse"></span>
-                    STATUS: ONLINE
+                    {t('shared.footer_status_online')}
                 </span>
-                <span className="hidden lg:inline text-white/20">LOC: SAO_PAULO</span>
+                <span className="hidden lg:inline text-white/20">{t('shared.footer_loc')}</span>
             </div>
         </footer>
     );

@@ -13,7 +13,7 @@ const MinishellArchitecture = () => {
     const { t } = useTranslation();
 
     return (
-        <div className="py-16">
+        <div className="mt-20 mb-6">
             <ArchitectureHeader
                 theme="terminal"
                 subtitleKey="terminal.architecture_subtitle"
