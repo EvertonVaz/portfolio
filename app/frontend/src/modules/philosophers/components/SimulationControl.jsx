@@ -41,26 +41,26 @@ export default function SimulationControl({ onStart, disabled }) {
                         label={t('philosophers.label_die')}
                         value={params.die}
                         onChange={v => setParams({ ...params, die: v })}
-                        step="0.1"
+                        step="1"
                     />
                     <Input
                         label={t('philosophers.label_eat')}
                         value={params.eat}
                         onChange={v => setParams({ ...params, eat: v })}
-                        step="0.1"
+                        step="1"
                     />
                     <Input
                         label={t('philosophers.label_sleep')}
                         value={params.sleep}
                         onChange={v => setParams({ ...params, sleep: v })}
-                        step="0.1"
+                        step="1"
                     />
                     <div className="sm:col-span-2">
                         <Input
                             label={t('philosophers.label_must_eat') || "Philosopher Quota (Must Eat)"}
                             value={params.must_eat}
                             onChange={v => setParams({ ...params, must_eat: v })}
-                            min="2"
+                            min="2" max="10"
                             description={t('philosophers.must_eat_desc') || "Encerrar após cada um comer X vezes (min: 2)"}
                         />
                     </div>
