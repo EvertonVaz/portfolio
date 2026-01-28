@@ -21,6 +21,7 @@ const resources = {
                 footer_status_online: 'STATUS: ONLINE',
                 footer_status_offline: 'STATUS: OFFLINE',
                 footer_loc: 'LOC: SAO_PAULO',
+                back_to_works: 'Back to Works',
             },
             hero: {
                 born2code: 'born2code',
@@ -182,6 +183,7 @@ const resources = {
                 footer_status_online: 'STATUS: ONLINE',
                 footer_status_offline: 'STATUS: OFFLINE',
                 footer_loc: 'LOC: SAO_PAULO',
+                back_to_works: 'Voltar aos Trabalhos',
             },
             hero: {
                 born2code: 'born2code',

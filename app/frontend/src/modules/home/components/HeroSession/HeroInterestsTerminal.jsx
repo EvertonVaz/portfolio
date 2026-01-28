@@ -31,7 +31,7 @@ const HeroInterestsTerminal = () => {
                 <div className="p-4 flex flex-col md:flex-row md:justify-around gap-6">
                     {interests.map((interest, idx) => (
                         <div key={idx} className="flex items-center gap-3 group">
-                            <span className={`${interest.color} text-lg group-hover:scale-125 transition-transform duration-300`}>&gt;</span>
+                            <span className={`${interest.color} text-base md:text-lg group-hover:scale-125 transition-transform duration-300`}>&gt;</span>
                             <span className="text-white/80 group-hover:text-white transition-colors">{interest.text}</span>
                         </div>
                     ))}

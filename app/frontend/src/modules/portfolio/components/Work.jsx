@@ -16,10 +16,10 @@ const Work = () => {
     ];
 
     return (
-        <div className="w-full max-w-7xl mx-auto px-8 lg:px-12 ">
+        <div className="w-full max-w-7xl mx-auto px-8 lg:px-12" id="work">
             {/* Section Header */}
             <div className="flex items-end justify-between mb-4 border-b-2 border-white/10 pb-2">
-                <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
+                <h2 className="text-4xl md:text-7xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
                     {t('work.title')}
                 </h2>
                 <div className="hidden md:block text-right">
@@ -29,7 +29,7 @@ const Work = () => {
             </div>
 
             {/* Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8 md:gap-y-16 mb-8 md:mb-12">
                 {projects.map((project) => (
                     <ProjectCard
                         key={project.id}

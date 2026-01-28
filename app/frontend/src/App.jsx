@@ -34,6 +34,7 @@ function App() {
               </ScrollSection>
             </>
           } />
+          <Route path="/home" element={<Navigate to="/#home" replace />} />
           <Route path="/work" element={<Navigate to="/#work" replace />} />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />
           <Route path="/terminal" element={<TerminalPage />} />

@@ -18,9 +18,9 @@ const ProjectCard = ({ id, title, tag, desc, path, type }) => {
             {/* Shadow Block */}
             <div className="absolute top-2 left-2 w-full h-full bg-punk-gray border-2 border-white/10 -z-20 transition-transform duration-300 group-hover:translate-x-2 group-hover:translate-y-2"></div>
 
-            <div className="relative bg-punk-bg border-2 border-white/20 p-8 h-full flex flex-col hover:border-white transition-colors duration-300 overflow-hidden">
+            <div className="relative bg-punk-bg border-2 border-white/20 p-6 md:p-8 h-full flex flex-col hover:border-white transition-colors duration-300 overflow-hidden">
                 {/* ID Stamped */}
-                <div className="absolute -right-4 -top-4 text-8xl font-black text-white/5 select-none group-hover:text-punk-pink/10 transition-colors duration-500 font-sans tracking-tighter">
+                <div className="absolute -right-4 -top-4 text-6xl md:text-8xl font-black text-white/5 select-none group-hover:text-punk-pink/10 transition-colors duration-500 font-sans tracking-tighter">
                     {id}
                 </div>
 
@@ -30,7 +30,7 @@ const ProjectCard = ({ id, title, tag, desc, path, type }) => {
                 </span>
 
                 {/* Title */}
-                <h3 className="text-3xl font-black uppercase mb-4 tracking-tighter group-hover:text-punk-cyan transition-colors duration-300">
+                <h3 className="text-2xl md:text-3xl font-black uppercase mb-4 tracking-tighter group-hover:text-punk-cyan transition-colors duration-300">
                     {title}
                 </h3>
 

@@ -6,6 +6,7 @@ import { GithubCTA } from '../../../shared/ui/social/GithubCTA';
 import ConnectionStatus from '../../../shared/ui/status/ConnectionStatus';
 import { useTerminalSocket } from '../hooks/useTerminalSocket';
 import ModuleHeader from '../../../shared/ui/layout/ModuleHeader';
+import BackToWorks from '../../../shared/ui/navigation/BackToWorks';
 
 /**
  * Página do TerminalLab.
@@ -35,6 +36,10 @@ const TerminalPage = () => {
         <Terminal />
         <MinishellArchitecture />
         <GithubCTA url="https://github.com/evertonvaz/minishell" />
+
+        <div className="flex justify-center mt-12">
+          <BackToWorks theme="green" />
+        </div>
       </div>
     </section>
   );

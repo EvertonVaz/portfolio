@@ -88,11 +88,11 @@ body {
   }
 
   .section-title {
-    @apply text-4xl font-black uppercase mb-12 flex items-center gap-4;
+    @apply text-3xl md:text-4xl font-black uppercase mb-8 mr-12 md:mb-12 flex items-center gap-4;
   }
 
   .hero-title {
-    @apply text-6xl md:text-9xl font-black tracking-tighter uppercase mb-4;
+    @apply text-5xl md:text-7xl lg:text-9xl font-black tracking-tighter uppercase mb-4;
   }
 
   .hero-title:hover {
@@ -100,8 +100,14 @@ body {
   }
 
   .punk-button {
-    @apply px-10 py-4 bg-white text-black font-black uppercase tracking-tighter transition-all duration-300 transform;
-    box-shadow: 8px 8px 0px #333;
+    @apply px-6 py-3 md:px-10 md:py-4 bg-white text-black font-black uppercase tracking-tighter transition-all duration-300 transform;
+    box-shadow: 4px 4px 0px #333;
+  }
+
+  @media (min-width: 768px) {
+    .punk-button {
+      box-shadow: 8px 8px 0px #333;
+    }
   }
 
   .punk-button:hover {

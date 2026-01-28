@@ -32,7 +32,7 @@ const HeroProfileCard = ({
             <div className={`absolute top-2 left-2 w-full h-full border border-white/10 bg-punk-gray/50 -z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:translate-y-1`}></div>
 
             {/* Main Card Container */}
-            <div className={`relative bg-punk-bg/90 p-8 h-full border-2 border-white/20 hover:border-white transition-all duration-300 ${borderHover}`}>
+            <div className={`relative bg-punk-bg/90 p-6 md:p-8 h-full border-2 border-white/20 hover:border-white transition-all duration-300 ${borderHover}`}>
                 {/* Badge */}
                 <div className="flex items-center justify-between mb-6">
                     <span className={`px-2 py-1 ${badgeColor} text-[10px] font-mono uppercase tracking-widest border border-current`}>
@@ -42,7 +42,7 @@ const HeroProfileCard = ({
                 </div>
 
                 {/* Título */}
-                <h3 className="text-2xl font-black text-white mb-4 tracking-tight uppercase">
+                <h3 className="text-xl md:text-2xl font-black text-white mb-4 tracking-tight uppercase">
                     <span className={`mr-2 ${titleColor}`}>&gt;</span>{title}
                 </h3>
 
