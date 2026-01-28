@@ -16,10 +16,10 @@ const Work = () => {
     ];
 
     return (
-        <div className="w-full max-w-7xl mx-auto px-8 lg:px-12" id="work">
+        <div className="w-full max-w-7xl mx-auto px-8 lg:px-12">
             {/* Section Header */}
             <div className="flex items-end justify-between mb-4 border-b-2 border-white/10 pb-2">
-                <h2 className="text-4xl md:text-7xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
+                <h2 className="text-3xl sm:text-4xl md:text-7xl font-black tracking-tighter uppercase text-transparent bg-clip-text bg-gradient-to-r from-white to-white/50">
                     {t('work.title')}
                 </h2>
                 <div className="hidden md:block text-right">
