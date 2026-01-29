@@ -1,6 +1,8 @@
 import React from 'react';
 import astronautImg from '../../assets/astronaut.png';
 import logo42Img from '../../assets/logo42.png';
+import astronautFemImg from '../../assets/astronaut-fem.png';
+import moonImg from '../../assets/moon.png';
 
 const FractalBackground = () => {
     return (
@@ -33,6 +35,16 @@ const FractalBackground = () => {
                 </svg>
             </div>
 
+            {/* Moon */}
+            <div className="absolute top-[8%] left-[8%] w-[8vw] h-[8vw] animate-[floatMoon_25s_ease-in-out_infinite] opacity-60">
+                <img src={moonImg} alt="" className="w-full h-full object-contain" />
+            </div>
+
+            {/* Astronauta Feminina */}
+            <div className="absolute bottom-[25%] right-[22%] w-[13vw] h-[13vw] animate-[floatAlt_16s_ease-in-out_infinite]">
+                <img src={astronautFemImg} alt="" className="w-full h-full object-contain" />
+            </div>
+
             {/* Binary rain-like column snippet */}
             <div className="absolute top-0 right-[20%] h-full w-px bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
             <div className="absolute top-0 left-[30%] h-full w-px bg-gradient-to-b from-transparent via-white/20 to-transparent"></div>
@@ -41,6 +53,14 @@ const FractalBackground = () => {
                 @keyframes float {
                     0%, 100% { transform: translateY(0) rotate(12deg); }
                     50% { transform: translateY(-20px) rotate(15deg); }
+                }
+                @keyframes floatAlt {
+                    0%, 100% { transform: translateY(0) rotate(-10deg); }
+                    50% { transform: translateY(-25px) rotate(-5deg); }
+                }
+                @keyframes floatMoon {
+                    0%, 100% { transform: translateY(0) rotate(0deg); }
+                    50% { transform: translateY(-10px) rotate(2deg); }
                 }
             `}</style>
         </div>
