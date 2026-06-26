@@ -48,7 +48,8 @@ defmodule PortfolioWeb.GameChannel do
       ball: %{x: state.ball.x, y: state.ball.y},
       player: %{y: state.player.y, score: state.player.score},
       ai: %{y: state.ai.y, score: state.ai.score},
-      status: state.status
+      status: state.status,
+      nn_viz: state.nn_viz
     }
   end
 end

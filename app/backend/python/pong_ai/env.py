@@ -1,16 +1,20 @@
+import os
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
 
 # Espelha exatamente as constantes do GameServer Elixir
-W, H = 800, 600
-PADDLE_W, PADDLE_H = 12, 80
-PADDLE_SPEED = 5.0
-BALL_R = 8
-PLAYER_X = 20
-AI_X = 768
-MAX_BALL_SPEED = 10.0
-MAX_STEPS = 2000
+W            = int(os.getenv("GAME_WIDTH",    "800"))
+H            = int(os.getenv("GAME_HEIGHT",   "600"))
+PADDLE_W     = int(os.getenv("PADDLE_WIDTH",  "12"))
+PADDLE_H     = int(os.getenv("PADDLE_HEIGHT", "80"))
+PADDLE_SPEED = float(os.getenv("PADDLE_SPEED",    "5.0"))
+BALL_R       = int(os.getenv("BALL_RADIUS",   "8"))
+PLAYER_X     = int(os.getenv("PLAYER_X",      "20"))
+AI_X         = int(os.getenv("AI_X",          "768"))
+MAX_BALL_SPEED = float(os.getenv("MAX_BALL_SPEED", "10.0"))
+MAX_STEPS    = int(os.getenv("MAX_STEPS",     "2000"))
 
 
 class PongEnv(gym.Env):

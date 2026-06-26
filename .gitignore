@@ -1,6 +1,7 @@
 _old_assets/
 deploy/
-envs/
+envs/*
+!envs/.env.pong
 
 
 # The directory Mix will write compiled artifacts to.

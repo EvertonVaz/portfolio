@@ -1,3 +1,6 @@
+-include envs/.env.pong
+export
+
 all: build
 
 build: front-build back-build

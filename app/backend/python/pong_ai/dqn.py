@@ -123,6 +123,28 @@ class DQNAgent:
             t = torch.FloatTensor(state).unsqueeze(0).to(self.device)
             return int(self.q_net(t).argmax(dim=1).item())
 
+    def predict_with_activations(self, state: np.ndarray) -> tuple[int, list[list[float]]]:
+        """Retorna (action, [input, hidden1, hidden2, output]) com ativações brutas."""
+        captured: list[np.ndarray] = []
+        hooks = []
+
+        def hook(_mod, _inp, out):
+            captured.append(out.squeeze(0).cpu().numpy())
+
+        for layer in self.q_net.net:
+            if isinstance(layer, nn.ReLU):
+                hooks.append(layer.register_forward_hook(hook))
+
+        with torch.no_grad():
+            t = torch.FloatTensor(state).unsqueeze(0).to(self.device)
+            q_values = self.q_net(t).squeeze(0).cpu().numpy()
+
+        for h in hooks:
+            h.remove()
+
+        action = int(q_values.argmax())
+        return action, [state.tolist(), captured[0].tolist(), captured[1].tolist(), q_values.tolist()]
+
     def save(self, path: str) -> None:
         torch.save({"weights": self.q_net.state_dict(), "steps": self.steps}, path)
 

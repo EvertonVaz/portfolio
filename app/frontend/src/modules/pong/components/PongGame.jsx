@@ -1,13 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { usePongChannel } from '../hooks/usePongChannel';
+import { NeuralNetViz } from './NeuralNetViz';
 
-const W = 800;
-const H = 600;
-const PADDLE_W = 12;
-const PADDLE_H = 80;
-const BALL_R = 8;
-const PLAYER_X = 20;
-const AI_X = 768;
+const W        = Number(import.meta.env.VITE_GAME_WIDTH    ?? 800);
+const H        = Number(import.meta.env.VITE_GAME_HEIGHT   ?? 600);
+const PADDLE_W = Number(import.meta.env.VITE_PADDLE_WIDTH  ?? 12);
+const PADDLE_H = Number(import.meta.env.VITE_PADDLE_HEIGHT ?? 80);
+const BALL_R   = Number(import.meta.env.VITE_BALL_RADIUS   ?? 8);
+const PLAYER_X = Number(import.meta.env.VITE_PLAYER_X      ?? 20);
+const AI_X     = Number(import.meta.env.VITE_AI_X          ?? 768);
 
 export function PongGame() {
     const canvasRef = useRef(null);
@@ -67,7 +68,7 @@ export function PongGame() {
 
     return (
         <div className="flex flex-col items-center gap-4 w-full">
-            <div className="flex items-center justify-between w-full max-w-4xl px-2">
+            <div className="flex items-center justify-between w-full max-w-5xl px-2">
                 <span className="font-mono text-xs uppercase tracking-widest text-punk-cyan">
                     PLAYER
                 </span>
@@ -80,31 +81,35 @@ export function PongGame() {
                 </span>
             </div>
 
-            <div className="relative w-full max-w-4xl">
-                <canvas
-                    ref={canvasRef}
-                    width={W}
-                    height={H}
-                    className="w-full border border-white/10"
-                    style={{ background: '#080808', aspectRatio: `${W}/${H}` }}
-                />
+            <div className="flex items-stretch gap-4 w-full max-w-5xl">
+                <div className="relative flex-1">
+                    <canvas
+                        ref={canvasRef}
+                        width={W}
+                        height={H}
+                        className="w-full border border-white/10"
+                        style={{ background: '#080808', aspectRatio: `${W}/${H}` }}
+                    />
 
-                {gameOver && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70">
-                        <p className="font-mono text-4xl font-black uppercase text-white mb-2">
-                            {gameStateRef.current?.player?.score >= 7 ? 'VOCÊ GANHOU' : 'IA GANHOU'}
-                        </p>
-                        <p className="font-mono text-sm text-white/40 mb-8 uppercase tracking-widest">
-                            {gameStateRef.current?.player?.score} — {gameStateRef.current?.ai?.score}
-                        </p>
-                        <button
-                            onClick={restart}
-                            className="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-punk-cyan text-punk-cyan hover:bg-punk-cyan/10 transition-colors"
-                        >
-                            JOGAR NOVAMENTE
-                        </button>
-                    </div>
-                )}
+                    {gameOver && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70">
+                            <p className="font-mono text-4xl font-black uppercase text-white mb-2">
+                                {gameStateRef.current?.player?.score >= 7 ? 'VOCÊ GANHOU' : 'IA GANHOU'}
+                            </p>
+                            <p className="font-mono text-sm text-white/40 mb-8 uppercase tracking-widest">
+                                {gameStateRef.current?.player?.score} — {gameStateRef.current?.ai?.score}
+                            </p>
+                            <button
+                                onClick={restart}
+                                className="font-mono text-xs uppercase tracking-widest px-6 py-3 border border-punk-cyan text-punk-cyan hover:bg-punk-cyan/10 transition-colors"
+                            >
+                                JOGAR NOVAMENTE
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                <NeuralNetViz gameStateRef={gameStateRef} />
             </div>
 
             <div className="font-mono text-xs text-white/30 uppercase tracking-widest">

@@ -19,10 +19,11 @@ STATE_QUEUE = "game.state"
 ACTION_QUEUE = "game.ai_action"
 MODEL_PATH = Path(__file__).parent / "pong_ai" / "models" / "dqn.pt"
 
-# Constantes espelhadas do PongEnv
-_W, _H = 800.0, 600.0
-_PADDLE_H = 80.0
-_MAX_BALL_SPEED = 10.0
+# Constantes espelhadas do PongEnv — lidas do ambiente para manter sincronismo
+_W             = float(os.getenv("GAME_WIDTH",    "800"))
+_H             = float(os.getenv("GAME_HEIGHT",   "600"))
+_PADDLE_H      = float(os.getenv("PADDLE_HEIGHT", "80"))
+_MAX_BALL_SPEED = float(os.getenv("MAX_BALL_SPEED", "10.0"))
 
 _agent = None
 
@@ -58,14 +59,29 @@ def _state_to_obs(state: dict) -> np.ndarray:
 
 
 _ACTION_TO_DIRECTION = {0: "up", 1: "down", 2: "stop"}
+_NN_VIZ_BINS = 16
 
 
-def _compute_direction(state: dict) -> str:
+def _bin(values: list[float], n: int) -> list[float]:
+    size = len(values) // n
+    return [float(np.mean(values[i * size:(i + 1) * size])) for i in range(n)]
+
+
+def _compute_direction(state: dict) -> tuple[str, dict | None]:
     if _agent is not None:
         obs = _state_to_obs(state)
-        action = _agent.predict(obs)
-        return _ACTION_TO_DIRECTION[action]
-    return compute_direction(state)
+        action, raw = _agent.predict_with_activations(obs)
+        nn_viz = {
+            "layers": [6, _NN_VIZ_BINS, _NN_VIZ_BINS, 3],
+            "activations": [
+                raw[0],
+                _bin(raw[1], _NN_VIZ_BINS),
+                _bin(raw[2], _NN_VIZ_BINS),
+                raw[3],
+            ],
+        }
+        return _ACTION_TO_DIRECTION[action], nn_viz
+    return compute_direction(state), None
 
 
 async def handle_state(
@@ -73,11 +89,12 @@ async def handle_state(
 ) -> None:
     async with message.process():
         state = json.loads(message.body)
-        direction = _compute_direction(state)
+        direction, nn_viz = _compute_direction(state)
 
-        payload = json.dumps(
-            {"room_id": state["room_id"], "direction": direction}
-        ).encode()
+        msg: dict = {"room_id": state["room_id"], "direction": direction}
+        if nn_viz is not None:
+            msg["nn_viz"] = nn_viz
+        payload = json.dumps(msg).encode()
         await channel.default_exchange.publish(
             aio_pika.Message(body=payload),
             routing_key=ACTION_QUEUE,

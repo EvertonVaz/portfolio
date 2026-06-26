@@ -53,13 +53,14 @@ defmodule Portfolio.Pong.AmqpBridge do
 
   def handle_info({:basic_deliver, payload, _meta}, state) do
     case Jason.decode(payload) do
-      {:ok, %{"room_id" => room_id, "direction" => dir}} ->
+      {:ok, %{"room_id" => room_id, "direction" => dir} = msg} ->
         direction = case dir do
           "up" -> :up
           "down" -> :down
           _ -> :stop
         end
-        Portfolio.Pong.GameServer.set_ai_direction(room_id, direction)
+        nn_viz = Map.get(msg, "nn_viz")
+        Portfolio.Pong.GameServer.set_ai_direction(room_id, direction, nn_viz)
 
       _ ->
         Logger.warning("[AmqpBridge] Unexpected payload: #{inspect(payload)}")
@@ -75,9 +76,9 @@ defmodule Portfolio.Pong.AmqpBridge do
       ball: %{x: game_state.ball.x, y: game_state.ball.y, vx: game_state.ball.vx, vy: game_state.ball.vy},
       ai_y: game_state.ai.y,
       player_y: game_state.player.y,
-      paddle_height: 80,
-      height: 600,
-      width: 800
+      paddle_height: game_state.cfg.paddle_height,
+      height: game_state.cfg.height,
+      width: game_state.cfg.width
     })
     AMQP.Basic.publish(chan, "", @state_queue, payload)
     {:noreply, state}

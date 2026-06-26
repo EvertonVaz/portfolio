@@ -8,3 +8,4 @@ config :portfolio, PortfolioWeb.Endpoint,
   pubsub_server: Portfolio.PubSub
 
 config :phoenix, :json_library, Jason
+

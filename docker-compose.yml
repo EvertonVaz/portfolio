@@ -59,6 +59,7 @@ services:
           path: ./
     env_file:
       - ./envs/.env.production
+      - ./envs/.env.pong
     environment:
       - RABBITMQ_URL=amqp://guest:guest@rabbitmq/
     depends_on:
