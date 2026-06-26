@@ -25,7 +25,9 @@
 				"cweijan.vscode-database-client2",
 				"bradlc.vscode-tailwindcss",
 				"naumovs.color-highlight",
-				"jakebecker.elixir-ls"
+				"jakebecker.elixir-ls",
+				"ms-python.python",
+				"ms-python.black-formatter"
 			]
 		}
 	}

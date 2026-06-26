@@ -1,6 +1,9 @@
 import logging
 from pathlib import Path
 
+import numpy as np
+from gymnasium.vector import SyncVectorEnv
+
 from pong_ai.dqn import DQNAgent
 from pong_ai.env import PongEnv
 
@@ -9,43 +12,56 @@ logger = logging.getLogger(__name__)
 
 MODELS_DIR = Path(__file__).parent / "models"
 MODEL_PATH = MODELS_DIR / "dqn.pt"
-EPISODES = 5_000
-LOG_EVERY = 200
+
+NUM_ENVS = 4
+TOTAL_STEPS = 200_000
+LOG_EVERY = 20_000
 
 
-def train() -> None:
+def train(resume: bool = True) -> None:
     MODELS_DIR.mkdir(exist_ok=True)
-    env = PongEnv()
+    envs = SyncVectorEnv([lambda: PongEnv()] * NUM_ENVS)
     agent = DQNAgent()
 
-    logger.info("Training on %s", agent.device)
-    recent_rewards: list[float] = []
+    if resume and MODEL_PATH.exists():
+        agent.load(str(MODEL_PATH))
+        # agent.epsilon = 0.2  # exploração leve ao retomar
+        logger.info("Resuming from %s (epsilon=%.2f)", MODEL_PATH, agent.epsilon)
+    else:
+        logger.info("Starting fresh training")
 
-    for episode in range(1, EPISODES + 1):
-        state, _ = env.reset()
-        total_reward = 0.0
-        done = False
+    logger.info("Training on %s | %d envs | %d total steps", agent.device, NUM_ENVS, TOTAL_STEPS)
 
-        while not done:
-            action = agent.select_action(state)
-            next_state, reward, terminated, truncated, _ = env.step(action)
-            done = terminated or truncated
+    states, _ = envs.reset()
+    episode_rewards = np.zeros(NUM_ENVS)
+    completed: list[float] = []
 
-            agent.buffer.push(state, action, reward, next_state, float(done))
-            agent.train_step()
+    iterations = TOTAL_STEPS // NUM_ENVS
+    for i in range(iterations):
+        actions = agent.select_actions_batch(states)
+        next_states, rewards, terminated, truncated, _ = envs.step(actions)
+        dones = terminated | truncated
 
-            state = next_state
-            total_reward += reward
+        for k in range(NUM_ENVS):
+            agent.buffer.push(states[k], actions[k], float(rewards[k]), next_states[k], float(dones[k]))
+            episode_rewards[k] += rewards[k]
+            if dones[k]:
+                completed.append(episode_rewards[k])
+                episode_rewards[k] = 0.0
 
-        recent_rewards.append(total_reward)
+        agent.train_step()
+        states = next_states
 
-        if episode % LOG_EVERY == 0:
-            avg = sum(recent_rewards[-LOG_EVERY:]) / LOG_EVERY
+        real_steps = (i + 1) * NUM_ENVS
+        if real_steps % LOG_EVERY == 0:
+            recent = completed[-50:] if completed else [0.0]
+            avg = sum(recent) / len(recent)
             logger.info(
-                "ep %d/%d | avg_reward=%.3f | epsilon=%.3f | buffer=%d",
-                episode, EPISODES, avg, agent.epsilon, len(agent.buffer),
+                "steps %d/%d | avg_reward=%.3f | epsilon=%.3f | buffer=%d | episodes=%d",
+                real_steps, TOTAL_STEPS, avg, agent.epsilon, len(agent.buffer), len(completed),
             )
 
+    envs.close()
     agent.save(str(MODEL_PATH))
     logger.info("Model saved → %s", MODEL_PATH)
 

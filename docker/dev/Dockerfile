@@ -51,6 +51,8 @@ RUN RUNZSH=no sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/
 
 RUN curl -fsSL https://claude.ai/install.sh | bash
 
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
 COPY ./scripts/.zshrc /home/${USER_NAME}/.zshrc
 
 WORKDIR /src

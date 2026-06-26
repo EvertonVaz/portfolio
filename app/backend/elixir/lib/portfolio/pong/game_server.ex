@@ -53,9 +53,7 @@ defmodule Portfolio.Pong.GameServer do
   end
 
   def handle_cast(:restart, state) do
-    new_state = initial_state(state.room_id)
-    schedule_tick()
-    {:noreply, new_state}
+    {:noreply, initial_state(state.room_id)}
   end
 
   def handle_cast({:ai_direction, direction}, state) do

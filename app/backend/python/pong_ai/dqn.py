@@ -53,9 +53,9 @@ class DQNAgent:
         gamma: float = 0.99,
         epsilon_start: float = 1.0,
         epsilon_end: float = 0.05,
-        epsilon_decay: int = 10_000,
-        target_update_freq: int = 500,
-        batch_size: int = 64,
+        epsilon_decay: int = 5_000,
+        target_update_freq: int = 200,
+        batch_size: int = 256,
     ):
         self.action_dim = action_dim
         self.gamma = gamma
@@ -77,14 +77,17 @@ class DQNAgent:
         self.buffer = ReplayBuffer()
 
     def select_action(self, state: np.ndarray) -> int:
+        return self.select_actions_batch(state[np.newaxis])[0]
+
+    def select_actions_batch(self, states: np.ndarray) -> list[int]:
         self.epsilon = self.epsilon_end + (1.0 - self.epsilon_end) * np.exp(
             -self.steps / self.epsilon_decay
         )
         if random.random() < self.epsilon:
-            return random.randrange(self.action_dim)
+            return [random.randrange(self.action_dim) for _ in range(len(states))]
         with torch.no_grad():
-            t = torch.FloatTensor(state).unsqueeze(0).to(self.device)
-            return int(self.q_net(t).argmax(dim=1).item())
+            t = torch.FloatTensor(states).to(self.device)
+            return self.q_net(t).argmax(dim=1).tolist()
 
     def train_step(self) -> float | None:
         if len(self.buffer) < self.batch_size:
@@ -114,9 +117,18 @@ class DQNAgent:
 
         return float(loss.item())
 
+    def predict(self, state: np.ndarray) -> int:
+        """Inferência greedy pura — sem epsilon. Usa em produção."""
+        with torch.no_grad():
+            t = torch.FloatTensor(state).unsqueeze(0).to(self.device)
+            return int(self.q_net(t).argmax(dim=1).item())
+
     def save(self, path: str) -> None:
-        torch.save(self.q_net.state_dict(), path)
+        torch.save({"weights": self.q_net.state_dict(), "steps": self.steps}, path)
 
     def load(self, path: str) -> None:
-        self.q_net.load_state_dict(torch.load(path, map_location=self.device, weights_only=True))
+        checkpoint = torch.load(path, map_location=self.device, weights_only=True)
+        weights = checkpoint["weights"] if isinstance(checkpoint, dict) else checkpoint
+        self.q_net.load_state_dict(weights)
         self.target_net.load_state_dict(self.q_net.state_dict())
+        self.steps = checkpoint.get("steps", 0)

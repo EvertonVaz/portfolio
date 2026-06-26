@@ -74,8 +74,10 @@ defmodule Portfolio.Pong.AmqpBridge do
       room_id: room_id,
       ball: %{x: game_state.ball.x, y: game_state.ball.y, vx: game_state.ball.vx, vy: game_state.ball.vy},
       ai_y: game_state.ai.y,
+      player_y: game_state.player.y,
       paddle_height: 80,
-      height: 600
+      height: 600,
+      width: 800
     })
     AMQP.Basic.publish(chan, "", @state_queue, payload)
     {:noreply, state}
