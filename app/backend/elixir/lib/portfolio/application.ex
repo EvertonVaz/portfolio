@@ -9,6 +9,7 @@ defmodule Portfolio.Application do
       {Phoenix.PubSub, name: Portfolio.PubSub},
       {Registry, keys: :unique, name: Portfolio.Pong.Registry},
       Portfolio.Pong.GameSupervisor,
+      Portfolio.Pong.AmqpBridge,
       PortfolioWeb.Endpoint
     ]
 

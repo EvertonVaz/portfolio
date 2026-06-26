@@ -28,6 +28,10 @@ defmodule Portfolio.Pong.GameServer do
     GenServer.cast(via(room_id), :restart)
   end
 
+  def set_ai_direction(room_id, direction) do
+    GenServer.cast(via(room_id), {:ai_direction, direction})
+  end
+
   defp via(room_id) do
     {:via, Registry, {Portfolio.Pong.Registry, room_id}}
   end
@@ -54,6 +58,10 @@ defmodule Portfolio.Pong.GameServer do
     {:noreply, new_state}
   end
 
+  def handle_cast({:ai_direction, direction}, state) do
+    {:noreply, %{state | ai_direction: direction}}
+  end
+
   @impl true
   def handle_info(:tick, %{status: :game_over} = state) do
     Phoenix.PubSub.broadcast(Portfolio.PubSub, "game:#{state.room_id}", {:game_state, state})
@@ -64,6 +72,7 @@ defmodule Portfolio.Pong.GameServer do
   def handle_info(:tick, state) do
     new_state = tick(state)
     Phoenix.PubSub.broadcast(Portfolio.PubSub, "game:#{state.room_id}", {:game_state, new_state})
+    Portfolio.Pong.AmqpBridge.publish_state(state.room_id, new_state)
     schedule_tick()
     {:noreply, new_state}
   end
@@ -77,6 +86,7 @@ defmodule Portfolio.Pong.GameServer do
       player: %{y: (@height - @paddle_height) / 2.0, score: 0},
       ai: %{y: (@height - @paddle_height) / 2.0, score: 0},
       player_direction: :stop,
+      ai_direction: nil,
       status: :playing
     }
   end
@@ -97,6 +107,15 @@ defmodule Portfolio.Pong.GameServer do
       _ -> player.y
     end
     %{state | player: %{player | y: new_y}}
+  end
+
+  defp move_ai(%{ai_direction: dir} = state) when not is_nil(dir) do
+    new_y = case dir do
+      :up -> max(0.0, state.ai.y - @paddle_speed)
+      :down -> min((@height - @paddle_height) * 1.0, state.ai.y + @paddle_speed)
+      :stop -> state.ai.y
+    end
+    %{state | ai: %{state.ai | y: new_y}, ai_direction: nil}
   end
 
   defp move_ai(state) do
