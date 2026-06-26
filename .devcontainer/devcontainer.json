@@ -14,6 +14,7 @@
 	// The 'service' property is the name of the service for the container that VS Code should
 	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
 	"service": "dev",
+	"remoteUser": "etovaz",
 
 	// The optional 'workspaceFolder' property is the path VS Code should open by default when
 	// connected. This is typically a file mount in .devcontainer/docker-compose.yml
@@ -22,10 +23,9 @@
 		"vscode": {
 			"extensions": [
 				"cweijan.vscode-database-client2",
-				"gruntfuggly.todo-tree",
 				"bradlc.vscode-tailwindcss",
 				"naumovs.color-highlight",
-				"elixir-lsp.elixir-ls"
+				"jakebecker.elixir-ls"
 			]
 		}
 	}

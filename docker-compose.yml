@@ -1,14 +1,21 @@
 services:
   dev:
     restart: always
+    user: etovaz
     build:
       context: ./docker/dev
       dockerfile: Dockerfile
+      args:
+        USER_NAME: etovaz
+        USER_UID: ${UID:-1000}
+        USER_GID: ${GID:-1000}
     volumes:
-      - ${HOME}/.p10k.zsh:/root/.p10k.zsh
-      - ${HOME}/.zsh_history:/root/.zsh_history
+      - ${HOME}/.p10k.zsh:/home/etovaz/.p10k.zsh
+      - ${HOME}/.zsh_history:/home/etovaz/.zsh_history
       - ./:/src
-      - ${HOME}/.gemini:/root/.gemini
+      - ${HOME}/.claude:/home/etovaz/.claude
+      - ${HOME}/.claude.json:/home/etovaz/.claude.json
+      - ${HOME}/.config/anthropic:/home/etovaz/.config/anthropic
     env_file:
       - ./envs/.env.production
 

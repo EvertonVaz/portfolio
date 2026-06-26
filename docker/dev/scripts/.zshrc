@@ -9,9 +9,8 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-source $HOME/.nvm/nvm.sh
 
-source /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 alias att='source ~/.zshrc'
 alias config='code $HOME/.zshrc'
@@ -40,4 +39,4 @@ bindkey "^[[1;5C" forward-word
 
 export EDITOR=nano
 export VISUAL=nano
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.claude/local/bin:$PATH"
