@@ -72,10 +72,17 @@ defmodule Portfolio.Pong.GameServer do
   def handle_info(:tick, state) do
     new_state = tick(state)
     Phoenix.PubSub.broadcast(Portfolio.PubSub, "game:#{state.room_id}", {:game_state, new_state})
-    Portfolio.Pong.AmqpBridge.publish_state(state.room_id, new_state)
+    maybe_publish_ai_state(new_state)
     schedule_tick()
     {:noreply, new_state}
   end
+
+  @ai_publish_every 3
+
+  defp maybe_publish_ai_state(%{tick_count: n} = state) when rem(n, @ai_publish_every) == 0 do
+    Portfolio.Pong.AmqpBridge.publish_state(state.room_id, state)
+  end
+  defp maybe_publish_ai_state(_state), do: :ok
 
   defp schedule_tick, do: Process.send_after(self(), :tick, @tick_ms)
 
@@ -87,12 +94,14 @@ defmodule Portfolio.Pong.GameServer do
       ai: %{y: (@height - @paddle_height) / 2.0, score: 0},
       player_direction: :stop,
       ai_direction: nil,
+      tick_count: 0,
       status: :playing
     }
   end
 
   defp tick(state) do
     state
+    |> Map.update!(:tick_count, &(&1 + 1))
     |> move_player()
     |> move_ai()
     |> move_ball()

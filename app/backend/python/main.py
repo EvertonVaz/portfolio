@@ -9,7 +9,7 @@ from pong_ai.rule_based import compute_direction
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost/")
+RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq/")
 STATE_QUEUE = "game.state"
 ACTION_QUEUE = "game.ai_action"
 
@@ -32,10 +32,12 @@ async def main() -> None:
 
     async with connection:
         channel = await connection.channel()
-        await channel.set_qos(prefetch_count=10)
+        await channel.set_qos(prefetch_count=1)
 
-        await channel.declare_queue(STATE_QUEUE, durable=True)
-        await channel.declare_queue(ACTION_QUEUE, durable=True)
+        await channel.declare_queue(STATE_QUEUE, durable=True,
+                                    arguments={"x-message-ttl": 50})
+        await channel.declare_queue(ACTION_QUEUE, durable=True,
+                                    arguments={"x-message-ttl": 200})
 
         state_queue = await channel.get_queue(STATE_QUEUE)
 

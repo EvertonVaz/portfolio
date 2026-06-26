@@ -26,13 +26,15 @@ defmodule Portfolio.Pong.AmqpBridge do
 
   @impl true
   def handle_info(:connect, state) do
-    url = System.get_env("RABBITMQ_URL") || "amqp://guest:guest@localhost"
+    url = System.get_env("RABBITMQ_URL") || "amqp://guest:guest@rabbitmq"
 
     case AMQP.Connection.open(url) do
       {:ok, conn} ->
         {:ok, chan} = AMQP.Channel.open(conn)
-        AMQP.Queue.declare(chan, @state_queue, durable: true)
-        AMQP.Queue.declare(chan, @action_queue, durable: true)
+        AMQP.Queue.declare(chan, @state_queue, durable: true,
+          arguments: [{"x-message-ttl", :long, 50}])
+        AMQP.Queue.declare(chan, @action_queue, durable: true,
+          arguments: [{"x-message-ttl", :long, 200}])
         AMQP.Basic.consume(chan, @action_queue, nil, no_ack: true)
         Logger.info("[AmqpBridge] Connected to RabbitMQ")
         {:noreply, %{conn: conn, chan: chan, connected: true}}
