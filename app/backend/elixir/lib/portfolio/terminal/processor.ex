@@ -6,8 +6,6 @@ defmodule Portfolio.Terminal.Processor do
   alias Portfolio.Terminal.CmdExecutor
   alias Portfolio.Terminal.Sanitizer
 
-  require Logger
-
   def process(input) do
     %Command{input: input}
     |> execute()

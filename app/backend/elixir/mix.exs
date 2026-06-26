@@ -23,11 +23,13 @@ defmodule Portfolio.MixProject do
   defp deps do
     [
       {:bandit, "~> 1.6"},
+      {:phoenix, "~> 1.7"},
+      {:phoenix_pubsub, "~> 2.1"},
       {:websock_adapter, "~> 0.5"},
       {:joken, "~> 2.6"},
-      # Necessário para JSON no Elixir
       {:jason, "~> 1.4"},
-      {:corsica, "~> 2.1"}
+      {:corsica, "~> 2.1"},
+      {:amqp, "~> 4.1"}
     ]
   end
 end
