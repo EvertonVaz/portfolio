@@ -20,6 +20,9 @@ back:
 ai:
 	cd ./app/backend/python && uv run python main.py
 
+train:
+	cd ./app/backend/python && uv run python -m pong_ai.train
+
 rabbitmq:
 	docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
 

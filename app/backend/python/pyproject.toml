@@ -5,4 +5,7 @@ description = "Pong AI service — consumes game state from RabbitMQ and publish
 requires-python = ">=3.11"
 dependencies = [
     "aio-pika>=9.6.2",
+    "gymnasium>=1.3.0",
+    "numpy>=2.4.6",
+    "torch>=2.12.1",
 ]
