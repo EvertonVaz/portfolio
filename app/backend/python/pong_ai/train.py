@@ -25,8 +25,7 @@ def train(resume: bool = True) -> None:
 
     if resume and MODEL_PATH.exists():
         agent.load(str(MODEL_PATH))
-        # agent.epsilon = 0.2  # exploração leve ao retomar
-        logger.info("Resuming from %s (epsilon=%.2f)", MODEL_PATH, agent.epsilon)
+        logger.info("Resuming from %s", MODEL_PATH)
     else:
         logger.info("Starting fresh training")
 

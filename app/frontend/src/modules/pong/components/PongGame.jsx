@@ -12,7 +12,7 @@ const AI_X     = Number(import.meta.env.VITE_AI_X          ?? 768);
 
 export function PongGame() {
     const canvasRef = useRef(null);
-    const { gameStateRef, connected, gameOver, movePlayer, restart } = usePongChannel('lobby');
+    const { gameStateRef, connected, gameOver, mode, movePlayer, restart, setMode } = usePongChannel('lobby');
     const keysRef = useRef(new Set());
 
     // RAF render loop — bypasses React re-renders entirely for 60fps
@@ -70,14 +70,26 @@ export function PongGame() {
         <div className="flex flex-col items-center gap-4 w-full">
             <div className="flex items-center justify-between w-full max-w-5xl px-2">
                 <span className="font-mono text-xs uppercase tracking-widest text-punk-cyan">
-                    PLAYER
+                    {mode === 'aivai' ? 'IA' : 'PLAYER'}
                 </span>
-                <div className={`px-3 py-1 text-xs font-mono flex items-center gap-2 border ${connected ? 'border-green-500/20 text-green-400' : 'border-red-500/20 text-red-400'}`}>
-                    <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-                    {connected ? 'CONNECTED' : 'CONNECTING...'}
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={() => setMode(mode === 'aivai' ? 'pvp' : 'aivai')}
+                        className={`font-mono text-xs uppercase tracking-widest px-3 py-1 border transition-colors ${
+                            mode === 'aivai'
+                                ? 'border-punk-pink/40 text-punk-pink hover:bg-punk-pink/10'
+                                : 'border-white/20 text-white/40 hover:border-white/40 hover:text-white/70'
+                        }`}
+                    >
+                        {mode === 'aivai' ? 'IA VS IA' : 'IA VS IA'}
+                    </button>
+                    <div className={`px-3 py-1 text-xs font-mono flex items-center gap-2 border ${connected ? 'border-green-500/20 text-green-400' : 'border-red-500/20 text-red-400'}`}>
+                        <div className={`w-2 h-2 rounded-full ${connected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+                        {connected ? 'CONNECTED' : 'CONNECTING...'}
+                    </div>
                 </div>
                 <span className="font-mono text-xs uppercase tracking-widest text-punk-pink">
-                    AI
+                    IA
                 </span>
             </div>
 
@@ -112,9 +124,11 @@ export function PongGame() {
                 <NeuralNetViz gameStateRef={gameStateRef} />
             </div>
 
-            <div className="font-mono text-xs text-white/30 uppercase tracking-widest">
-                ↑ / W &nbsp;|&nbsp; ↓ / S &nbsp;—&nbsp; mover raquete
-            </div>
+            {mode !== 'aivai' && (
+                <div className="font-mono text-xs text-white/30 uppercase tracking-widest">
+                    ↑ / W &nbsp;|&nbsp; ↓ / S &nbsp;—&nbsp; mover raquete
+                </div>
+            )}
         </div>
     );
 }

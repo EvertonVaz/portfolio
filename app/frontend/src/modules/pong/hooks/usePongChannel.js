@@ -7,6 +7,7 @@ export function usePongChannel(roomId = 'lobby') {
     const gameStateRef = useRef(null);
     const [connected, setConnected] = useState(false);
     const [gameOver, setGameOver] = useState(false);
+    const [mode, setModeState] = useState('pvp');
 
     useEffect(() => {
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -18,6 +19,7 @@ export function usePongChannel(roomId = 'lobby') {
         channel.on('game_state', (state) => {
             gameStateRef.current = state;
             if (state.status === 'game_over') setGameOver(true);
+            if (state.mode) setModeState(state.mode);
         });
 
         channel.join()
@@ -42,5 +44,10 @@ export function usePongChannel(roomId = 'lobby') {
         setGameOver(false);
     }, []);
 
-    return { gameStateRef, connected, gameOver, movePlayer, restart };
+    const setMode = useCallback((newMode) => {
+        channelRef.current?.push('set_mode', { mode: newMode });
+        setGameOver(false);
+    }, []);
+
+    return { gameStateRef, connected, gameOver, mode, movePlayer, restart, setMode };
 }

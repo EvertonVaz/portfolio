@@ -17,6 +17,10 @@ defmodule Portfolio.Pong.GameServer do
     GenServer.cast(via(room_id), :restart)
   end
 
+  def set_mode(room_id, mode) do
+    GenServer.cast(via(room_id), {:set_mode, mode})
+  end
+
   def set_ai_direction(room_id, direction, nn_viz \\ nil) do
     GenServer.cast(via(room_id), {:ai_direction, direction, nn_viz})
   end
@@ -43,7 +47,11 @@ defmodule Portfolio.Pong.GameServer do
   end
 
   def handle_cast(:restart, state) do
-    {:noreply, initial_state(state.room_id, state.cfg)}
+    {:noreply, initial_state(state.room_id, state.cfg, state.mode)}
+  end
+
+  def handle_cast({:set_mode, mode}, state) do
+    {:noreply, initial_state(state.room_id, state.cfg, mode)}
   end
 
   def handle_cast({:ai_direction, direction, nn_viz}, state) do
@@ -72,10 +80,11 @@ defmodule Portfolio.Pong.GameServer do
   end
   defp maybe_publish_ai_state(_state), do: :ok
 
-  defp initial_state(room_id, cfg) do
+  defp initial_state(room_id, cfg, mode \\ :pvp) do
     %{
       room_id: room_id,
       cfg: cfg,
+      mode: mode,
       ball: %{x: cfg.width / 2.0, y: cfg.height / 2.0, vx: 4.0, vy: 3.0},
       player: %{y: (cfg.height - cfg.paddle_height) / 2.0, score: 0},
       ai: %{y: (cfg.height - cfg.paddle_height) / 2.0, score: 0},
@@ -95,6 +104,13 @@ defmodule Portfolio.Pong.GameServer do
     |> move_ball()
     |> check_collisions()
     |> check_score()
+  end
+
+  defp move_player(%{mode: :aivai, cfg: cfg} = state) do
+    new_y = Portfolio.Pong.RuleBasedAI.next_y(
+      state.player.y, state.ball, cfg.paddle_height, cfg.paddle_speed, cfg.height
+    )
+    %{state | player: %{state.player | y: new_y}}
   end
 
   defp move_player(%{player: player, player_direction: dir, cfg: cfg} = state) do

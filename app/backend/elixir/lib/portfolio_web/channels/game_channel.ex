@@ -31,6 +31,12 @@ defmodule PortfolioWeb.GameChannel do
     {:noreply, socket}
   end
 
+  def handle_in("set_mode", %{"mode" => mode}, socket) do
+    atom = if mode == "aivai", do: :aivai, else: :pvp
+    Portfolio.Pong.GameServer.set_mode(socket.assigns.room_id, atom)
+    {:noreply, socket}
+  end
+
   @impl true
   def handle_info(:push_initial_state, socket) do
     state = Portfolio.Pong.GameServer.get_state(socket.assigns.room_id)
@@ -49,6 +55,7 @@ defmodule PortfolioWeb.GameChannel do
       player: %{y: state.player.y, score: state.player.score},
       ai: %{y: state.ai.y, score: state.ai.score},
       status: state.status,
+      mode: state.mode,
       nn_viz: state.nn_viz
     }
   end
