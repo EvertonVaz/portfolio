@@ -68,6 +68,12 @@ const resources = {
                         desc: 'A multithreading simulation in C and Elixir, solving the classic deadlock problem with GenServers.',
                         path: '/philosophers',
                         type: 'internal'
+                    },
+                    p04: {
+                        title: 'Pong AI',
+                        desc: 'Real-time Pong game running on an Elixir GenServer at 60fps, with a rule-based AI opponent and Phoenix Channels.',
+                        path: '/pong',
+                        type: 'internal'
                     }
                 }
             },
@@ -122,6 +128,10 @@ const resources = {
                 architecture_desc_bff: 'Elixir/Phoenix layer managing secure WebSocket connections and process spawning.',
                 architecture_desc_core: 'The original C implementation of Minishell, executing native Unix commands.',
                 architecture_info_footer: '[SYSTEM_INFO]: communication is bidirectional. the elixir bff acts as a process supervisor, maintaining system stability and ensuring each command runs in its own isolated environment before returning the result to the browser.',
+            },
+            pong: {
+                title: 'pong.ai',
+                intro: 'Real-time Pong running on an Elixir GenServer at 60fps. State is computed server-side every 16ms and broadcast to the browser via Phoenix Channels. The opponent is a rule-based AI — the first iteration before replacing it with a trained DQN model.',
             },
             philosophers: {
                 title: 'philosophers_lab',
@@ -230,6 +240,12 @@ const resources = {
                         desc: 'Uma simulação de multithreading em C e Elixir, resolvendo o clássico problema de deadlock com GenServers.',
                         path: '/philosophers',
                         type: 'internal'
+                    },
+                    p04: {
+                        title: 'Pong AI',
+                        desc: 'Jogo de Pong em tempo real rodando em um GenServer Elixir a 60fps, com IA rule-based e Phoenix Channels.',
+                        path: '/pong',
+                        type: 'internal'
                     }
                 }
             },
@@ -284,6 +300,10 @@ const resources = {
                 architecture_desc_bff: 'Camada Elixir/Phoenix gerenciando conexões seguras via WebSockets e execução de processos.',
                 architecture_desc_core: 'A implementação original do Minishell em C, executando comandos Unix nativos.',
                 architecture_info_footer: '[SYSTEM_INFO]: a comunicação é bidirecional. o bff em elixir atua como um supervisor de processos, mantendo a estabilidade do sistema e garantindo que cada comando execute em seu próprio ambiente isolado antes de retornar o resultado para o navegador.',
+            },
+            pong: {
+                title: 'pong.ai',
+                intro: 'Pong em tempo real rodando num GenServer Elixir a 60fps. O estado é computado no servidor a cada 16ms e transmitido ao browser via Phoenix Channels. O adversário é uma IA rule-based — a primeira iteração antes de substituir por um modelo DQN treinado.',
             },
             philosophers: {
                 title: 'philosophers_lab',

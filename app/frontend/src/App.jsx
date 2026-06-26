@@ -7,6 +7,7 @@ import FractalPage from './modules/fractal/pages/FractalPage'
 import WorkPage from './modules/portfolio/pages/WorkPage'
 import ContactPage from './modules/portfolio/pages/ContactPage'
 import PhilosophersPage from './modules/philosophers/pages/PhilosophersPage'
+import PongPage from './modules/pong/pages/PongPage'
 import ScrollToTop from './shared/ui/ScrollToTop'
 
 /**
@@ -40,6 +41,7 @@ function App() {
           <Route path="/terminal" element={<TerminalPage />} />
           <Route path="/fractals" element={<FractalPage />} />
           <Route path="/philosophers" element={<PhilosophersPage />} />
+          <Route path="/pong" element={<PongPage />} />
         </Routes>
       </Layout>
     </Router>

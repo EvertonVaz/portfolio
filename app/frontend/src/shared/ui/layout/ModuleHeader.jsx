@@ -22,6 +22,13 @@ const THEMES = {
         ghost: 'MATH',
         prefix: '*',
         ghostSize: 'text-[100px]'
+    },
+    pong: {
+        color: 'text-punk-cyan',
+        border: 'border-l-4 border-l-punk-cyan',
+        ghost: 'PONG',
+        prefix: '>',
+        ghostSize: 'text-[120px]'
     }
 };
 

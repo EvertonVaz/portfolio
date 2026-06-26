@@ -6,6 +6,9 @@ defmodule Portfolio.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      {Phoenix.PubSub, name: Portfolio.PubSub},
+      {Registry, keys: :unique, name: Portfolio.Pong.Registry},
+      Portfolio.Pong.GameSupervisor,
       PortfolioWeb.Endpoint
     ]
 
