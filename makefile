@@ -18,7 +18,7 @@ back:
 	cd ./app/backend/elixir && mix run --no-halt
 
 ai:
-	cd ./app/backend/python && pip install -r requirements.txt -q && python main.py
+	cd ./app/backend/python && uv run python main.py
 
 rabbitmq:
 	docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management

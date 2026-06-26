@@ -1,0 +1,8 @@
+[project]
+name = "pong-ai"
+version = "0.1.0"
+description = "Pong AI service — consumes game state from RabbitMQ and publishes AI actions"
+requires-python = ">=3.11"
+dependencies = [
+    "aio-pika>=9.6.2",
+]
