@@ -160,7 +160,7 @@ const resources = {
                     },
                     p04: {
                         title: 'Pong AI',
-                        desc: 'Real-time Pong game running on an Elixir GenServer at 60fps, with a rule-based AI opponent and Phoenix Channels.',
+                        desc: 'Real-time Pong on an Elixir GenServer at 60fps, against a DQN model trained with PyTorch — including an AI vs AI mode.',
                         path: '/pong',
                         type: 'internal'
                     }
@@ -220,7 +220,7 @@ const resources = {
             },
             pong: {
                 title: 'pong.ai',
-                intro: 'Real-time Pong running on an Elixir GenServer at 60fps. State is computed server-side every 16ms and broadcast to the browser via Phoenix Channels. The opponent is a rule-based AI — the first iteration before replacing it with a trained DQN model.',
+                intro: 'Real-time Pong running on an Elixir GenServer at 60fps. State is computed server-side every 16ms and broadcast to the browser via Phoenix Channels. The opponent is a DQN model trained with PyTorch and Gymnasium — with live neural network visualization and an AI vs AI mode.',
             },
             philosophers: {
                 title: 'philosophers_lab',
@@ -421,7 +421,7 @@ const resources = {
                     },
                     p04: {
                         title: 'Pong AI',
-                        desc: 'Jogo de Pong em tempo real rodando em um GenServer Elixir a 60fps, com IA rule-based e Phoenix Channels.',
+                        desc: 'Pong em tempo real rodando em um GenServer Elixir a 60fps, contra um modelo DQN treinado com PyTorch — incluindo modo IA vs IA.',
                         path: '/pong',
                         type: 'internal'
                     }
@@ -481,7 +481,7 @@ const resources = {
             },
             pong: {
                 title: 'pong.ai',
-                intro: 'Pong em tempo real rodando num GenServer Elixir a 60fps. O estado é computado no servidor a cada 16ms e transmitido ao browser via Phoenix Channels. O adversário é uma IA rule-based — a primeira iteração antes de substituir por um modelo DQN treinado.',
+                intro: 'Pong em tempo real rodando num GenServer Elixir a 60fps. O estado é computado no servidor a cada 16ms e transmitido ao browser via Phoenix Channels. O adversário é um modelo DQN treinado com PyTorch e Gymnasium — com visualização da rede neural ao vivo e modo IA vs IA.',
             },
             philosophers: {
                 title: 'philosophers_lab',
