@@ -21,8 +21,12 @@ defmodule Portfolio.Pong.GameServer do
     GenServer.cast(via(room_id), {:set_mode, mode})
   end
 
-  def set_ai_direction(room_id, direction, nn_viz \\ nil) do
-    GenServer.cast(via(room_id), {:ai_direction, direction, nn_viz})
+  def set_models(room_id, ai_model, player_model) do
+    GenServer.cast(via(room_id), {:set_models, ai_model, player_model})
+  end
+
+  def set_ai_direction(room_id, direction, nn_viz \\ nil, player_direction \\ nil) do
+    GenServer.cast(via(room_id), {:ai_direction, direction, nn_viz, player_direction})
   end
 
   defp via(room_id) do
@@ -42,20 +46,37 @@ defmodule Portfolio.Pong.GameServer do
   end
 
   @impl true
+  # Em aivai a raquete esquerda é controlada pelo agente — ignora input humano
+  def handle_cast({:player_direction, _direction}, %{mode: :aivai} = state) do
+    {:noreply, state}
+  end
+
   def handle_cast({:player_direction, direction}, state) do
     {:noreply, %{state | player_direction: direction}}
   end
 
   def handle_cast(:restart, state) do
-    {:noreply, initial_state(state.room_id, state.cfg, state.mode)}
+    {:noreply, initial_state(state.room_id, state.cfg, state.mode, state.ai_model, state.player_model)}
   end
 
   def handle_cast({:set_mode, mode}, state) do
-    {:noreply, initial_state(state.room_id, state.cfg, mode)}
+    {:noreply, initial_state(state.room_id, state.cfg, mode, state.ai_model, state.player_model)}
   end
 
-  def handle_cast({:ai_direction, direction, nn_viz}, state) do
-    {:noreply, %{state | ai_direction: direction, nn_viz: nn_viz}}
+  # Troca de modelo ao vivo — não reinicia a partida
+  def handle_cast({:set_models, ai_model, player_model}, state) do
+    {:noreply, %{state | ai_model: ai_model, player_model: player_model}}
+  end
+
+  def handle_cast({:ai_direction, direction, nn_viz, player_direction}, state) do
+    state = %{state | ai_direction: direction, nn_viz: nn_viz}
+
+    state =
+      if state.mode == :aivai and player_direction != nil,
+        do: %{state | player_direction: player_direction},
+        else: state
+
+    {:noreply, state}
   end
 
   @impl true
@@ -80,11 +101,13 @@ defmodule Portfolio.Pong.GameServer do
   end
   defp maybe_publish_ai_state(_state), do: :ok
 
-  defp initial_state(room_id, cfg, mode \\ :pvp) do
+  defp initial_state(room_id, cfg, mode \\ :pvp, ai_model \\ "ppo", player_model \\ "ppo") do
     %{
       room_id: room_id,
       cfg: cfg,
       mode: mode,
+      ai_model: ai_model,
+      player_model: player_model,
       ball: %{x: cfg.width / 2.0, y: cfg.height / 2.0, vx: 4.0, vy: 3.0},
       player: %{y: (cfg.height - cfg.paddle_height) / 2.0, score: 0},
       ai: %{y: (cfg.height - cfg.paddle_height) / 2.0, score: 0},
@@ -106,13 +129,6 @@ defmodule Portfolio.Pong.GameServer do
     |> check_score()
   end
 
-  defp move_player(%{mode: :aivai, cfg: cfg} = state) do
-    new_y = Portfolio.Pong.RuleBasedAI.next_y(
-      state.player.y, state.ball, cfg.paddle_height, cfg.paddle_speed, cfg.height
-    )
-    %{state | player: %{state.player | y: new_y}}
-  end
-
   defp move_player(%{player: player, player_direction: dir, cfg: cfg} = state) do
     new_y = case dir do
       :up   -> max(0.0, player.y - cfg.paddle_speed)
@@ -122,15 +138,18 @@ defmodule Portfolio.Pong.GameServer do
     %{state | player: %{player | y: new_y}}
   end
 
+  # Direção recebida do serviço Python — mantém até chegar a próxima
+  # (não reseta para nil: a ação persiste entre mensagens, como no treino)
   defp move_ai(%{ai_direction: dir, cfg: cfg} = state) when not is_nil(dir) do
     new_y = case dir do
       :up   -> max(0.0, state.ai.y - cfg.paddle_speed)
       :down -> min((cfg.height - cfg.paddle_height) * 1.0, state.ai.y + cfg.paddle_speed)
       :stop -> state.ai.y
     end
-    %{state | ai: %{state.ai | y: new_y}, ai_direction: nil}
+    %{state | ai: %{state.ai | y: new_y}}
   end
 
+  # Serviço Python nunca respondeu — fallback rule-based
   defp move_ai(%{cfg: cfg} = state) do
     new_y = Portfolio.Pong.RuleBasedAI.next_y(
       state.ai.y, state.ball, cfg.paddle_height, cfg.paddle_speed, cfg.height
@@ -164,7 +183,7 @@ defmodule Portfolio.Pong.GameServer do
     if vx < 0 and x - cfg.ball_radius <= cfg.player_x + cfg.paddle_width and
        y >= paddle_y and y <= paddle_y + cfg.paddle_height do
       relative = (y - (paddle_y + cfg.paddle_height / 2.0)) / (cfg.paddle_height / 2.0)
-      %{ball | x: (cfg.player_x + cfg.paddle_width + cfg.ball_radius) * 1.0, vx: abs(vx), vy: relative * 5.0}
+      %{ball | x: (cfg.player_x + cfg.paddle_width + cfg.ball_radius) * 1.0, vx: accelerate(vx, cfg), vy: relative * 5.0}
     else
       ball
     end
@@ -174,10 +193,16 @@ defmodule Portfolio.Pong.GameServer do
     if vx > 0 and x + cfg.ball_radius >= cfg.ai_x and
        y >= paddle_y and y <= paddle_y + cfg.paddle_height do
       relative = (y - (paddle_y + cfg.paddle_height / 2.0)) / (cfg.paddle_height / 2.0)
-      %{ball | x: (cfg.ai_x - cfg.ball_radius) * 1.0, vx: -abs(vx), vy: relative * 5.0}
+      %{ball | x: (cfg.ai_x - cfg.ball_radius) * 1.0, vx: -accelerate(vx, cfg), vy: relative * 5.0}
     else
       ball
     end
+  end
+
+  # Bola acelera a cada rebatida de raquete até o teto — torna a defesa
+  # perfeita impossível em ralis longos, forçando o jogo ofensivo
+  defp accelerate(vx, cfg) do
+    min(abs(vx) * cfg.ball_accel, cfg.max_ball_speed)
   end
 
   defp check_score(%{ball: ball, cfg: cfg} = state) do

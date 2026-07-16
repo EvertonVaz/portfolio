@@ -40,6 +40,11 @@ export default defineConfig({
         target: 'http://localhost:4000',
         ws: true,
         changeOrigin: true
+      },
+      '/train-api': {
+        target: 'http://localhost:4001',
+        rewrite: path => path.replace(/^\/train-api/, ''),
+        changeOrigin: true,
       }
     }
   }

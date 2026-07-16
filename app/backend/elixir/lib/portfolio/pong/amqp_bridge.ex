@@ -54,13 +54,16 @@ defmodule Portfolio.Pong.AmqpBridge do
   def handle_info({:basic_deliver, payload, _meta}, state) do
     case Jason.decode(payload) do
       {:ok, %{"room_id" => room_id, "direction" => dir} = msg} ->
-        direction = case dir do
-          "up" -> :up
-          "down" -> :down
-          _ -> :stop
-        end
         nn_viz = Map.get(msg, "nn_viz")
-        Portfolio.Pong.GameServer.set_ai_direction(room_id, direction, nn_viz)
+        player_direction =
+          case Map.get(msg, "player_direction") do
+            nil -> nil
+            pdir -> decode_direction(pdir)
+          end
+
+        Portfolio.Pong.GameServer.set_ai_direction(
+          room_id, decode_direction(dir), nn_viz, player_direction
+        )
 
       _ ->
         Logger.warning("[AmqpBridge] Unexpected payload: #{inspect(payload)}")
@@ -69,10 +72,17 @@ defmodule Portfolio.Pong.AmqpBridge do
     {:noreply, state}
   end
 
+  defp decode_direction("up"), do: :up
+  defp decode_direction("down"), do: :down
+  defp decode_direction(_), do: :stop
+
   @impl true
   def handle_cast({:publish_state, room_id, game_state}, %{chan: chan, connected: true} = state) do
     payload = Jason.encode!(%{
       room_id: room_id,
+      mode: game_state.mode,
+      ai_model: game_state.ai_model,
+      player_model: game_state.player_model,
       ball: %{x: game_state.ball.x, y: game_state.ball.y, vx: game_state.ball.vx, vy: game_state.ball.vy},
       ai_y: game_state.ai.y,
       player_y: game_state.player.y,

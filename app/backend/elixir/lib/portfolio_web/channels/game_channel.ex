@@ -37,6 +37,20 @@ defmodule PortfolioWeb.GameChannel do
     {:noreply, socket}
   end
 
+  @valid_models ~w(ppo es)
+
+  def handle_in("set_models", params, socket) do
+    Portfolio.Pong.GameServer.set_models(
+      socket.assigns.room_id,
+      validate_model(params["ai_model"]),
+      validate_model(params["player_model"])
+    )
+    {:noreply, socket}
+  end
+
+  defp validate_model(model) when model in @valid_models, do: model
+  defp validate_model(_model), do: "ppo"
+
   @impl true
   def handle_info(:push_initial_state, socket) do
     state = Portfolio.Pong.GameServer.get_state(socket.assigns.room_id)
@@ -56,6 +70,8 @@ defmodule PortfolioWeb.GameChannel do
       ai: %{y: state.ai.y, score: state.ai.score},
       status: state.status,
       mode: state.mode,
+      ai_model: state.ai_model,
+      player_model: state.player_model,
       nn_viz: state.nn_viz
     }
   end

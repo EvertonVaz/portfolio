@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq/")
 STATE_QUEUE = "game.state"
 ACTION_QUEUE = "game.ai_action"
-MODEL_PATH = Path(__file__).parent / "pong_ai" / "models" / "dqn.pt"
+_MODELS_DIR     = Path(__file__).parent / "pong_ai" / "models"
+_PPO_MODEL_PATH = _MODELS_DIR / "ppo.pt"
+_ES_MODEL_PATH  = _MODELS_DIR / "es.pt"
 
 # Constantes espelhadas do PongEnv — lidas do ambiente para manter sincronismo
 _W             = float(os.getenv("GAME_WIDTH",    "800"))
@@ -25,23 +27,40 @@ _H             = float(os.getenv("GAME_HEIGHT",   "600"))
 _PADDLE_H      = float(os.getenv("PADDLE_HEIGHT", "80"))
 _MAX_BALL_SPEED = float(os.getenv("MAX_BALL_SPEED", "10.0"))
 
-_agent = None
+_agents: dict = {}
 
 
-def _load_agent():
-    global _agent
-    if not MODEL_PATH.exists():
-        logger.warning("Model not found at %s — using rule-based AI", MODEL_PATH)
-        return
+def _load_agents():
+    if _PPO_MODEL_PATH.exists():
+        try:
+            from pong_ai.ppo import PPOAgent
+            agent = PPOAgent()
+            agent.load(str(_PPO_MODEL_PATH))
+            _agents["ppo"] = agent
+        except Exception as exc:
+            logger.error("Failed to load PPOAgent: %s", exc)
 
-    try:
-        from pong_ai.dqn import DQNAgent
-        _agent = DQNAgent()
-        _agent.load(str(MODEL_PATH))
-        logger.info("DQN model loaded from %s", MODEL_PATH)
-    except Exception as exc:
-        logger.error("Failed to load DQN model: %s — falling back to rule-based", exc)
-        _agent = None
+    if _ES_MODEL_PATH.exists():
+        try:
+            from pong_ai.es import ESAgent
+            agent = ESAgent()
+            agent.load(str(_ES_MODEL_PATH))
+            _agents["es"] = agent
+        except Exception as exc:
+            logger.error("Failed to load ESAgent: %s", exc)
+
+    if not _agents:
+        logger.warning("No model found — using rule-based AI")
+
+
+def _agent_for(name: str | None):
+    """Retorna (algo, agent) do modelo pedido, ou o primeiro disponível como fallback."""
+    if name in _agents:
+        return name, _agents[name]
+    for key in ("ppo", "es"):
+        if key in _agents:
+            return key, _agents[key]
+    return None, None
 
 
 def _state_to_obs(state: dict) -> np.ndarray:
@@ -58,6 +77,23 @@ def _state_to_obs(state: dict) -> np.ndarray:
     ], dtype=np.float32)
 
 
+def _state_to_obs_mirrored(state: dict) -> np.ndarray:
+    """Observação da raquete esquerda: eixo X espelhado, posições trocadas.
+    Mesma transformação usada no self-play do treino ES.
+    """
+    b = state["ball"]
+    ai_y = float(state["ai_y"])
+    player_y = float(state.get("player_y", _H / 2.0 - _PADDLE_H / 2.0))
+    return np.array([
+        (_W - b["x"]) / _W * 2.0 - 1.0,
+        b["y"] / _H * 2.0 - 1.0,
+        -b["vx"] / _MAX_BALL_SPEED,
+        b["vy"] / _MAX_BALL_SPEED,
+        player_y / (_H - _PADDLE_H) * 2.0 - 1.0,
+        ai_y / (_H - _PADDLE_H) * 2.0 - 1.0,
+    ], dtype=np.float32)
+
+
 _ACTION_TO_DIRECTION = {0: "up", 1: "down", 2: "stop"}
 _NN_VIZ_BINS = 16
 
@@ -67,11 +103,20 @@ def _bin(values: list[float], n: int) -> list[float]:
     return [float(np.mean(values[i * size:(i + 1) * size])) for i in range(n)]
 
 
-def _compute_direction(state: dict) -> tuple[str, dict | None]:
-    if _agent is not None:
+def _compute_direction(state: dict) -> tuple[str, dict | None, str | None]:
+    """Retorna (direction, nn_viz, player_direction).
+
+    player_direction só é computada no modo aivai: a mesma rede joga a
+    raquete esquerda com observação espelhada (self-play, como no treino).
+    """
+    aivai = state.get("mode") == "aivai"
+    algo, agent = _agent_for(state.get("ai_model"))
+
+    if agent is not None:
         obs = _state_to_obs(state)
-        action, raw = _agent.predict_with_activations(obs)
+        action, raw = agent.predict_with_activations(obs)
         nn_viz = {
+            "algo": algo.upper(),
             "layers": [6, _NN_VIZ_BINS, _NN_VIZ_BINS, 3],
             "activations": [
                 raw[0],
@@ -80,8 +125,19 @@ def _compute_direction(state: dict) -> tuple[str, dict | None]:
                 raw[3],
             ],
         }
-        return _ACTION_TO_DIRECTION[action], nn_viz
-    return compute_direction(state), None
+        player_direction = None
+        if aivai:
+            _, player_agent = _agent_for(state.get("player_model"))
+            player_action = player_agent.predict(_state_to_obs_mirrored(state))
+            player_direction = _ACTION_TO_DIRECTION[player_action]
+        return _ACTION_TO_DIRECTION[action], nn_viz, player_direction
+
+    # Fallback rule-based (nenhum modelo carregado)
+    player_direction = None
+    if aivai:
+        player_state = {**state, "ai_y": state.get("player_y", 0.0)}
+        player_direction = compute_direction(player_state)
+    return compute_direction(state), None, player_direction
 
 
 async def handle_state(
@@ -89,11 +145,13 @@ async def handle_state(
 ) -> None:
     async with message.process():
         state = json.loads(message.body)
-        direction, nn_viz = _compute_direction(state)
+        direction, nn_viz, player_direction = _compute_direction(state)
 
         msg: dict = {"room_id": state["room_id"], "direction": direction}
         if nn_viz is not None:
             msg["nn_viz"] = nn_viz
+        if player_direction is not None:
+            msg["player_direction"] = player_direction
         payload = json.dumps(msg).encode()
         await channel.default_exchange.publish(
             aio_pika.Message(body=payload),
@@ -102,7 +160,7 @@ async def handle_state(
 
 
 async def main() -> None:
-    _load_agent()
+    _load_agents()
 
     logger.info("Connecting to RabbitMQ at %s", RABBITMQ_URL)
     connection = await aio_pika.connect_robust(RABBITMQ_URL)
@@ -120,8 +178,8 @@ async def main() -> None:
 
         state_queue = await channel.get_queue(STATE_QUEUE)
 
-        mode = "DQN" if _agent is not None else "rule-based"
-        logger.info("AI service ready [%s] — consuming from '%s'", mode, STATE_QUEUE)
+        loaded = ", ".join(_agents) if _agents else "rule-based"
+        logger.info("AI service ready [%s] — consuming from '%s'", loaded, STATE_QUEUE)
         await state_queue.consume(lambda msg: handle_state(msg, channel))
 
         await asyncio.Future()

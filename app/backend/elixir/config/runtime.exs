@@ -21,4 +21,5 @@ config :portfolio, :pong,
   ai_x:          String.to_integer(System.get_env("AI_X",             "768")),
   win_score:     String.to_integer(System.get_env("WIN_SCORE",        "7")),
   tick_ms:       String.to_integer(System.get_env("TICK_MS",          "16")),
-  max_ball_speed: String.to_float( System.get_env("MAX_BALL_SPEED",   "10.0"))
+  max_ball_speed: String.to_float( System.get_env("MAX_BALL_SPEED",   "10.0")),
+  ball_accel:     String.to_float( System.get_env("BALL_ACCEL",       "1.05"))

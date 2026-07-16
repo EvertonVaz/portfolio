@@ -15,16 +15,22 @@ test:
 	cd ./app/backend/elixir && mix test --cover
 
 front:
-	cd ./app/frontend && npm run dev -- --host
+	clear && cd ./app/frontend && npm run dev -- --host
 
 back:
-	cd ./app/backend/elixir && mix run --no-halt
+	clear && cd ./app/backend/elixir && mix run --no-halt
 
 ai:
-	cd ./app/backend/python && uv run python main.py
+	clear && cd ./app/backend/python && uv run python main.py
 
-train:
-	cd ./app/backend/python && uv run python -m pong_ai.train
+train-ppo:
+	clear && cd ./app/backend/python && uv run python -m pong_ai.train_ppo
+
+train-es:
+	clear && cd ./app/backend/python && uv run python -m pong_ai.train_es
+
+train-server:
+	clear && cd ./app/backend/python && uv run python -m pong_ai.train_server
 
 rabbitmq:
 	docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management

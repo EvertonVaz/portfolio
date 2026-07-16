@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const VIZ_W = 220;
 const VIZ_H = Number(import.meta.env.VITE_GAME_HEIGHT ?? 600);
@@ -124,14 +124,17 @@ function drawNetwork(ctx, nnViz) {
 
 export function NeuralNetViz({ gameStateRef }) {
     const canvasRef = useRef(null);
+    const [algo, setAlgo] = useState('');
 
     useEffect(() => {
         let animId;
         function loop() {
             const canvas = canvasRef.current;
+            const nnViz = gameStateRef.current?.nn_viz ?? null;
             if (canvas) {
-                drawNetwork(canvas.getContext('2d'), gameStateRef.current?.nn_viz ?? null);
+                drawNetwork(canvas.getContext('2d'), nnViz);
             }
+            setAlgo(nnViz?.algo ?? '');
             animId = requestAnimationFrame(loop);
         }
         animId = requestAnimationFrame(loop);
@@ -148,7 +151,7 @@ export function NeuralNetViz({ gameStateRef }) {
                 style={{ background: '#080808', width: VIZ_W }}
             />
             <span className="absolute top-2 left-0 right-0 text-center font-mono text-xs uppercase tracking-widest text-white/20 pointer-events-none">
-                DQN
+                {algo}
             </span>
         </div>
     );

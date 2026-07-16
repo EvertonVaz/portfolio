@@ -8,6 +8,7 @@ export function usePongChannel(roomId = 'lobby') {
     const [connected, setConnected] = useState(false);
     const [gameOver, setGameOver] = useState(false);
     const [mode, setModeState] = useState('pvp');
+    const [models, setModelsState] = useState({ ai: 'ppo', player: 'ppo' });
 
     useEffect(() => {
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
@@ -20,6 +21,14 @@ export function usePongChannel(roomId = 'lobby') {
             gameStateRef.current = state;
             if (state.status === 'game_over') setGameOver(true);
             if (state.mode) setModeState(state.mode);
+            if (state.ai_model) {
+                // evita re-render a 60fps: só troca o objeto quando o valor muda
+                setModelsState(prev =>
+                    prev.ai === state.ai_model && prev.player === state.player_model
+                        ? prev
+                        : { ai: state.ai_model, player: state.player_model }
+                );
+            }
         });
 
         channel.join()
@@ -49,5 +58,9 @@ export function usePongChannel(roomId = 'lobby') {
         setGameOver(false);
     }, []);
 
-    return { gameStateRef, connected, gameOver, mode, movePlayer, restart, setMode };
+    const setModels = useCallback((aiModel, playerModel) => {
+        channelRef.current?.push('set_models', { ai_model: aiModel, player_model: playerModel });
+    }, []);
+
+    return { gameStateRef, connected, gameOver, mode, models, movePlayer, restart, setMode, setModels };
 }

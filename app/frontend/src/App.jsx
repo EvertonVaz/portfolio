@@ -8,6 +8,7 @@ import WorkPage from './modules/portfolio/pages/WorkPage'
 import ContactPage from './modules/portfolio/pages/ContactPage'
 import PhilosophersPage from './modules/philosophers/pages/PhilosophersPage'
 import PongPage from './modules/pong/pages/PongPage'
+import PongTrainingPage from './modules/pong/pages/PongTrainingPage'
 import ScrollToTop from './shared/ui/ScrollToTop'
 
 /**
@@ -42,6 +43,7 @@ function App() {
           <Route path="/fractals" element={<FractalPage />} />
           <Route path="/philosophers" element={<PhilosophersPage />} />
           <Route path="/pong" element={<PongPage />} />
+          <Route path="/pong/training" element={<PongTrainingPage />} />
         </Routes>
       </Layout>
     </Router>

@@ -10,9 +10,25 @@ const BALL_R   = Number(import.meta.env.VITE_BALL_RADIUS   ?? 8);
 const PLAYER_X = Number(import.meta.env.VITE_PLAYER_X      ?? 20);
 const AI_X     = Number(import.meta.env.VITE_AI_X          ?? 768);
 
+const MODEL_OPTIONS = ['ppo', 'es'];
+
+function ModelSelect({ value, onChange }) {
+    return (
+        <select
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="bg-transparent border border-white/20 font-mono text-xs uppercase tracking-widest px-2 py-1 text-white/60 hover:border-white/40 focus:outline-none cursor-pointer"
+        >
+            {MODEL_OPTIONS.map((m) => (
+                <option key={m} value={m} className="bg-black">{m.toUpperCase()}</option>
+            ))}
+        </select>
+    );
+}
+
 export function PongGame() {
     const canvasRef = useRef(null);
-    const { gameStateRef, connected, gameOver, mode, movePlayer, restart, setMode } = usePongChannel('lobby');
+    const { gameStateRef, connected, gameOver, mode, models, movePlayer, restart, setMode, setModels } = usePongChannel('lobby');
     const keysRef = useRef(new Set());
 
     // RAF render loop — bypasses React re-renders entirely for 60fps
@@ -69,9 +85,14 @@ export function PongGame() {
     return (
         <div className="flex flex-col items-center gap-4 w-full">
             <div className="flex items-center justify-between w-full max-w-5xl px-2">
-                <span className="font-mono text-xs uppercase tracking-widest text-punk-cyan">
-                    {mode === 'aivai' ? 'IA' : 'PLAYER'}
-                </span>
+                <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs uppercase tracking-widest text-punk-cyan">
+                        {mode === 'aivai' ? 'IA' : 'PLAYER'}
+                    </span>
+                    {mode === 'aivai' && (
+                        <ModelSelect value={models.player} onChange={(m) => setModels(models.ai, m)} />
+                    )}
+                </div>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={() => setMode(mode === 'aivai' ? 'pvp' : 'aivai')}
@@ -88,9 +109,12 @@ export function PongGame() {
                         {connected ? 'CONNECTED' : 'CONNECTING...'}
                     </div>
                 </div>
-                <span className="font-mono text-xs uppercase tracking-widest text-punk-pink">
-                    IA
-                </span>
+                <div className="flex items-center gap-2">
+                    <ModelSelect value={models.ai} onChange={(m) => setModels(m, models.player)} />
+                    <span className="font-mono text-xs uppercase tracking-widest text-punk-pink">
+                        IA
+                    </span>
+                </div>
             </div>
 
             <div className="flex items-stretch gap-4 w-full max-w-5xl">
