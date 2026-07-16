@@ -1,0 +1,18 @@
+# Contexto de build dos Dockerfiles de produção (context = raiz do repo)
+.git
+.claude
+envs
+docker/dev
+docker/rabbitmq
+
+# Frontend
+app/frontend/node_modules
+app/frontend/dist
+
+# Backend Elixir (o release é construído dentro da imagem)
+app/backend/elixir/_build
+app/backend/elixir/deps
+
+# Python
+**/__pycache__
+**/.venv
