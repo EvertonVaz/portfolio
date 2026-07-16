@@ -37,7 +37,7 @@ const resources = {
                 interest_1: 'Distributed systems and high-scale orchestration',
                 interest_2: 'The logic within the silence of bits',
                 interest_3: 'Indie culture and open source artifacts',
-                professional_desc: 'Backend developer with strong fundamentals in low-level. Spent the last year as a fullstack builder creating an education and employability platform for the <1>Despertar NGO</1>. Proud graduate of <3>42 São Paulo</3>.',
+                professional_desc: 'Software engineer with strong low-level fundamentals and 13 years running a business before going all-in on code. Built a real-time education platform for the <1>Despertar NGO</1>, LMS integrations in Go and certification systems at scale. Proud graduate of <3>42 São Paulo</3>.',
                 stat_aesthetics: 'aesthetics',
                 stat_mindset: 'mindset',
                 stat_resonance: 'resonance',
@@ -47,6 +47,10 @@ const resources = {
             },
             contact: {
                 title: 'get in touch',
+            },
+            home: {
+                view_changelog: 'view full changelog',
+                enter_labs: 'enter the playground',
             },
             journey: {
                 title: 'journey.log',
@@ -294,7 +298,7 @@ const resources = {
                 interest_1: 'Sistemas distribuídos e orquestração em alta escala',
                 interest_2: 'A lógica dentro do silêncio dos bits',
                 interest_3: 'Cultura indie e artefatos open source',
-                professional_desc: 'Desenvolvedor backend com fortes fundamentos em baixo nível. No último ano, atuei como fullstack construindo uma plataforma de educação e empregabilidade para a <1>ONG Despertar</1>. Formado pela <3>42 São Paulo</3>.',
+                professional_desc: 'Engenheiro de software com fortes fundamentos de baixo nível e 13 anos à frente de um negócio antes de mergulhar de vez no código. Construí uma plataforma de educação em tempo real para a <1>ONG Despertar</1>, integrações LMS em Go e certificação em escala. Formado pela <3>42 São Paulo</3>.',
                 stat_aesthetics: 'estética',
                 stat_mindset: 'cultura',
                 stat_resonance: 'ressonância',
@@ -304,6 +308,10 @@ const resources = {
             },
             contact: {
                 title: 'entre em contato',
+            },
+            home: {
+                view_changelog: 'ver changelog completo',
+                enter_labs: 'entrar no playground',
             },
             journey: {
                 title: 'jornada.log',
