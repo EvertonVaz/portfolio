@@ -8,6 +8,8 @@ import WorkPage from './modules/portfolio/pages/WorkPage'
 import ContactPage from './modules/portfolio/pages/ContactPage'
 import PhilosophersPage from './modules/philosophers/pages/PhilosophersPage'
 import PongPage from './modules/pong/pages/PongPage'
+import JourneyPage from './modules/journey/pages/JourneyPage'
+import LabsPage from './modules/labs/pages/LabsPage'
 import ScrollToTop from './shared/ui/ScrollToTop'
 
 /**
@@ -38,6 +40,8 @@ function App() {
           <Route path="/home" element={<Navigate to="/#home" replace />} />
           <Route path="/work" element={<Navigate to="/#work" replace />} />
           <Route path="/contact" element={<Navigate to="/#contact" replace />} />
+          <Route path="/journey" element={<JourneyPage />} />
+          <Route path="/labs" element={<LabsPage />} />
           <Route path="/terminal" element={<TerminalPage />} />
           <Route path="/fractals" element={<FractalPage />} />
           <Route path="/philosophers" element={<PhilosophersPage />} />

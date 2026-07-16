@@ -1,13 +1,14 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { HashLink } from 'react-router-hash-link';
 
 /**
  * Componente de Cartão de Projeto Individual.
  * SRP: Responsável apenas pela exibição de um único projeto.
  */
-const ProjectCard = ({ id, title, tag, desc, path, type }) => {
+const ProjectCard = ({ id, title, tag, desc, path, type, linkLabel }) => {
     const { t } = useTranslation();
+    const label = linkLabel || t('work.view_project');
 
     return (
         <div className="group relative h-full">
@@ -41,12 +42,12 @@ const ProjectCard = ({ id, title, tag, desc, path, type }) => {
 
                 {/* Action Button/Link */}
                 {type === 'internal' ? (
-                    <Link to={path} className="self-start relative px-6 py-3 bg-white/5 border border-white/20 text-xs font-bold uppercase tracking-widest hover:bg-punk-green hover:text-black hover:border-punk-green transition-all group-hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
-                        {t('work.view_project')} &gt;
-                    </Link>
+                    <HashLink smooth to={path} className="self-start relative px-6 py-3 bg-white/5 border border-white/20 text-xs font-bold uppercase tracking-widest hover:bg-punk-green hover:text-black hover:border-punk-green transition-all group-hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                        {label} &gt;
+                    </HashLink>
                 ) : (
                     <button className="self-start relative px-6 py-3 bg-white/5 border border-white/20 text-xs font-bold uppercase tracking-widest hover:bg-punk-pink hover:text-black hover:border-punk-pink transition-all group-hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
-                        {t('work.view_project')} &gt;
+                        {label} &gt;
                     </button>
                 )}
             </div>

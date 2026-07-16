@@ -8,7 +8,9 @@ const resources = {
             nav: {
                 home: 'Home',
                 terminal: 'Terminal',
+                journey: 'Journey',
                 work: 'Works',
+                labs: 'Labs',
                 hacklog: 'Hacklog',
                 contact: 'Contact',
             },
@@ -46,10 +48,93 @@ const resources = {
             contact: {
                 title: 'get in touch',
             },
+            journey: {
+                title: 'journey.log',
+                intro: 'The changelog of a career — from office boy to software engineer.',
+                releases: {
+                    v0x: {
+                        label: 'bootstrap',
+                        period: 'age 13 → 19',
+                        body: 'I started working at 13, as an office boy. Then came supermarket cashier, waiter, and whatever else showed up. I learned early that nobody is coming to save you — you build your own way out.',
+                    },
+                    v10: {
+                        label: 'breaking change',
+                        period: 'at 19',
+                        body: "In the hardest year of my family's history, my sister and I took over my mother's business: a clothing store on the edge of bankruptcy, with a debt that looked unpayable. I took Sebrae's management courses, wrote a recovery plan and we restarted almost from zero.",
+                    },
+                    v1x: {
+                        label: 'recovery',
+                        period: 'the years after',
+                        body: "We froze what couldn't be paid, built cash flow and, once the business was healthy, renegotiated and settled 100% of the debt. The company that almost went under now runs three profitable stores. I stayed for 13 years.",
+                    },
+                    v20: {
+                        label: 'hello world',
+                        period: '2017',
+                        body: "I met Power BI and its languages, M and DAX — instant passion. From there came SQL, then Python, and I never stopped. I built the company's BI app: data analysis for management and for the sales team.",
+                    },
+                    v25: {
+                        label: 'first real system',
+                        period: '~2019',
+                        body: 'The company switched ERPs and 9 years of history were about to be lost. I built a data warehouse with Python and Postgres: a cron job extracted from the production database, transformed and loaded into the DW that Power BI consumed. Real-time data stayed in the backlog — for now.',
+                    },
+                    v30: {
+                        label: 'fork',
+                        period: '2022',
+                        body: "I left the company to go all-in on my developer career. As a freelancer I built, among other things, a price monitor that scrapes a competitor's website and updates my client's ERP (Bling) through its API, daily.",
+                    },
+                    v35: {
+                        label: '42 são paulo',
+                        period: '2023–2024',
+                        body: "The most incredible school I have ever attended. Everything in C, no libraries, everything by hand — that's where I truly understood what programming is. I graduated at the end of 2024 with almost every project delivered with bonus.",
+                    },
+                    v40: {
+                        label: '42 labs / despertar ngo',
+                        period: '2025',
+                        body: "An education platform built in Haxe — a language I had never seen and was proficient in within 15 days. A virtual classroom with students' answers reaching the teacher in real time, performance dashboards, a SCORM repository and an employability module. The 2019 backlog started to get paid.",
+                    },
+                    v45: {
+                        label: 'empreendalab',
+                        period: '2026',
+                        body: 'An LTI 1.3 integration in Go, designed to work with any LMS on the market — not just the Moodle I was asked for. Then a certification platform issuing 100k certificates in hours: I refactored it, shipped new features, integrated payments and replaced 5-second polling with SSE — real-time data, again. A 5-month contract, everything delivered on time.',
+                    },
+                    v50: {
+                        label: 'in development',
+                        period: 'today',
+                        body: 'Exploring the maker world: Arduino, electronics and whatever else can be made to blink. This site — Elixir, WebSockets, an AI playing Pong in real time — is part of this release.',
+                    },
+                },
+            },
+            labs: {
+                title: 'labs.playground',
+                intro: 'Interactive experiments running live on this server — click and play.',
+            },
             work: {
                 title: 'work.archives',
                 items_count: '({{count}} items)',
                 view_project: 'view project',
+                view_story: 'view on journey',
+                cases: {
+                    c01: {
+                        title: 'Retail BI',
+                        desc: 'Full BI app for a retail company: data analysis for management and the sales floor, built with Power BI, Python and Postgres.',
+                    },
+                    c02: {
+                        title: 'Data Warehouse',
+                        desc: "An ERP migration threatened 9 years of history. A cron-driven ETL pipeline feeding a Postgres DW kept every record alive for Power BI.",
+                    },
+                    c03: {
+                        title: 'Price Monitor',
+                        desc: "Scrapes a competitor's website daily — prices, images, descriptions — and updates the client's Bling ERP through its API.",
+                    },
+                    c04: {
+                        title: 'Despertar Platform',
+                        desc: 'Education platform for an NGO: virtual classroom with real-time answers, performance dashboards, SCORM repository and an employability module.',
+                    },
+                    c05: {
+                        title: 'LTI 1.3 + Certifier',
+                        desc: 'LMS-agnostic LTI 1.3 integration in Go, plus a certification platform issuing 100k certificates in hours — refactored, with payments and SSE.',
+                    },
+                },
                 projects: {
                     p01: {
                         title: 'Minishell',
@@ -180,7 +265,9 @@ const resources = {
             nav: {
                 home: 'Início',
                 terminal: 'Terminal',
+                journey: 'Jornada',
                 work: 'Trabalhos',
+                labs: 'Labs',
                 hacklog: 'Hacklog',
                 contact: 'Contato',
             },
@@ -218,10 +305,93 @@ const resources = {
             contact: {
                 title: 'entre em contato',
             },
+            journey: {
+                title: 'jornada.log',
+                intro: 'Changelog de uma carreira — de office boy a engenheiro de software.',
+                releases: {
+                    v0x: {
+                        label: 'bootstrap',
+                        period: '13 → 19 anos',
+                        body: 'Comecei a trabalhar aos 13, como office boy. Depois vieram caixa de hipermercado, garçom e o que mais aparecesse. Aprendi cedo que ninguém vem te salvar — você constrói a sua saída.',
+                    },
+                    v10: {
+                        label: 'breaking change',
+                        period: 'aos 19',
+                        body: 'No ano mais difícil da história da minha família, assumi com minha irmã o negócio da minha mãe: uma loja de roupas à beira da falência, com uma dívida que parecia impagável. Fiz os cursos de gestão do Sebrae, escrevi um plano de recuperação e recomeçamos praticamente do zero.',
+                    },
+                    v1x: {
+                        label: 'recovery',
+                        period: 'anos seguintes',
+                        body: 'Congelamos o que não podia ser pago, construímos fluxo de caixa e, quando o negócio ficou saudável, renegociamos e quitamos 100% da dívida. A empresa que quase quebrou hoje tem três lojas lucrativas. Fiquei 13 anos nela.',
+                    },
+                    v20: {
+                        label: 'hello world',
+                        period: '2017',
+                        body: 'Conheci o Power BI e suas linguagens M e DAX — e foi paixão imediata. De lá fui pro SQL, depois Python, e nunca mais parei. Construí o app de BI da empresa: análise de dados pra gestão e pro time de vendas.',
+                    },
+                    v25: {
+                        label: 'primeiro sistema de verdade',
+                        period: '~2019',
+                        body: 'A empresa trocou de ERP e 9 anos de histórico iam pro lixo. Construí um data warehouse com Python e Postgres: um cron extraía do banco de produção, transformava e carregava no DW que o Power BI consumia. Dados em tempo real ficaram no backlog — por enquanto.',
+                    },
+                    v30: {
+                        label: 'fork',
+                        period: '2022',
+                        body: 'Saí da empresa pra me dedicar por inteiro à carreira de dev. Como freelancer, construí entre outros um monitor de preços que varre o site do concorrente do cliente e atualiza o ERP dele (Bling) via API, diariamente.',
+                    },
+                    v35: {
+                        label: '42 são paulo',
+                        period: '2023–2024',
+                        body: 'A escola mais incrível que já estudei. Tudo em C, sem bibliotecas, tudo à mão — foi ali que eu entendi de verdade o que é programar. Me formei no fim de 2024 com quase todos os projetos entregues com bônus.',
+                    },
+                    v40: {
+                        label: '42 labs / ong despertar',
+                        period: '2025',
+                        body: 'Plataforma de educação construída em Haxe — linguagem que eu nunca tinha visto e em 15 dias estava dominando. Sala de aula virtual com respostas dos alunos chegando ao professor em tempo real, dashboards de desempenho, repositório SCORM e módulo de empregabilidade. O backlog de 2019 começou a ser pago.',
+                    },
+                    v45: {
+                        label: 'empreendalab',
+                        period: '2026',
+                        body: 'Integração LTI 1.3 em Go, desenhada pra funcionar com qualquer LMS do mercado, não só o Moodle que foi pedido. Depois, uma certificadora que emite 100 mil certificados em horas: refatorei, criei features, integrei pagamento e troquei o polling de 5 em 5 segundos por SSE — dados em tempo real, de novo. Contrato de 5 meses, tudo entregue no prazo.',
+                    },
+                    v50: {
+                        label: 'em desenvolvimento',
+                        period: 'hoje',
+                        body: 'Explorando o mundo maker: Arduino, eletrônica e o que mais der pra fazer piscar. Este site — Elixir, WebSockets, uma IA jogando Pong em tempo real — é parte dessa versão.',
+                    },
+                },
+            },
+            labs: {
+                title: 'labs.playground',
+                intro: 'Experimentos interativos rodando ao vivo neste servidor — clique e brinque.',
+            },
             work: {
                 title: 'trabalhos.arquivos',
                 items_count: '({{count}} itens)',
                 view_project: 'ver projeto',
+                view_story: 'ver na jornada',
+                cases: {
+                    c01: {
+                        title: 'BI de Varejo',
+                        desc: 'App de BI completo para uma rede de varejo: análise de dados pra gestão e pro time de vendas, construído com Power BI, Python e Postgres.',
+                    },
+                    c02: {
+                        title: 'Data Warehouse',
+                        desc: 'A troca de ERP ameaçava 9 anos de histórico. Um pipeline ETL via cron alimentando um DW em Postgres manteve cada registro vivo pro Power BI.',
+                    },
+                    c03: {
+                        title: 'Monitor de Preços',
+                        desc: 'Varre o site do concorrente diariamente — preços, imagens, descrições — e atualiza o ERP Bling do cliente via API.',
+                    },
+                    c04: {
+                        title: 'Plataforma Despertar',
+                        desc: 'Plataforma de educação para uma ONG: sala de aula virtual com respostas em tempo real, dashboards de desempenho, repositório SCORM e módulo de empregabilidade.',
+                    },
+                    c05: {
+                        title: 'LTI 1.3 + Certificadora',
+                        desc: 'Integração LTI 1.3 em Go agnóstica de LMS, mais uma certificadora que emite 100 mil certificados em horas — refatorada, com pagamentos e SSE.',
+                    },
+                },
                 projects: {
                     p01: {
                         title: 'Minishell',
