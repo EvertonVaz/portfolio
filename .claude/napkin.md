@@ -17,6 +17,9 @@
 3. **[2026-06-26] Backend Elixir não usa Phoenix — usa Bandit direto**
    Do instead: ao criar rotas/controllers, seguir o padrão Bandit + WebSock; não procurar `router.ex` do Phoenix nem usar `Phoenix.Router`.
 
+4. **[2026-07-16] Produção: compose em `docker/production/`, envs via Coolify**
+   Do instead: `make docker-up` usa `docker/production/docker-compose.yml`; exige `SECRET_KEY_BASE` no ambiente. Backend roda em debian-slim (nunca alpine: `minishell`/`philosophers` são binários glibc pré-compilados). AI instala torch CPU-only via índice do PyTorch antes das deps (evita ~5GB de wheels CUDA do uv.lock). Pendências: `pong_ai/models/dqn.pt` não existe (AI cai em rule-based) e auth do terminal é token estático (JWT antigo no commit 5f62285).
+
 ## Shell & Comandos Úteis
 
 1. **[2026-06-26] Makefile como ponto de entrada**

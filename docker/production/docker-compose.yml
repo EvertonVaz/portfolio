@@ -40,6 +40,6 @@ services:
       dockerfile: docker/production/frontend.Dockerfile
     restart: always
     ports:
-      - "${NGINX_PORT:-8888}:80"
+      - "${NGINX_PORT:-9999}:80"
     depends_on:
       - backend
