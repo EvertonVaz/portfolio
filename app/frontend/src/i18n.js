@@ -47,6 +47,7 @@ const resources = {
             },
             contact: {
                 title: 'get in touch',
+                copied: '// copied to clipboard',
             },
             home: {
                 view_changelog: 'view full changelog',
@@ -312,6 +313,7 @@ const resources = {
             },
             contact: {
                 title: 'entre em contato',
+                copied: '// copiado para a área de transferência',
             },
             home: {
                 view_changelog: 'ver changelog completo',
