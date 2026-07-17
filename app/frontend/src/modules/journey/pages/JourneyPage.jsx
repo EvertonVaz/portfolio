@@ -4,17 +4,18 @@ import { useLocation } from 'react-router-dom';
 import ReleaseEntry from '../components/ReleaseEntry';
 
 // Dados neutros de idioma; copy vive no i18n (journey.releases.*)
+// Ordem decrescente: release mais recente primeiro, como num changelog real
 const RELEASES = [
-    { id: 'v0x', version: 'v0.x', tags: [] },
-    { id: 'v10', version: 'v1.0', tags: [], accent: 'pink' },
-    { id: 'v1x', version: 'v1.x', tags: [] },
-    { id: 'v20', version: 'v2.0', tags: ['power bi', 'm/dax', 'sql', 'python'] },
-    { id: 'v25', version: 'v2.5', tags: ['python', 'postgres', 'cron', 'etl'] },
-    { id: 'v30', version: 'v3.0', tags: ['python', 'web scraping', 'bling api'] },
-    { id: 'v35', version: 'v3.5', tags: ['c', 'unix', '42'] },
-    { id: 'v40', version: 'v4.0', tags: ['haxe', 'realtime', 'scorm'] },
-    { id: 'v45', version: 'v4.5', tags: ['go', 'lti 1.3', 'sse', 'payments'] },
     { id: 'v50', version: 'v5.0-beta', tags: ['arduino', 'elixir', 'websocket'], accent: 'cyan', current: true },
+    { id: 'v45', version: 'v4.5', tags: ['go', 'lti 1.3', 'sse', 'payments'] },
+    { id: 'v40', version: 'v4.0', tags: ['haxe', 'realtime', 'scorm'] },
+    { id: 'v35', version: 'v3.5', tags: ['c', 'unix', '42'] },
+    { id: 'v30', version: 'v3.0', tags: ['python', 'web scraping', 'bling api'] },
+    { id: 'v25', version: 'v2.5', tags: ['python', 'postgres', 'cron', 'etl'] },
+    { id: 'v20', version: 'v2.0', tags: ['power bi', 'm/dax', 'sql', 'python'] },
+    { id: 'v1x', version: 'v1.x', tags: [] },
+    { id: 'v10', version: 'v1.0', tags: [], accent: 'pink' },
+    { id: 'v0x', version: 'v0.x', tags: [] },
 ];
 
 /**
