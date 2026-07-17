@@ -104,7 +104,7 @@ const resources = {
                     v50: {
                         label: 'in development',
                         period: 'today',
-                        body: 'Exploring the maker world: Arduino, electronics and whatever else can be made to blink. This site — Elixir, WebSockets, an AI playing Pong in real time — is part of this release.',
+                        body: 'Deep dive into AI: neural networks trained from scratch with reinforcement learning — Evolution Strategies and PPO in PyTorch. This site — Elixir, WebSockets, an AI playing Pong in real time — is part of this release.',
                     },
                 },
             },
@@ -369,7 +369,7 @@ const resources = {
                     v50: {
                         label: 'em desenvolvimento',
                         period: 'hoje',
-                        body: 'Explorando o mundo maker: Arduino, eletrônica e o que mais der pra fazer piscar. Este site — Elixir, WebSockets, uma IA jogando Pong em tempo real — é parte dessa versão.',
+                        body: 'Mergulho em IA: redes neurais treinadas do zero com reinforcement learning — Evolution Strategies e PPO em PyTorch. Este site — Elixir, WebSockets, uma IA jogando Pong em tempo real — é parte dessa versão.',
                     },
                 },
             },

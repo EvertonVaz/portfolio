@@ -6,7 +6,7 @@ import ReleaseEntry from '../components/ReleaseEntry';
 // Dados neutros de idioma; copy vive no i18n (journey.releases.*)
 // Ordem decrescente: release mais recente primeiro, como num changelog real
 const RELEASES = [
-    { id: 'v50', version: 'v5.0-beta', tags: ['arduino', 'elixir', 'websocket'], accent: 'cyan', current: true },
+    { id: 'v50', version: 'v5.0-beta', tags: ['pytorch', 'rl', 'elixir', 'websocket'], accent: 'cyan', current: true },
     { id: 'v45', version: 'v4.5', tags: ['go', 'lti 1.3', 'sse', 'payments'] },
     { id: 'v40', version: 'v4.0', tags: ['haxe', 'realtime', 'scorm'] },
     { id: 'v35', version: 'v3.5', tags: ['c', 'unix', '42'] },
