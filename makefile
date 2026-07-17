@@ -37,12 +37,17 @@ rabbitmq:
 
 DOCKER_COMPOSE = docker compose
 COMPOSE_FILE = ./docker/production/docker-compose.yml
+COMPOSE_LOCAL = ./docker/production/docker-compose.local.yml
 
 deploy:
 	bash ./deploy/deploy.sh
 
 docker-up: docker-down
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d --build
+
+# Stack de produção com a porta do frontend publicada em localhost:8080
+prod-local:
+	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -f $(COMPOSE_LOCAL) up -d --build
 
 docker-down:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down --rmi all -v

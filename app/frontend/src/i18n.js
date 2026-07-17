@@ -47,6 +47,7 @@ const resources = {
             },
             contact: {
                 title: 'get in touch',
+                copied: '// copied to clipboard',
             },
             home: {
                 view_changelog: 'view full changelog',
@@ -104,7 +105,7 @@ const resources = {
                     v50: {
                         label: 'in development',
                         period: 'today',
-                        body: 'Exploring the maker world: Arduino, electronics and whatever else can be made to blink. This site — Elixir, WebSockets, an AI playing Pong in real time — is part of this release.',
+                        body: 'Deep dive into AI: neural networks trained from scratch with reinforcement learning — Evolution Strategies and PPO in PyTorch. This site — Elixir, WebSockets, an AI playing Pong in real time — is part of this release.',
                     },
                 },
             },
@@ -220,7 +221,11 @@ const resources = {
             },
             pong: {
                 title: 'pong.ai',
-                intro: 'Real-time Pong running on an Elixir GenServer at 60fps. State is computed server-side every 16ms and broadcast to the browser via Phoenix Channels. The opponent is a DQN model trained with PyTorch and Gymnasium — with live neural network visualization and an AI vs AI mode.',
+                intro: 'Real-time Pong running on an Elixir GenServer at 60fps. State is computed server-side every 16ms and broadcast to the browser via Phoenix Channels. The opponent is a neural network trained with Evolution Strategies — no backpropagation, just selection pressure over generations.',
+                training_title: 'training.lab',
+                training_intro: 'Watch the neural network learn to play in real time: fitness per generation, live matches of the current candidate, and full control over the training loop. Models trained here are the same ones that play in the arena.',
+                training_link: 'training lab',
+                back_to_game: 'back to game',
             },
             philosophers: {
                 title: 'philosophers_lab',
@@ -308,6 +313,7 @@ const resources = {
             },
             contact: {
                 title: 'entre em contato',
+                copied: '// copiado para a área de transferência',
             },
             home: {
                 view_changelog: 'ver changelog completo',
@@ -365,7 +371,7 @@ const resources = {
                     v50: {
                         label: 'em desenvolvimento',
                         period: 'hoje',
-                        body: 'Explorando o mundo maker: Arduino, eletrônica e o que mais der pra fazer piscar. Este site — Elixir, WebSockets, uma IA jogando Pong em tempo real — é parte dessa versão.',
+                        body: 'Mergulho em IA: redes neurais treinadas do zero com reinforcement learning — Evolution Strategies e PPO em PyTorch. Este site — Elixir, WebSockets, uma IA jogando Pong em tempo real — é parte dessa versão.',
                     },
                 },
             },
@@ -481,7 +487,11 @@ const resources = {
             },
             pong: {
                 title: 'pong.ai',
-                intro: 'Pong em tempo real rodando num GenServer Elixir a 60fps. O estado é computado no servidor a cada 16ms e transmitido ao browser via Phoenix Channels. O adversário é um modelo DQN treinado com PyTorch e Gymnasium — com visualização da rede neural ao vivo e modo IA vs IA.',
+                intro: 'Pong em tempo real rodando num GenServer Elixir a 60fps. O estado é computado no servidor a cada 16ms e transmitido ao browser via Phoenix Channels. O adversário é uma rede neural treinada com Evolution Strategies — sem backpropagation, só pressão seletiva ao longo das gerações.',
+                training_title: 'training.lab',
+                training_intro: 'Acompanhe a rede neural aprendendo a jogar em tempo real: fitness por geração, partidas ao vivo do candidato atual e controle total sobre o loop de treino. Os modelos treinados aqui são os mesmos que jogam na arena.',
+                training_link: 'laboratório de treino',
+                back_to_game: 'voltar ao jogo',
             },
             philosophers: {
                 title: 'philosophers_lab',
