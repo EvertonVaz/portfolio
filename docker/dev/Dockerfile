@@ -8,6 +8,17 @@ RUN apt update && \
     apt install -y zsh curl gnupg git nano sqlite3 libsqlite3-dev build-essential wget lsb-release inotify-tools ca-certificates sudo
 
 RUN apt install -y libssl-dev libncurses5-dev automake autoconf libxml2-utils unzip
+
+RUN (type -p wget >/dev/null || (sudo apt update && sudo apt install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update \
+	&& sudo apt install gh -y
+
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN set -eux; \

@@ -36,7 +36,7 @@ rabbitmq:
 	docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
 
 DOCKER_COMPOSE = docker compose
-COMPOSE_FILE = ./deploy/docker-compose.prod-test.yml
+COMPOSE_FILE = ./docker/production/docker-compose.yml
 
 deploy:
 	bash ./deploy/deploy.sh

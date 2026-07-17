@@ -1,0 +1,58 @@
+services:
+  rabbitmq:
+    image: rabbitmq:4-alpine
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS:-guest}
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../..
+      dockerfile: docker/production/backend.Dockerfile
+    restart: always
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?defina SECRET_KEY_BASE no ambiente}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq/
+    healthcheck:
+      # Porta 4000 aberta = Bandit no ar (sem curl/wget na imagem; bash nativo do debian-slim)
+      test: ["CMD", "bash", "-c", "</dev/tcp/127.0.0.1/4000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  ai:
+    build:
+      context: ../..
+      dockerfile: docker/production/ai.Dockerfile
+    restart: always
+    environment:
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq/
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../..
+      dockerfile: docker/production/frontend.Dockerfile
+    restart: always
+    expose:
+      - "80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      backend:
+        condition: service_healthy

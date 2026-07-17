@@ -29,6 +29,8 @@ services:
       - ${HOME}/.claude:/home/etovaz/.claude
       - ${HOME}/.claude.json:/home/etovaz/.claude.json
       - ${HOME}/.config/anthropic:/home/etovaz/.config/anthropic
+      - ${HOME}/.config/gh:/home/etovaz/.config/gh
+      - ${HOME}/.ssh:/home/etovaz/.ssh
     env_file:
       - ./envs/.env.production
 

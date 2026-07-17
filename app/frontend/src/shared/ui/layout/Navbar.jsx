@@ -24,7 +24,9 @@ const Navbar = () => {
 
     const menuItems = [
         { name: t('nav.home'), path: '/#home' },
+        { name: t('nav.journey'), path: '/journey' },
         { name: t('nav.work'), path: '/#work' },
+        { name: t('nav.labs'), path: '/labs' },
         { name: t('nav.contact'), path: '/#contact' },
     ];
 

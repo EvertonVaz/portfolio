@@ -9,10 +9,13 @@ import ProjectCard from './ProjectCard';
 const Work = () => {
     const { t } = useTranslation();
 
+    // Cases de mundo real; as demos interativas vivem em /labs
     const projects = [
-        { id: '01', title: t('work.projects.p01.title'), tag: 'C/C++', desc: t('work.projects.p01.desc'), path: t('work.projects.p01.path'), type: t('work.projects.p01.type') },
-        { id: '02', title: t('work.projects.p02.title'), tag: 'JSX/Math', desc: t('work.projects.p02.desc'), path: t('work.projects.p02.path'), type: t('work.projects.p02.type') },
-        { id: '03', title: t('work.projects.p03.title'), tag: 'Elixir/C', desc: t('work.projects.p03.desc'), path: t('work.projects.p03.path'), type: t('work.projects.p03.type') },
+        { id: '01', title: t('work.cases.c01.title'), tag: 'Power BI/SQL', desc: t('work.cases.c01.desc'), path: '/journey#v20', type: 'internal' },
+        { id: '02', title: t('work.cases.c02.title'), tag: 'Python/Postgres', desc: t('work.cases.c02.desc'), path: '/journey#v25', type: 'internal' },
+        { id: '03', title: t('work.cases.c03.title'), tag: 'Python/API', desc: t('work.cases.c03.desc'), path: '/journey#v30', type: 'internal' },
+        { id: '04', title: t('work.cases.c04.title'), tag: 'Haxe/Realtime', desc: t('work.cases.c04.desc'), path: '/journey#v40', type: 'internal' },
+        { id: '05', title: t('work.cases.c05.title'), tag: 'Go/SSE', desc: t('work.cases.c05.desc'), path: '/journey#v45', type: 'internal' },
     ];
 
     return (
@@ -34,6 +37,7 @@ const Work = () => {
                     <ProjectCard
                         key={project.id}
                         {...project}
+                        linkLabel={t('work.view_story')}
                     />
                 ))}
             </div>
