@@ -8,8 +8,9 @@ const BALL_R   = Number(import.meta.env.VITE_BALL_RADIUS   ?? 8);
 const PLAYER_X = Number(import.meta.env.VITE_PLAYER_X      ?? 20);
 const AI_X     = Number(import.meta.env.VITE_AI_X          ?? 768);
 
-const API    = '/train-api';
-const POLL   = 110; // ms
+const API          = '/train-api';
+const POLL         = 110;  // ms, com o servidor de treino respondendo
+const POLL_OFFLINE = 5000; // ms, backoff quando o servidor está fora
 
 // ── gráfico SVG ──────────────────────────────────────────────────────────────
 
@@ -182,15 +183,23 @@ export function TrainingPanel() {
                 const ctx = canvasRef.current.getContext('2d');
                 drawGame(ctx, data.game);
             }
+            return true;
         } catch {
             setOffline(true);
+            return false;
         }
     }, []);
 
     useEffect(() => {
-        poll();
-        const id = setInterval(poll, POLL);
-        return () => clearInterval(id);
+        let timer;
+        let cancelled = false;
+        const loop = async () => {
+            const online = await poll();
+            if (cancelled) return;
+            timer = setTimeout(loop, online ? POLL : POLL_OFFLINE);
+        };
+        loop();
+        return () => { cancelled = true; clearTimeout(timer); };
     }, [poll]);
 
     const toggle = async () => {
