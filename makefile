@@ -45,9 +45,9 @@ deploy:
 docker-up: docker-down
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d --build
 
-# Stack de produção com a porta do frontend publicada em localhost:8080
+# Stack de produção com a porta do frontend publicada em localhost:9999
 prod-local:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -f $(COMPOSE_LOCAL) up -d --build
+	SECRET_KEY_BASE=teste $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -f $(COMPOSE_LOCAL) up -d --build
 
 docker-down:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down --rmi all -v
