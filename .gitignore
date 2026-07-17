@@ -52,7 +52,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-app/backend/python/pong_ai/models/
+# Iterações de treino ficam fora; só os modelos servidos em produção entram
+app/backend/python/pong_ai/models/*
+!app/backend/python/pong_ai/models/es.pt
+!app/backend/python/pong_ai/models/ppo.pt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

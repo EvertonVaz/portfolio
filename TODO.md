@@ -3,7 +3,8 @@
 ## Deploy / Produção
 
 - [ ] Configurar envs no Coolify: `SECRET_KEY_BASE` (obrigatória), `RABBITMQ_USER`/`RABBITMQ_PASS`, `PORTFOLIO_VERSION` — referência em `envs/.env.production`
-- [ ] Gerar/renomear o modelo `pong_ai/models/dqn.pt` — `main.py` procura esse arquivo e hoje só existem `es.pt`/`ppo.pt`, então a AI sobe em fallback rule-based (alternativa: ajustar `MODEL_PATH`)
+- [x] ~~Modelo da AI~~ — resolvido: `main.py` agora carrega `ppo.pt`/`es.pt` diretamente
+- [ ] Garantir que `pong_ai/models/*.pt` chegue ao build de produção — o diretório não está no git; o Coolify builda a partir do repo, então a imagem da AI subiria sem modelos (fallback rule-based). Commitar os `.pt` (são <10 kB) ou baixá-los no build
 - [ ] Passar `PORTFOLIO_VERSION` como build arg no `backend.Dockerfile` — o `mix.exs` lê em build time; hoje a release sai como `0.1.0`
 
 ## Segurança

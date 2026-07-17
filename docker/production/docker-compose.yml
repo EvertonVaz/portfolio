@@ -18,7 +18,8 @@ services:
     restart: always
     environment:
       - SECRET_KEY_BASE=${SECRET_KEY_BASE:?defina SECRET_KEY_BASE no ambiente}
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq/
+      # Sem "/" no final: "amqp://host/" significa vhost vazio na spec AMQP, não o default
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq
     healthcheck:
       # Porta 4000 aberta = Bandit no ar (sem curl/wget na imagem; bash nativo do debian-slim)
       test: ["CMD", "bash", "-c", "</dev/tcp/127.0.0.1/4000"]
@@ -36,7 +37,14 @@ services:
       dockerfile: docker/production/ai.Dockerfile
     restart: always
     environment:
-      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq/
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq
+    healthcheck:
+      # Worker sem porta: valida a idade do heartbeat gravado pelo main.py (10s de intervalo)
+      test: ["CMD", "python", "-c", "import os,sys,time; sys.exit(0 if time.time()-os.path.getmtime('/tmp/ai-heartbeat')<30 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       rabbitmq:
         condition: service_healthy

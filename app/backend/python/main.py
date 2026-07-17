@@ -17,6 +17,8 @@ logger = logging.getLogger(__name__)
 RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@rabbitmq/")
 STATE_QUEUE = "game.state"
 ACTION_QUEUE = "game.ai_action"
+HEARTBEAT_FILE = Path(os.getenv("HEARTBEAT_FILE", "/tmp/ai-heartbeat"))
+HEARTBEAT_INTERVAL_S = 10
 _MODELS_DIR     = Path(__file__).parent / "pong_ai" / "models"
 _PPO_MODEL_PATH = _MODELS_DIR / "ppo.pt"
 _ES_MODEL_PATH  = _MODELS_DIR / "es.pt"
@@ -159,6 +161,15 @@ async def handle_state(
         )
 
 
+async def _heartbeat() -> None:
+    """Toca o arquivo de heartbeat enquanto o event loop estiver vivo.
+    O healthcheck do container confere a idade do arquivo.
+    """
+    while True:
+        HEARTBEAT_FILE.touch()
+        await asyncio.sleep(HEARTBEAT_INTERVAL_S)
+
+
 async def main() -> None:
     _load_agents()
 
@@ -182,7 +193,11 @@ async def main() -> None:
         logger.info("AI service ready [%s] — consuming from '%s'", loaded, STATE_QUEUE)
         await state_queue.consume(lambda msg: handle_state(msg, channel))
 
-        await asyncio.Future()
+        heartbeat_task = asyncio.create_task(_heartbeat())
+        try:
+            await asyncio.Future()
+        finally:
+            heartbeat_task.cancel()
 
 
 if __name__ == "__main__":
