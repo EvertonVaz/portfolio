@@ -26,8 +26,8 @@ from pong_ai.env import (
 )
 from pong_ai.es import ESAgent, QNetwork
 from pong_ai.train_es import (
-    EVAL_WORKERS, GENERATIONS, HOF_MAX_SIZE, HOF_SNAPSHOT_EVERY, LR,
-    MODEL_PATH as ES_MODEL_PATH, OPPONENT_THRESHOLD, POP_SIZE, SIGMA_START,
+    EPISODES_PER_EVAL, EVAL_WORKERS, GENERATIONS, HOF_MAX_SIZE, HOF_SNAPSHOT_EVERY,
+    LR, MODEL_PATH as ES_MODEL_PATH, POP_SIZE, SIGMA_START, WEIGHT_DECAY,
     evaluate_individual, _sample_opponents, _set_params_to_net,
 )
 from pong_ai.train_ppo import MODEL_PATH as PPO_MODEL_PATH, TOTAL_STEPS
@@ -37,6 +37,7 @@ _GAME_FPS      = 60
 _BALL_VX_INIT  = 4.0
 _BALL_VY_INIT  = 3.0
 _ANGLE_MULT    = 5.0
+_OPPONENT_DEADBAND = 40.0   # px de deadband do rule-based na visualização (sem PPO carregado)
 
 
 # ── redes de inferência compartilhadas (preview) ─────────────────────────────
@@ -138,9 +139,9 @@ def _step_game() -> None:
             # Fallback: rule-based com handicap de threshold
             target = g["by"] - PADDLE_H / 2.0
             diff   = g["pl_y"] - target
-            if diff > OPPONENT_THRESHOLD:
+            if diff > _OPPONENT_DEADBAND:
                 g["pl_y"] = max(0.0, g["pl_y"] - PADDLE_SPEED)
-            elif diff < -OPPONENT_THRESHOLD:
+            elif diff < -_OPPONENT_DEADBAND:
                 g["pl_y"] = min(H - PADDLE_H, g["pl_y"] + PADDLE_SPEED)
 
         g["bx"] += g["bvx"]
@@ -224,8 +225,12 @@ def _run_training_es() -> None:
 
     agent = ESAgent(pop_size=POP_SIZE, sigma=SIGMA_START, lr=LR)
 
-    if ES_MODEL_PATH.exists():
+    resuming = ES_MODEL_PATH.exists()
+    if resuming:
         agent.load(str(ES_MODEL_PATH))
+
+    # Weight decay só ao retomar (dessatura checkpoint treinado); no fresh trava o treino.
+    weight_decay = WEIGHT_DECAY if resuming else 0.0
 
     _update_es_net(agent.params)
 
@@ -249,9 +254,11 @@ def _run_training_es() -> None:
                 if _ppo_ready:
                     opponents.append(_flatten_net(_ppo_net))  # cross-play vs PPO
 
+                # Common random numbers: mesmas seeds para todos os candidatos da geração
+                seeds = [int(np.random.randint(0, 2**31 - 1)) for _ in range(EPISODES_PER_EVAL)]
                 candidates, epsilons = agent.ask()
-                fitness = pool.map(evaluate_individual, [(c, opponents) for c in candidates])
-                agent.tell(fitness, epsilons)
+                fitness = pool.map(evaluate_individual, [(c, opponents, seeds) for c in candidates])
+                agent.tell(fitness, epsilons, weight_decay=weight_decay)
 
                 if (gen + 1) % HOF_SNAPSHOT_EVERY == 0:
                     hof.append(agent.params.copy())

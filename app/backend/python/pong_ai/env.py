@@ -5,6 +5,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from gymnasium import spaces
+from gymnasium.vector import AutoresetMode
 
 W            = int(os.getenv("GAME_WIDTH",    "800"))
 H            = int(os.getenv("GAME_HEIGHT",   "600"))
@@ -35,18 +36,25 @@ class PongEnv(gym.Env):
         0 = cima, 1 = baixo, 2 = parado
 
     Recompensa (do ponto de vista da IA direita):
-        +10.0  IA pontua (bola sai pelo lado esquerdo)
-         -1.0  IA leva ponto (bola sai pelo lado direito)
-         +1.0  IA rebate nas pontas (|relative| > 0.5)
-         -0.6  IA rebate no centro  (|relative| <= 0.5)
+        +5.0  IA marca (bola sai pelo lado esquerdo)  — encerra o ponto
+        -5.0  IA sofre gol (bola sai pelo lado direito) — encerra o ponto
+        +0.5 a +1.0  IA rebate — cresce linearmente com |relative|
+                     (0.5 no centro do paddle, 1.0 nas pontas)
+
+    Cada episódio é UM ponto: termina quando qualquer lado marca (crédito
+    temporal limpo — o retorno do episódio = rebatidas ± resultado do ponto).
 
     O oponente (lado esquerdo) usa a mesma rede com observação espelhada.
 
     Cada step aplica a ação por ACTION_REPEAT ticks da física (cadência de
     produção); a recompensa é a soma dos ticks.
+
+    info em cada step:
+        hits:   rebatidas acumuladas da IA no episódio (cumulativo)
+        result: 0 durante o ponto; +1 se a IA marca; -1 se sofre gol
     """
 
-    metadata = {"render_modes": []}
+    metadata = {"render_modes": [], "autoreset_mode": AutoresetMode.SAME_STEP}
 
     def __init__(self, opponent: nn.Module):
         super().__init__()
@@ -55,6 +63,7 @@ class PongEnv(gym.Env):
         self.opponent = opponent
         self._state: dict = {}
         self._steps: int = 0
+        self._ep_hits: int = 0
 
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
@@ -65,24 +74,30 @@ class PongEnv(gym.Env):
             "ai":     {"y": (H - PADDLE_H) / 2.0},
         }
         self._steps = 0
-        return self._observe(), {}
+        self._ep_hits = 0
+        return self._observe(), {"hits": 0, "result": 0}
 
     def step(self, action: int):
         opponent_action = self._opponent_action()
         reward = 0.0
         terminated = False
+        result = 0
 
         for _ in range(ACTION_REPEAT):
             self._steps += 1
             self._move_ai(action)
             self._move_opponent(opponent_action)
             self._move_ball()
-            r, terminated = self._handle_collisions()
+            r, terminated, res, hit = self._handle_collisions()
             reward += r
+            self._ep_hits += hit
+            if res != 0:
+                result = res
             if terminated:
                 break
 
-        return self._observe(), reward, terminated, self._steps >= MAX_STEPS, {}
+        info = {"hits": self._ep_hits, "result": result}
+        return self._observe(), reward, terminated, self._steps >= MAX_STEPS, info
 
     # ── movimentação ────────────────────────────────────────────────────────────
 
@@ -120,15 +135,19 @@ class PongEnv(gym.Env):
 
     # ── colisões e pontuação ─────────────────────────────────────────────────────
 
-    def _handle_collisions(self) -> tuple[float, bool]:
+    def _handle_collisions(self) -> tuple[float, bool, int, int]:
+        """Retorna (reward, terminated, result, hit).
+
+        result: +1 IA marca, -1 IA sofre gol, 0 nenhum.
+        hit:    1 se a IA rebateu neste tick, 0 caso contrário.
+        """
         ball = self._state["ball"]
-        reward = 0.0
 
         self._handle_player_paddle(ball)
-        reward = self._handle_ai_paddle(ball, reward)
-        reward, terminated = self._handle_scoring(ball, reward)
+        reward, hit = self._handle_ai_paddle(ball)
+        reward, terminated, result = self._handle_scoring(ball, reward)
 
-        return reward, terminated
+        return reward, terminated, result, hit
 
     def _handle_player_paddle(self, ball: dict) -> None:
         s = self._state
@@ -140,7 +159,7 @@ class PongEnv(gym.Env):
             ball["vx"] = min(abs(ball["vx"]) * BALL_ACCEL, MAX_BALL_SPEED)
             ball["vy"] = relative * 5.0
 
-    def _handle_ai_paddle(self, ball: dict, reward: float) -> float:
+    def _handle_ai_paddle(self, ball: dict) -> tuple[float, int]:
         s = self._state
         if (ball["vx"] > 0
                 and ball["x"] + BALL_R >= AI_X
@@ -149,19 +168,15 @@ class PongEnv(gym.Env):
             ball["x"] = float(AI_X - BALL_R)
             ball["vx"] = -min(abs(ball["vx"]) * BALL_ACCEL, MAX_BALL_SPEED)
             ball["vy"] = relative * 5.0
-            reward = -10 if abs(relative) <= 0.85 else 10.0
-        return reward
+            return 0.5 + 0.5 * abs(relative), 1
+        return 0.0, 0
 
-    def _handle_scoring(self, ball: dict, reward: float) -> tuple[float, bool]:
+    def _handle_scoring(self, ball: dict, reward: float) -> tuple[float, bool, int]:
         if ball["x"] > W:
-            return -1.0, True
+            return reward - 5.0, True, -1   # IA sofre gol — encerra o ponto
         if ball["x"] < 0:
-            ball["x"] = W / 2.0
-            ball["y"] = H / 2.0
-            ball["vx"] = 4.0
-            ball["vy"] = float(self.np_random.choice([-3.0, 3.0]))
-            return 10.0, False
-        return reward, False
+            return reward + 5.0, True, +1   # IA marca — encerra o ponto
+        return reward, False, 0
 
     # ── observações ──────────────────────────────────────────────────────────────
 
