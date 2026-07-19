@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.distributions import Categorical
 
-from pong_ai.es import QNetwork, forward_with_activations
+from pong_ai.net import QNetwork, forward_with_activations
 
 logger = logging.getLogger(__name__)
 

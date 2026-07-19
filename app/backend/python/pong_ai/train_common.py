@@ -80,15 +80,13 @@ def format_log(label: str, step: int, total: int, m: dict, extra: str = "") -> s
                   agente travou num movimento só.
     O `extra` traz as métricas específicas de cada algoritmo:
 
-    ES (train_es.py):
-        sigma     desvio da perturbação dos pesos na geração (decai ao longo do
-                  treino: explora no início, refina no fim).
-        fit(hof)  fitness do agente atual (retorno médio/episódio) contra o pool
-                  de oponentes do hall of fame, nas EVAL_SEEDS fixas.
-        pop_std   desvio-padrão do fitness na população. ~0 ⇒ colapso (todos os
-                  candidatos jogam igual, ES sem gradiente); >0 ⇒ há variação
-                  para o ES escalar.
-        hof       tamanho do hall of fame (âncora rule-based + snapshots).
+    GA (train_ga.py):
+        best_fit  maior fitness da população na geração (retorno médio/ponto do
+                  campeão) — o genoma salvo no checkpoint e semente da próxima
+                  geração via elitismo.
+        pop_std   desvio-padrão do fitness na população. ~0 ⇒ convergência total
+                  (todos os genomas jogam igual, sem material para recombinar);
+                  >0 ⇒ ainda há diversidade para a seleção natural explorar.
 
     PPO (train_ppo.py):
         train_ret retorno médio dos últimos ~200 episódios do self-play (não do

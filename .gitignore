@@ -54,7 +54,7 @@ dist-ssr
 *.sw?
 # Iterações de treino ficam fora; só os modelos servidos em produção entram
 app/backend/python/pong_ai/models/*
-!app/backend/python/pong_ai/models/es.pt
+!app/backend/python/pong_ai/models/ga.pt
 !app/backend/python/pong_ai/models/ppo.pt
 
 # Byte-compiled / optimized / DLL files

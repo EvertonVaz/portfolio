@@ -158,13 +158,13 @@ function drawGame(ctx, { ball, player, ai }) {
 
 // ── componente principal ──────────────────────────────────────────────────────
 
-const ALGOS = ['es', 'ppo'];
+const ALGOS = ['ga', 'ppo'];
 
 export function TrainingPanel() {
     const canvasRef    = useRef(null);
-    const [info, setInfo]           = useState({ running: false, algo: 'es', generation: 0, total: 300 });
-    const [histories, setHistories] = useState({ es: [], ppo: [] });
-    const [algo, setAlgo]           = useState('es');
+    const [info, setInfo]           = useState({ running: false, algo: 'ga', generation: 0, total: 300 });
+    const [histories, setHistories] = useState({ ga: [], ppo: [] });
+    const [algo, setAlgo]           = useState('ga');
     const [offline, setOffline]     = useState(false);
 
     const poll = useCallback(async () => {
@@ -229,7 +229,7 @@ export function TrainingPanel() {
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
                     <h3 className="font-mono text-sm uppercase tracking-widest text-white/50">
-                        {isPpo ? 'Proximal Policy Optimization' : 'Evolution Strategies'} — Training Monitor
+                        {isPpo ? 'Proximal Policy Optimization' : 'Genetic Algorithm'} — Training Monitor
                     </h3>
                     <div className="flex items-center gap-4">
                         {lastRecord && (
@@ -328,7 +328,7 @@ export function TrainingPanel() {
                 {/* Partida ao vivo */}
                 <div className="flex flex-col gap-2 flex-none">
                     <p className="font-mono text-xs text-white/25 uppercase tracking-widest">
-                        Partida ao Vivo — ES vs PPO
+                        Partida ao Vivo — GA vs PPO
                     </p>
                     <div className="relative">
                         <canvas
@@ -356,7 +356,7 @@ export function TrainingPanel() {
                     {/* Labels */}
                     <div className="flex justify-between font-mono text-xs">
                         <span className="text-punk-cyan/50">← PPO</span>
-                        <span className="text-punk-pink/50">ES →</span>
+                        <span className="text-punk-pink/50">GA →</span>
                     </div>
                 </div>
             </div>

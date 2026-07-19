@@ -10,7 +10,7 @@ const BALL_R   = Number(import.meta.env.VITE_BALL_RADIUS   ?? 8);
 const PLAYER_X = Number(import.meta.env.VITE_PLAYER_X      ?? 20);
 const AI_X     = Number(import.meta.env.VITE_AI_X          ?? 768);
 
-const MODEL_OPTIONS = ['ppo', 'es'];
+const MODEL_OPTIONS = ['ppo', 'ga'];
 
 function ModelSelect({ value, onChange }) {
     return (
