@@ -2,9 +2,10 @@
 HTTP server para controle e monitoramento dos treinos (GA e PPO).
 Porta 4001 (proxied via Vite em dev como /train-api).
 
-    GET  /status  → JSON: estado, históricos por algoritmo, frame da partida GA vs PPO
-    POST /start   → inicia treino (body JSON: {"algo": "ga" | "ppo"}; default "ga")
-    POST /stop    → para o treino em andamento (idempotente)
+    GET  /status      → JSON: estado, históricos por algoritmo, frame da partida GA vs PPO
+    GET  /model/<algo> → baixa o checkpoint servido (ga.pt | ppo.pt) como attachment
+    POST /start       → inicia treino (body JSON: {"algo": "ga" | "ppo"}; default "ga")
+    POST /stop        → para o treino em andamento (idempotente)
 
 Cross-play: o GA avalia cada genoma também contra a rede PPO atual, e o PPO
 inclui a rede GA no pool de oponentes do hall of fame.
@@ -20,12 +21,9 @@ from socketserver import ThreadingMixIn, TCPServer
 import numpy as np
 import torch
 
-from pong_ai.env import (
-    ACTION_REPEAT, AI_X, BALL_ACCEL, BALL_R, H, MAX_BALL_SPEED, PADDLE_H,
-    PADDLE_SPEED, PADDLE_W, PLAYER_X, W,
-)
+from pong_ai.env import ACTION_REPEAT, H, MAX_BALL_SPEED, PADDLE_H, W, physics_tick
 from pong_ai.net import QNetwork, RuleBasedNet, set_flat_params
-from pong_ai.train_common import evaluate_in_env
+from pong_ai.train_common import EVAL_SEEDS, evaluate_in_env
 from pong_ai.train_ga import (
     ELITE_FRAC, EPISODES_PER_EVAL, EVAL_WORKERS, GENERATIONS,
     MODEL_PATH as GA_MODEL_PATH, MUTATION_RATE, MUTATION_SCALE, N_ELITE,
@@ -37,7 +35,6 @@ PORT           = int(os.getenv("TRAIN_SERVER_PORT", "4001"))
 _GAME_FPS      = 60
 _BALL_VX_INIT  = 4.0
 _BALL_VY_INIT  = 3.0
-_ANGLE_MULT    = 5.0
 _OPPONENT_DEADBAND = 40.0   # px de deadband do rule-based (âncora do GA e fallback da arena)
 
 
@@ -104,107 +101,87 @@ def _eval_ga_genome(
 # ── simulação de partida para visualização (thread separada) ─────────────────
 # GA joga a raquete direita; PPO joga a esquerda com observação espelhada.
 # Sem PPO carregado, a esquerda cai no rule-based com deadband.
+# A física é a mesma do treino: physics_tick do PongEnv (fonte única).
 
 _game_lock = threading.Lock()
 _game = {
-    "bx": W / 2.0, "by": H / 2.0,
-    "bvx": _BALL_VX_INIT, "bvy": _BALL_VY_INIT,
-    "ai_y": (H - PADDLE_H) / 2.0,
-    "pl_y": (H - PADDLE_H) / 2.0,
+    "state": {
+        "ball":   {"x": W / 2.0, "y": H / 2.0, "vx": _BALL_VX_INIT, "vy": _BALL_VY_INIT},
+        "player": {"y": (H - PADDLE_H) / 2.0},
+        "ai":     {"y": (H - PADDLE_H) / 2.0},
+    },
     "ai_score": 0, "pl_score": 0,
     "tick": 0, "ai_action": 2, "pl_action": 2,
 }
 
 
+def _rule_based_left_action(state: dict) -> int:
+    """Ação do paddle esquerdo seguindo a bola, com handicap de deadband (fallback sem PPO)."""
+    diff = state["player"]["y"] - (state["ball"]["y"] - PADDLE_H / 2.0)
+    if diff > _OPPONENT_DEADBAND:
+        return 0  # cima
+    if diff < -_OPPONENT_DEADBAND:
+        return 1  # baixo
+    return 2      # parado
+
+
+def _serve(ball: dict, vx: float) -> None:
+    """Recoloca a bola no centro com a direção horizontal dada e vy aleatório."""
+    ball["x"], ball["y"] = W / 2.0, H / 2.0
+    ball["vx"] = vx
+    ball["vy"] = float(np.random.choice([-_BALL_VY_INIT, _BALL_VY_INIT]))
+
+
 def _step_game() -> None:
     with _game_lock:
         g = _game
+        s = g["state"]
+        ball = s["ball"]
 
-        # Redes decidem a cada ACTION_REPEAT ticks e a ação persiste
-        # (mesma cadência do app e do treino)
+        # Redes/regra decidem a cada ACTION_REPEAT ticks e a ação persiste (cadência do treino)
         if g["tick"] % ACTION_REPEAT == 0:
             obs = np.array([
-                g["bx"] / W * 2.0 - 1.0,
-                g["by"] / H * 2.0 - 1.0,
-                g["bvx"] / MAX_BALL_SPEED,
-                g["bvy"] / MAX_BALL_SPEED,
-                g["ai_y"] / (H - PADDLE_H) * 2.0 - 1.0,
-                g["pl_y"] / (H - PADDLE_H) * 2.0 - 1.0,
+                ball["x"] / W * 2.0 - 1.0,
+                ball["y"] / H * 2.0 - 1.0,
+                ball["vx"] / MAX_BALL_SPEED,
+                ball["vy"] / MAX_BALL_SPEED,
+                s["ai"]["y"] / (H - PADDLE_H) * 2.0 - 1.0,
+                s["player"]["y"] / (H - PADDLE_H) * 2.0 - 1.0,
             ], dtype=np.float32)
             g["ai_action"] = _net_action(_ga_net, obs)
 
             if _ppo_ready:
                 obs_pl = np.array([
-                    (W - g["bx"]) / W * 2.0 - 1.0,
-                    g["by"] / H * 2.0 - 1.0,
-                    -g["bvx"] / MAX_BALL_SPEED,
-                    g["bvy"] / MAX_BALL_SPEED,
-                    g["pl_y"] / (H - PADDLE_H) * 2.0 - 1.0,
-                    g["ai_y"] / (H - PADDLE_H) * 2.0 - 1.0,
+                    (W - ball["x"]) / W * 2.0 - 1.0,
+                    ball["y"] / H * 2.0 - 1.0,
+                    -ball["vx"] / MAX_BALL_SPEED,
+                    ball["vy"] / MAX_BALL_SPEED,
+                    s["player"]["y"] / (H - PADDLE_H) * 2.0 - 1.0,
+                    s["ai"]["y"] / (H - PADDLE_H) * 2.0 - 1.0,
                 ], dtype=np.float32)
                 g["pl_action"] = _net_action(_ppo_net, obs_pl)
+            else:
+                g["pl_action"] = _rule_based_left_action(s)
         g["tick"] += 1
 
-        if g["ai_action"] == 0:
-            g["ai_y"] = max(0.0, g["ai_y"] - PADDLE_SPEED)
-        elif g["ai_action"] == 1:
-            g["ai_y"] = min(H - PADDLE_H, g["ai_y"] + PADDLE_SPEED)
+        _, result, _ = physics_tick(s, g["ai_action"], g["pl_action"])
 
-        if _ppo_ready:
-            if g["pl_action"] == 0:
-                g["pl_y"] = max(0.0, g["pl_y"] - PADDLE_SPEED)
-            elif g["pl_action"] == 1:
-                g["pl_y"] = min(H - PADDLE_H, g["pl_y"] + PADDLE_SPEED)
-        else:
-            # Fallback: rule-based com handicap de threshold
-            target = g["by"] - PADDLE_H / 2.0
-            diff   = g["pl_y"] - target
-            if diff > _OPPONENT_DEADBAND:
-                g["pl_y"] = max(0.0, g["pl_y"] - PADDLE_SPEED)
-            elif diff < -_OPPONENT_DEADBAND:
-                g["pl_y"] = min(H - PADDLE_H, g["pl_y"] + PADDLE_SPEED)
-
-        g["bx"] += g["bvx"]
-        g["by"] += g["bvy"]
-
-        if g["by"] - BALL_R <= 0:
-            g["by"] = float(BALL_R); g["bvy"] = abs(g["bvy"])
-        elif g["by"] + BALL_R >= H:
-            g["by"] = float(H - BALL_R); g["bvy"] = -abs(g["bvy"])
-
-        # Colisão esquerda (PPO)
-        if (g["bvx"] < 0 and g["bx"] - BALL_R <= PLAYER_X + PADDLE_W
-                and g["pl_y"] <= g["by"] <= g["pl_y"] + PADDLE_H):
-            rel = (g["by"] - (g["pl_y"] + PADDLE_H / 2.0)) / (PADDLE_H / 2.0)
-            g["bx"] = float(PLAYER_X + PADDLE_W + BALL_R)
-            g["bvx"] = min(abs(g["bvx"]) * BALL_ACCEL, MAX_BALL_SPEED)
-            g["bvy"] = rel * _ANGLE_MULT
-
-        # Colisão direita (GA)
-        if (g["bvx"] > 0 and g["bx"] + BALL_R >= AI_X
-                and g["ai_y"] <= g["by"] <= g["ai_y"] + PADDLE_H):
-            rel = (g["by"] - (g["ai_y"] + PADDLE_H / 2.0)) / (PADDLE_H / 2.0)
-            g["bx"] = float(AI_X - BALL_R)
-            g["bvx"] = -min(abs(g["bvx"]) * BALL_ACCEL, MAX_BALL_SPEED)
-            g["bvy"] = rel * _ANGLE_MULT
-
-        if g["bx"] < 0:
+        if result > 0:      # IA (direita) marca — bola saiu pela esquerda
             g["ai_score"] += 1
-            g["bx"], g["by"] = W / 2.0, H / 2.0
-            g["bvx"], g["bvy"] = _BALL_VX_INIT, float(np.random.choice([-_BALL_VY_INIT, _BALL_VY_INIT]))
-        elif g["bx"] > W:
+            _serve(ball, _BALL_VX_INIT)
+        elif result < 0:    # IA sofre gol — bola saiu pela direita
             g["pl_score"] += 1
-            g["bx"], g["by"] = W / 2.0, H / 2.0
-            g["bvx"], g["bvy"] = -_BALL_VX_INIT, float(np.random.choice([-_BALL_VY_INIT, _BALL_VY_INIT]))
+            _serve(ball, -_BALL_VX_INIT)
 
 
 def _game_snapshot() -> dict:
     with _game_lock:
         g = _game
+        s = g["state"]
         return {
-            "ball":   {"x": g["bx"],    "y": g["by"]},
-            "ai":     {"y": g["ai_y"],  "score": g["ai_score"]},
-            "player": {"y": g["pl_y"],  "score": g["pl_score"]},
+            "ball":   {"x": s["ball"]["x"],   "y": s["ball"]["y"]},
+            "ai":     {"y": s["ai"]["y"],     "score": g["ai_score"]},
+            "player": {"y": s["player"]["y"], "score": g["pl_score"]},
         }
 
 
@@ -240,6 +217,26 @@ def _finish_training() -> None:
             _train_state["running"] = False
 
 
+def _behavior_record(gen: int, m: dict, pop_std=None, best_fit=None) -> dict:
+    """Monta o registro de histórico a partir das métricas de comportamento (mesmas
+    do log/format_log), pro gráfico plotar a tendência. act vira % (soma ~100)."""
+    a = m["act"]
+    s = int(max(a.sum(), 1))
+    rec = {
+        "gen":     gen,
+        "return":  round(float(m["return"]), 3),
+        "hits":    round(float(m["hits"]), 3),
+        "win":     round(float(m["win"]), 1),
+        "pts_len": round(float(m["pts_len"]), 1),
+        "act":     [round(100 * a[0] / s), round(100 * a[1] / s), round(100 * a[2] / s)],
+    }
+    if pop_std is not None:
+        rec["pop_std"] = round(float(pop_std), 3)
+    if best_fit is not None:
+        rec["best_fit"] = round(float(best_fit), 3)
+    return rec
+
+
 def _run_training_ga() -> None:
     from multiprocessing import Pool
 
@@ -270,12 +267,14 @@ def _run_training_ga() -> None:
                 champ = pop[int(np.argmax(fitness))]
                 _update_ga_net(champ)
 
-                record = {
-                    "gen":  gen,
-                    "mean": float(np.mean(fitness)),
-                    "std":  float(np.std(fitness)),
-                    "best": float(np.max(fitness)),
-                }
+                # Métricas de comportamento do campeão vs âncora (mesmas do log)
+                m = evaluate_in_env(
+                    _greedy_action(_build_net(champ)),
+                    RuleBasedNet(deadband=_OPPONENT_DEADBAND), EVAL_SEEDS,
+                )
+                record = _behavior_record(
+                    gen, m, pop_std=float(np.std(fitness)), best_fit=float(np.max(fitness)),
+                )
                 with _train_lock:
                     _train_state["generation"] = gen
                     _train_state["histories"]["ga"].append(record)
@@ -299,13 +298,11 @@ def _run_training_ppo() -> None:
 
     def on_rollout(agent, target, completed):
         _update_ppo_net(agent.policy.state_dict())
-        recent = completed[-50:] if completed else [0.0]
-        record = {
-            "gen":  agent.global_step,
-            "mean": float(np.mean(recent)),
-            "std":  float(np.std(recent)),
-            "best": float(np.max(recent)),
-        }
+        # Mesmas métricas de comportamento do GA (política greedy vs âncora)
+        m = evaluate_in_env(
+            agent.predict, RuleBasedNet(deadband=_OPPONENT_DEADBAND), EVAL_SEEDS,
+        )
+        record = _behavior_record(agent.global_step, m)
         with _train_lock:
             _train_state["total"] = target
             _train_state["generation"] = agent.global_step
@@ -359,7 +356,23 @@ class Handler(BaseHTTPRequestHandler):
         self._cors()
         self.end_headers()
 
+    def _serve_model(self, algo: str):
+        path = {"ga": GA_MODEL_PATH, "ppo": PPO_MODEL_PATH}.get(algo)
+        if path is None or not path.exists():
+            self.send_response(404); self._cors(); self.end_headers(); return
+        data = path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/octet-stream")
+        self.send_header("Content-Disposition", f'attachment; filename="{algo}.pt"')
+        self.send_header("Content-Length", str(len(data)))
+        self._cors()
+        self.end_headers()
+        self.wfile.write(data)
+
     def do_GET(self):
+        if self.path.startswith("/model/"):
+            self._serve_model(self.path.rsplit("/", 1)[-1])
+            return
         if self.path != "/status":
             self.send_response(404); self.end_headers(); return
 
