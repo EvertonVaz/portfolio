@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const VIZ_W = 220;
+const VIZ_W = 240;
 const VIZ_H = Number(import.meta.env.VITE_GAME_HEIGHT ?? 600);
 const MARGIN_X = 28;
 const MARGIN_Y = 32;
@@ -147,8 +147,8 @@ export function NeuralNetViz({ gameStateRef }) {
                 ref={canvasRef}
                 width={VIZ_W}
                 height={VIZ_H}
-                className="border border-white/10 h-full"
-                style={{ background: '#080808', width: VIZ_W }}
+                className="absolute inset-0 block w-full h-full border border-white/10"
+                style={{ background: '#080808' }}
             />
             <span className="absolute top-2 left-0 right-0 text-center font-mono text-xs uppercase tracking-widest text-white/20 pointer-events-none">
                 {algo}

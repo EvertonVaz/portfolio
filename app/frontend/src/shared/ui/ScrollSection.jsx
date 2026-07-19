@@ -10,7 +10,7 @@ const ScrollSection = ({ children, id, className = "" }) => (
         id={id}
         initial={{ opacity: 0, y: 50, filter: 'blur(10px)' }}
         whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        viewport={{ once: true, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.05 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={`flex flex-col justify-center scroll-mt-24 ${className}`}
     >

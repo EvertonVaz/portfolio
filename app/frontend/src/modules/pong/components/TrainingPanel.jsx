@@ -12,14 +12,45 @@ const API          = '/train-api';
 const POLL         = 110;  // ms, com o servidor de treino respondendo
 const POLL_OFFLINE = 5000; // ms, backoff quando o servidor está fora
 
-// ── gráfico SVG ──────────────────────────────────────────────────────────────
+// ── gráfico de comportamento ──────────────────────────────────────────────────
+// Tendência das métricas do log ao longo das gerações. Escalas diferentes são
+// normalizadas pra um eixo 0-100%; a legenda mostra o valor real de cada série.
 
-function FitnessChart({ history, unit = 'gen' }) {
+const clamp01 = v => Math.max(0, Math.min(1, v));
+
+// win% tem teto real (0-100); hits/pt e return não têm máximo fixo (crescem com o
+// rally), então auto-escalam pelo maior valor da janela — nada gruda no topo.
+const SERIES = [
+    { key: 'win%',    color: '#00f0ff', value: h => h.win ?? 0,    fmt: v => `${Math.round(v)}%`, fixed: [0, 100] },
+    { key: 'hits/pt', color: '#ff2d78', value: h => h.hits ?? 0,   fmt: v => v.toFixed(2) },
+    { key: 'return',  color: '#ffd23f', value: h => h.return ?? 0, fmt: v => v.toFixed(2) },
+];
+
+// Resolve [lo, hi] de cada série e devolve a fn de normalização pra [0,1].
+// fixed → teto real; auto → [min(0, ·), max] sobre a janela do gráfico.
+function scaleSeries(history) {
+    return SERIES.map(s => {
+        let lo, hi;
+        if (s.fixed) {
+            [lo, hi] = s.fixed;
+        } else {
+            const vals = history.map(s.value);
+            lo = Math.min(0, ...vals);
+            hi = Math.max(...vals);
+            if (hi <= lo) hi = lo + 1;  // evita divisão por zero
+        }
+        return { ...s, norm: h => clamp01((s.value(h) - lo) / (hi - lo)) };
+    });
+}
+
+const ACT_COLORS = ['#00f0ff', '#ff2d78', 'rgba(255,255,255,0.25)'];  // ↑ ↓ ·
+
+function BehaviorChart({ history, unit = 'gen' }) {
     const W = 560, H = 180, PX = 40, PY = 16;
 
     if (!history.length) {
         return (
-            <div className="w-full h-full flex items-center justify-center border border-white/10"
+            <div className="w-full flex items-center justify-center border border-white/10"
                  style={{ background: '#080808', height: H }}>
                 <span className="font-mono text-xs text-white/20 uppercase tracking-widest">
                     aguardando dados…
@@ -28,92 +59,83 @@ function FitnessChart({ history, unit = 'gen' }) {
         );
     }
 
-    const means = history.map(h => h.mean);
-    const bests = history.map(h => h.best);
-    const stds  = history.map(h => h.std);
-    const n     = history.length;
-
-    const allVals = [...means, ...bests];
-    const minV = Math.min(...allVals), maxV = Math.max(...allVals);
-    const range = Math.max(maxV - minV, 0.5);
-
+    const n = history.length;
     const cx = i => PX + (i / Math.max(n - 1, 1)) * (W - PX - 8);
-    const cy = v => PY + (1 - (v - minV) / range) * (H - PY - PY);
+    const cy = v => PY + (1 - v) * (H - 2 * PY);   // v ∈ [0,1]
 
-    const linePath = pts =>
-        pts.map((v, i) => `${i === 0 ? 'M' : 'L'}${cx(i).toFixed(1)},${cy(v).toFixed(1)}`).join(' ');
+    const linePath = norm =>
+        history.map((h, i) => `${i === 0 ? 'M' : 'L'}${cx(i).toFixed(1)},${cy(norm(h)).toFixed(1)}`).join(' ');
 
-    // Faixa ±std ao redor da média
-    const bandTop    = means.map((m, i) => [cx(i), cy(m - stds[i])]);
-    const bandBottom = means.map((m, i) => [cx(i), cy(m + stds[i])]).reverse();
-    const bandPath   = [...bandTop, ...bandBottom].map(([x, y], i) =>
-        `${i === 0 ? 'M' : 'L'}${x.toFixed(1)},${y.toFixed(1)}`).join(' ') + 'Z';
-
-    const gridY = [minV, (minV + maxV) / 2, maxV];
-    const firstGen = history[0].gen;
-    const lastGen  = history[n - 1].gen;
+    const last = history[n - 1];
+    const series = scaleSeries(history);
+    const grid = [{ v: 1, label: '100%' }, { v: 0.5, label: '50' }, { v: 0, label: '0' }];
+    const act = last.act ?? [0, 0, 0];
 
     return (
-        <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="w-full block"
-             style={{ background: '#080808', border: '1px solid rgba(255,255,255,0.08)' }}>
-            {/* Grade horizontal */}
-            {gridY.map((v, i) => (
-                <g key={i}>
-                    <line x1={PX} y1={cy(v)} x2={W - 8} y2={cy(v)}
-                          stroke="rgba(255,255,255,0.06)" strokeDasharray="4,6" />
-                    <text x={PX - 4} y={cy(v) + 4} textAnchor="end"
-                          fill="rgba(255,255,255,0.25)" fontSize={9} fontFamily="monospace">
-                        {v.toFixed(1)}
-                    </text>
-                </g>
-            ))}
+        <div className="w-full flex flex-col gap-2">
+            {/* Legenda com valores reais */}
+            <div className="flex flex-wrap gap-x-4 gap-y-1 font-mono text-[10px]">
+                {series.map(s => (
+                    <span key={s.key} className="flex items-center gap-1.5" style={{ color: s.color }}>
+                        <span className="inline-block w-3 h-[2px]" style={{ background: s.color }} />
+                        {s.key} <span className="tabular-nums">{s.fmt(s.value(last))}</span>
+                    </span>
+                ))}
+            </div>
 
-            {/* Eixos */}
-            <line x1={PX} y1={PY} x2={PX} y2={H - PY}
-                  stroke="rgba(255,255,255,0.12)" />
-            <line x1={PX} y1={H - PY} x2={W - 8} y2={H - PY}
-                  stroke="rgba(255,255,255,0.12)" />
+            <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="w-full block"
+                 style={{ background: '#080808', border: '1px solid rgba(255,255,255,0.08)' }}>
+                {/* Grade horizontal (0 / 50 / 100%) */}
+                {grid.map(({ v, label }) => (
+                    <g key={v}>
+                        <line x1={PX} y1={cy(v)} x2={W - 8} y2={cy(v)}
+                              stroke="rgba(255,255,255,0.06)" strokeDasharray="4,6" />
+                        <text x={PX - 4} y={cy(v) + 4} textAnchor="end"
+                              fill="rgba(255,255,255,0.25)" fontSize={9} fontFamily="monospace">
+                            {label}
+                        </text>
+                    </g>
+                ))}
 
-            {/* Labels eixo X */}
-            <text x={PX} y={H - 4} fill="rgba(255,255,255,0.2)" fontSize={9} fontFamily="monospace">
-                {unit} {firstGen}
-            </text>
-            <text x={W - 8} y={H - 4} textAnchor="end"
-                  fill="rgba(255,255,255,0.2)" fontSize={9} fontFamily="monospace">
-                {unit} {lastGen}
-            </text>
+                {/* Eixos */}
+                <line x1={PX} y1={PY} x2={PX} y2={H - PY} stroke="rgba(255,255,255,0.12)" />
+                <line x1={PX} y1={H - PY} x2={W - 8} y2={H - PY} stroke="rgba(255,255,255,0.12)" />
 
-            {/* Faixa std */}
-            {n > 1 && (
-                <path d={bandPath} fill="rgba(0,240,255,0.06)" />
-            )}
+                {/* Labels eixo X */}
+                <text x={PX} y={H - 4} fill="rgba(255,255,255,0.2)" fontSize={9} fontFamily="monospace">
+                    {unit} {history[0].gen}
+                </text>
+                <text x={W - 8} y={H - 4} textAnchor="end"
+                      fill="rgba(255,255,255,0.2)" fontSize={9} fontFamily="monospace">
+                    {unit} {last.gen}
+                </text>
 
-            {/* Linha best */}
-            {n > 1 && (
-                <path d={linePath(bests)}
-                      fill="none" stroke="rgba(0,240,255,0.25)" strokeWidth={1}
-                      strokeDasharray="4,4" />
-            )}
+                {/* Linhas + ponto atual de cada série */}
+                {series.map(s => (
+                    <g key={s.key}>
+                        {n > 1 && (
+                            <path d={linePath(s.norm)} fill="none" stroke={s.color}
+                                  strokeWidth={2} opacity={0.9} />
+                        )}
+                        <circle cx={cx(n - 1)} cy={cy(s.norm(last))} r={3} fill={s.color} />
+                    </g>
+                ))}
+            </svg>
 
-            {/* Linha média */}
-            {n > 1 && (
-                <path d={linePath(means)}
-                      fill="none" stroke="#00f0ff" strokeWidth={2} />
-            )}
-
-            {/* Ponto atual */}
-            {n > 0 && (
-                <circle cx={cx(n - 1)} cy={cy(means[n - 1])} r={3}
-                        fill="#00f0ff" />
-            )}
-
-            {/* Legenda */}
-            <line x1={W - 120} y1={12} x2={W - 104} y2={12} stroke="#00f0ff" strokeWidth={2} />
-            <text x={W - 100} y={16} fill="rgba(0,240,255,0.7)" fontSize={9} fontFamily="monospace">média</text>
-            <line x1={W - 60}  y1={12} x2={W - 44} y2={12} stroke="rgba(0,240,255,0.3)"
-                  strokeWidth={1} strokeDasharray="4,3" />
-            <text x={W - 40} y={16} fill="rgba(0,240,255,0.4)" fontSize={9} fontFamily="monospace">best</text>
-        </svg>
+            {/* act[↑↓·] barra empilhada + extras ao vivo */}
+            <div className="flex items-center gap-3 font-mono text-[10px] text-white/40">
+                <span className="uppercase tracking-widest text-white/30 shrink-0">act ↑↓·</span>
+                <div className="flex h-2 flex-1 min-w-0 overflow-hidden border border-white/10">
+                    {act.map((p, i) => (
+                        <div key={i} style={{ width: `${p}%`, background: ACT_COLORS[i] }} />
+                    ))}
+                </div>
+                <span className="text-white/50 tabular-nums shrink-0">{act[0]}/{act[1]}/{act[2]}</span>
+                {last.pop_std != null && <span className="shrink-0">pop_std {last.pop_std.toFixed(2)}</span>}
+                {last.pts_len != null && <span className="shrink-0">pts_len {Math.round(last.pts_len)}</span>}
+                {last.best_fit != null && <span className="shrink-0">best_fit {last.best_fit.toFixed(2)}</span>}
+            </div>
+        </div>
     );
 }
 
@@ -213,12 +235,20 @@ export function TrainingPanel() {
         } catch { /* server offline */ }
     };
 
+    const downloadModel = () => {
+        const a = document.createElement('a');
+        a.href = `${API}/model/${algo}`;
+        a.download = `${algo}.pt`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    };
+
     const pct = info.total > 0 ? Math.round((info.generation / info.total) * 100) : 0;
 
     const history    = histories[algo] ?? [];
     const lastRecord = history.at(-1);
     const isPpo      = algo === 'ppo';
-    const metric     = isPpo ? 'return' : 'fitness';
     const unit       = isPpo ? 'step' : 'gen';
     const fmt        = (n) => (isPpo && n >= 1000 ? `${(n / 1000).toFixed(0)}k` : n);
 
@@ -235,13 +265,13 @@ export function TrainingPanel() {
                         {lastRecord && (
                             <>
                                 <span className="font-mono text-xs text-punk-cyan/60">
-                                    {metric} médio: {lastRecord.mean.toFixed(2)}
+                                    win: {Math.round(lastRecord.win ?? 0)}%
                                 </span>
                                 <span className="font-mono text-xs text-punk-cyan/40">
-                                    best: {lastRecord.best.toFixed(2)}
+                                    hits/pt: {(lastRecord.hits ?? 0).toFixed(2)}
                                 </span>
                                 <span className="font-mono text-xs text-punk-cyan/30">
-                                    ±{lastRecord.std.toFixed(2)}
+                                    return: {(lastRecord.return ?? 0).toFixed(2)}
                                 </span>
                             </>
                         )}
@@ -288,6 +318,16 @@ export function TrainingPanel() {
                         </span>
                     )}
 
+                    {/* Download do checkpoint servido */}
+                    <button
+                        onClick={downloadModel}
+                        disabled={offline}
+                        title={`baixar ${algo}.pt do servidor`}
+                        className="font-mono text-xs uppercase tracking-widest px-4 py-2 border border-white/20 text-white/50 hover:text-white/80 hover:border-white/40 transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
+                    >
+                        ↓ {algo}.pt
+                    </button>
+
                     {/* Botão */}
                     <button
                         onClick={toggle}
@@ -319,10 +359,10 @@ export function TrainingPanel() {
                 {/* Gráfico */}
                 <div className="flex-1 min-w-0 flex flex-col gap-2">
                     <p className="font-mono text-xs text-white/25 uppercase tracking-widest">
-                        {isPpo ? 'Return por Rollout' : 'Fitness por Geração'}
-                        <span className="text-white/15 ml-2">— média (linha) · best (tracejado) · ±std (faixa)</span>
+                        Comportamento por {isPpo ? 'Rollout' : 'Geração'}
+                        <span className="text-white/15 ml-2">— métricas do log, normalizadas 0-100%</span>
                     </p>
-                    <FitnessChart history={history} unit={unit} />
+                    <BehaviorChart history={history} unit={unit} />
                 </div>
 
                 {/* Partida ao vivo */}
