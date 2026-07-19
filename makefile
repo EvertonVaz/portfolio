@@ -26,8 +26,11 @@ ai:
 train-ppo:
 	clear && cd ./app/backend/python && uv run python -m pong_ai.train_ppo
 
-train-es:
-	clear && cd ./app/backend/python && uv run python -m pong_ai.train_es
+train-ga:
+	clear && cd ./app/backend/python && uv run python -m pong_ai.train_ga
+
+train-ga-fresh:
+	clear && cd ./app/backend/python && uv run python -m pong_ai.train_ga --fresh
 
 train-server:
 	clear && cd ./app/backend/python && uv run python -m pong_ai.train_server

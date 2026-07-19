@@ -21,7 +21,7 @@ HEARTBEAT_FILE = Path(os.getenv("HEARTBEAT_FILE", "/tmp/ai-heartbeat"))
 HEARTBEAT_INTERVAL_S = 10
 _MODELS_DIR     = Path(__file__).parent / "pong_ai" / "models"
 _PPO_MODEL_PATH = _MODELS_DIR / "ppo.pt"
-_ES_MODEL_PATH  = _MODELS_DIR / "es.pt"
+_GA_MODEL_PATH  = _MODELS_DIR / "ga.pt"
 
 # Constantes espelhadas do PongEnv — lidas do ambiente para manter sincronismo
 _W             = float(os.getenv("GAME_WIDTH",    "800"))
@@ -42,14 +42,14 @@ def _load_agents():
         except Exception as exc:
             logger.error("Failed to load PPOAgent: %s", exc)
 
-    if _ES_MODEL_PATH.exists():
+    if _GA_MODEL_PATH.exists():
         try:
-            from pong_ai.es import ESAgent
-            agent = ESAgent()
-            agent.load(str(_ES_MODEL_PATH))
-            _agents["es"] = agent
+            from pong_ai.net import GAAgent
+            agent = GAAgent()
+            agent.load(str(_GA_MODEL_PATH))
+            _agents["ga"] = agent
         except Exception as exc:
-            logger.error("Failed to load ESAgent: %s", exc)
+            logger.error("Failed to load GAAgent: %s", exc)
 
     if not _agents:
         logger.warning("No model found — using rule-based AI")
@@ -59,7 +59,7 @@ def _agent_for(name: str | None):
     """Retorna (algo, agent) do modelo pedido, ou o primeiro disponível como fallback."""
     if name in _agents:
         return name, _agents[name]
-    for key in ("ppo", "es"):
+    for key in ("ppo", "ga"):
         if key in _agents:
             return key, _agents[key]
     return None, None
@@ -81,7 +81,7 @@ def _state_to_obs(state: dict) -> np.ndarray:
 
 def _state_to_obs_mirrored(state: dict) -> np.ndarray:
     """Observação da raquete esquerda: eixo X espelhado, posições trocadas.
-    Mesma transformação usada no self-play do treino ES.
+    Mesma transformação usada no self-play do treino.
     """
     b = state["ball"]
     ai_y = float(state["ai_y"])

@@ -17,7 +17,7 @@ import torch.nn as nn
 from gymnasium.vector import AutoresetMode, SyncVectorEnv
 
 from pong_ai.env import PongEnv
-from pong_ai.es import QNetwork, RuleBasedNet
+from pong_ai.net import QNetwork, RuleBasedNet
 from pong_ai.ppo import PPOAgent
 from pong_ai.train_common import ANCHOR_DEADBAND, EVAL_SEEDS, evaluate_in_env, format_log
 

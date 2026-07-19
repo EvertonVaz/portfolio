@@ -37,7 +37,7 @@ defmodule PortfolioWeb.GameChannel do
     {:noreply, socket}
   end
 
-  @valid_models ~w(ppo es)
+  @valid_models ~w(ppo ga)
 
   def handle_in("set_models", params, socket) do
     Portfolio.Pong.GameServer.set_models(

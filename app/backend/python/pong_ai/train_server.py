@@ -1,13 +1,13 @@
 """
-HTTP server para controle e monitoramento dos treinos (ES e PPO).
+HTTP server para controle e monitoramento dos treinos (GA e PPO).
 Porta 4001 (proxied via Vite em dev como /train-api).
 
-    GET  /status  → JSON: estado, históricos por algoritmo, frame da partida ES vs PPO
-    POST /start   → inicia treino (body JSON: {"algo": "es" | "ppo"}; default "es")
+    GET  /status  → JSON: estado, históricos por algoritmo, frame da partida GA vs PPO
+    POST /start   → inicia treino (body JSON: {"algo": "ga" | "ppo"}; default "ga")
     POST /stop    → para o treino em andamento (idempotente)
 
-Cross-play: o ES avalia cada indivíduo também contra a rede PPO atual, e o
-PPO inclui a rede ES no pool de oponentes do hall of fame.
+Cross-play: o GA avalia cada genoma também contra a rede PPO atual, e o PPO
+inclui a rede GA no pool de oponentes do hall of fame.
 """
 import copy
 import json
@@ -24,11 +24,12 @@ from pong_ai.env import (
     ACTION_REPEAT, AI_X, BALL_ACCEL, BALL_R, H, MAX_BALL_SPEED, PADDLE_H,
     PADDLE_SPEED, PADDLE_W, PLAYER_X, W,
 )
-from pong_ai.es import ESAgent, QNetwork
-from pong_ai.train_es import (
-    EPISODES_PER_EVAL, EVAL_WORKERS, GENERATIONS, HOF_MAX_SIZE, HOF_SNAPSHOT_EVERY,
-    LR, MODEL_PATH as ES_MODEL_PATH, POP_SIZE, SIGMA_START, WEIGHT_DECAY,
-    evaluate_individual, _sample_opponents, _set_params_to_net,
+from pong_ai.net import QNetwork, RuleBasedNet, set_flat_params
+from pong_ai.train_common import evaluate_in_env
+from pong_ai.train_ga import (
+    ELITE_FRAC, EPISODES_PER_EVAL, EVAL_WORKERS, GENERATIONS,
+    MODEL_PATH as GA_MODEL_PATH, MUTATION_RATE, MUTATION_SCALE, N_ELITE,
+    _build_net, _genome_size, _greedy_action, _initial_population, next_generation,
 )
 from pong_ai.train_ppo import MODEL_PATH as PPO_MODEL_PATH, TOTAL_STEPS
 
@@ -37,28 +38,28 @@ _GAME_FPS      = 60
 _BALL_VX_INIT  = 4.0
 _BALL_VY_INIT  = 3.0
 _ANGLE_MULT    = 5.0
-_OPPONENT_DEADBAND = 40.0   # px de deadband do rule-based na visualização (sem PPO carregado)
+_OPPONENT_DEADBAND = 40.0   # px de deadband do rule-based (âncora do GA e fallback da arena)
 
 
 # ── redes de inferência compartilhadas (preview) ─────────────────────────────
 # Atualizadas pelas threads de treino, lidas pela thread do jogo.
 
 _net_lock  = threading.Lock()
-_es_net    = QNetwork()
+_ga_net    = QNetwork()
 _ppo_net   = QNetwork()
-_es_ready  = False   # True após load de checkpoint ou primeiro update de treino
+_ga_ready  = False   # True após load de checkpoint ou primeiro update de treino
 _ppo_ready = False
 
-for _n in (_es_net, _ppo_net):
+for _n in (_ga_net, _ppo_net):
     _n.eval()
     _n.requires_grad_(False)
 
 
-def _update_es_net(params: np.ndarray) -> None:
-    global _es_ready
+def _update_ga_net(params: np.ndarray) -> None:
+    global _ga_ready
     with _net_lock:
-        _set_params_to_net(_es_net, params)
-        _es_ready = True
+        set_flat_params(_ga_net, params)
+        _ga_ready = True
 
 
 def _update_ppo_net(state_dict: dict) -> None:
@@ -81,8 +82,27 @@ def _flatten_net(net: QNetwork) -> np.ndarray:
         ).astype(np.float32)
 
 
+# ── avaliação de fitness do GA (com cross-play) ──────────────────────────────
+
+def _eval_ga_genome(
+    args: tuple[np.ndarray, list[np.ndarray | None], list[int]]
+) -> float:
+    """Fitness = retorno médio por ponto vs cada oponente (None=rule-based, senão net).
+
+    Roda nos workers do Pool. Reusa _build_net/_greedy_action do train_ga e o
+    evaluate_in_env do train_common — mesma avaliação greedy do treino standalone.
+    """
+    genome, opp_params, seeds = args
+    action_fn = _greedy_action(_build_net(genome))
+    total = 0.0
+    for p in opp_params:
+        opp = RuleBasedNet(deadband=_OPPONENT_DEADBAND) if p is None else _build_net(p)
+        total += evaluate_in_env(action_fn, opp, seeds)["return"]
+    return total / len(opp_params)
+
+
 # ── simulação de partida para visualização (thread separada) ─────────────────
-# ES joga a raquete direita; PPO joga a esquerda com observação espelhada.
+# GA joga a raquete direita; PPO joga a esquerda com observação espelhada.
 # Sem PPO carregado, a esquerda cai no rule-based com deadband.
 
 _game_lock = threading.Lock()
@@ -111,7 +131,7 @@ def _step_game() -> None:
                 g["ai_y"] / (H - PADDLE_H) * 2.0 - 1.0,
                 g["pl_y"] / (H - PADDLE_H) * 2.0 - 1.0,
             ], dtype=np.float32)
-            g["ai_action"] = _net_action(_es_net, obs)
+            g["ai_action"] = _net_action(_ga_net, obs)
 
             if _ppo_ready:
                 obs_pl = np.array([
@@ -160,7 +180,7 @@ def _step_game() -> None:
             g["bvx"] = min(abs(g["bvx"]) * BALL_ACCEL, MAX_BALL_SPEED)
             g["bvy"] = rel * _ANGLE_MULT
 
-        # Colisão direita (ES)
+        # Colisão direita (GA)
         if (g["bvx"] > 0 and g["bx"] + BALL_R >= AI_X
                 and g["ai_y"] <= g["by"] <= g["ai_y"] + PADDLE_H):
             rel = (g["by"] - (g["ai_y"] + PADDLE_H / 2.0)) / (PADDLE_H / 2.0)
@@ -199,10 +219,10 @@ def _game_loop() -> None:
 _train_lock  = threading.Lock()
 _train_state = {
     "running":    False,
-    "algo":       "es",       # algoritmo em treino (ou o último)
-    "generation": 0,          # gerações (es) ou global steps (ppo)
+    "algo":       "ga",       # algoritmo em treino (ou o último)
+    "generation": 0,          # gerações (ga) ou global steps (ppo)
     "total":      GENERATIONS,
-    "histories":  {"es": [], "ppo": []},   # [{gen, mean, std, best}]
+    "histories":  {"ga": [], "ppo": []},   # [{gen, mean, std, best}]
 }
 
 _stop_event   = threading.Event()
@@ -220,52 +240,35 @@ def _finish_training() -> None:
             _train_state["running"] = False
 
 
-def _run_training_es() -> None:
+def _run_training_ga() -> None:
     from multiprocessing import Pool
 
-    agent = ESAgent(pop_size=POP_SIZE, sigma=SIGMA_START, lr=LR)
+    rng = np.random.default_rng()
+    size = _genome_size()
+    # Retoma de ga.pt (campeão + mutações) se existir, senão população aleatória
+    pop, start_gen = _initial_population(rng, size)
+    _update_ga_net(pop[0])  # mostra algo na arena de imediato
 
-    resuming = ES_MODEL_PATH.exists()
-    if resuming:
-        agent.load(str(ES_MODEL_PATH))
-
-    # Weight decay só ao retomar (dessatura checkpoint treinado); no fresh trava o treino.
-    weight_decay = WEIGHT_DECAY if resuming else 0.0
-
-    _update_es_net(agent.params)
-
-    # Hall of fame: âncora rule-based + snapshot do agente atual (se retomando)
-    hof: list[np.ndarray | None] = [None]
-    if agent.generation > 0:
-        hof.append(agent.params.copy())
-
-    # Se o checkpoint já completou a meta, roda mais GENERATIONS a partir dele
-    target = GENERATIONS if agent.generation < GENERATIONS else agent.generation + GENERATIONS
+    target = start_gen + GENERATIONS
     with _train_lock:
         _train_state["total"] = target
 
     try:
         with Pool(processes=EVAL_WORKERS) as pool:
-            for gen in range(agent.generation, target):
+            for gen in range(start_gen, target):
                 if _stop_event.is_set():
                     break
 
-                opponents = _sample_opponents(hof)
+                opp_params: list[np.ndarray | None] = [None]  # âncora rule-based
                 if _ppo_ready:
-                    opponents.append(_flatten_net(_ppo_net))  # cross-play vs PPO
+                    opp_params.append(_flatten_net(_ppo_net))  # cross-play vs PPO
 
-                # Common random numbers: mesmas seeds para todos os candidatos da geração
-                seeds = [int(np.random.randint(0, 2**31 - 1)) for _ in range(EPISODES_PER_EVAL)]
-                candidates, epsilons = agent.ask()
-                fitness = pool.map(evaluate_individual, [(c, opponents, seeds) for c in candidates])
-                agent.tell(fitness, epsilons, weight_decay=weight_decay)
+                # Common random numbers: mesmas seeds para todos os genomas da geração
+                seeds = [int(rng.integers(0, 2**31 - 1)) for _ in range(EPISODES_PER_EVAL)]
+                fitness = pool.map(_eval_ga_genome, [(g, opp_params, seeds) for g in pop])
 
-                if (gen + 1) % HOF_SNAPSHOT_EVERY == 0:
-                    hof.append(agent.params.copy())
-                    if len(hof) > HOF_MAX_SIZE:
-                        del hof[1]  # descarta o mais antigo, preserva a âncora rule-based
-
-                _update_es_net(agent.params)
+                champ = pop[int(np.argmax(fitness))]
+                _update_ga_net(champ)
 
                 record = {
                     "gen":  gen,
@@ -273,12 +276,15 @@ def _run_training_es() -> None:
                     "std":  float(np.std(fitness)),
                     "best": float(np.max(fitness)),
                 }
-
                 with _train_lock:
                     _train_state["generation"] = gen
-                    _train_state["histories"]["es"].append(record)
+                    _train_state["histories"]["ga"].append(record)
 
-                agent.save(str(ES_MODEL_PATH))
+                torch.save({"params": torch.from_numpy(champ), "generation": gen}, GA_MODEL_PATH)
+
+                pop = next_generation(
+                    pop, fitness, rng, ELITE_FRAC, N_ELITE, MUTATION_RATE, MUTATION_SCALE
+                )
     finally:
         _finish_training()
 
@@ -287,9 +293,9 @@ def _run_training_ppo() -> None:
     from pong_ai import train_ppo
 
     extra_opponents = []
-    if _es_ready:
+    if _ga_ready:
         with _net_lock:
-            extra_opponents.append(copy.deepcopy(_es_net.state_dict()))  # cross-play vs ES
+            extra_opponents.append(copy.deepcopy(_ga_net.state_dict()))  # cross-play vs GA
 
     def on_rollout(agent, target, completed):
         _update_ppo_net(agent.policy.state_dict())
@@ -326,7 +332,7 @@ def _start_training(algo: str) -> None:
         _train_state["generation"] = 0
         _train_state["total"] = TOTAL_STEPS if algo == "ppo" else GENERATIONS
     _stop_event.clear()
-    run = _run_training_ppo if algo == "ppo" else _run_training_es
+    run = _run_training_ppo if algo == "ppo" else _run_training_ga
     _train_thread = threading.Thread(target=run, daemon=True)
     _train_thread.start()
 
@@ -364,7 +370,7 @@ class Handler(BaseHTTPRequestHandler):
                 "generation": _train_state["generation"],
                 "total":      _train_state["total"],
                 "histories": {
-                    "es":  _train_state["histories"]["es"][-300:],
+                    "ga":  _train_state["histories"]["ga"][-300:],
                     "ppo": _train_state["histories"]["ppo"][-300:],
                 },
                 "game":       _game_snapshot(),
@@ -385,7 +391,7 @@ class Handler(BaseHTTPRequestHandler):
                 params = json.loads(self.rfile.read(length)) if length else {}
             except json.JSONDecodeError:
                 params = {}
-            algo = "ppo" if params.get("algo") == "ppo" else "es"
+            algo = "ppo" if params.get("algo") == "ppo" else "ga"
             _start_training(algo)
         elif self.path == "/stop":
             _stop_training()
@@ -405,10 +411,9 @@ class _ThreadedHTTPServer(ThreadingMixIn, TCPServer):
 
 
 if __name__ == "__main__":
-    if ES_MODEL_PATH.exists():
-        tmp = ESAgent()
-        tmp.load(str(ES_MODEL_PATH))
-        _update_es_net(tmp.params)
+    if GA_MODEL_PATH.exists():
+        _data = torch.load(GA_MODEL_PATH, map_location="cpu", weights_only=True)
+        _update_ga_net(_data["params"].numpy().astype(np.float32))
 
     if PPO_MODEL_PATH.exists():
         from pong_ai.ppo import PPOAgent
