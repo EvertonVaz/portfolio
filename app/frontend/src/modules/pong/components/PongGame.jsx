@@ -84,7 +84,7 @@ export function PongGame() {
 
     return (
         <div className="flex flex-col items-center gap-4 w-full">
-            <div className="flex items-center justify-between w-full max-w-5xl px-2">
+            <div className="flex flex-wrap items-center justify-between gap-3 w-full max-w-5xl px-2">
                 <div className="flex items-center gap-2">
                     <span className="font-mono text-xs uppercase tracking-widest text-punk-cyan">
                         {mode === 'aivai' ? 'IA' : 'PLAYER'}
@@ -117,13 +117,14 @@ export function PongGame() {
                 </div>
             </div>
 
-            <div className="flex items-stretch gap-4 w-full max-w-5xl">
-                <div className="relative flex-1">
+            <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-center gap-4 w-full max-w-5xl">
+                <div className="w-full max-w-2xl lg:max-w-none mx-auto lg:flex-1 min-w-0">
+                  <div className="relative mx-auto w-fit lg:w-full min-w-0">
                     <canvas
                         ref={canvasRef}
                         width={W}
                         height={H}
-                        className="w-full border border-white/10"
+                        className="block w-auto lg:w-full max-w-full max-h-[70vh] border border-white/10"
                         style={{ background: '#080808', aspectRatio: `${W}/${H}` }}
                     />
 
@@ -143,9 +144,12 @@ export function PongGame() {
                             </button>
                         </div>
                     )}
+                  </div>
                 </div>
 
-                <NeuralNetViz gameStateRef={gameStateRef} />
+                <div className="hidden lg:block shrink-0">
+                    <NeuralNetViz gameStateRef={gameStateRef} />
+                </div>
             </div>
 
             {mode !== 'aivai' && (
