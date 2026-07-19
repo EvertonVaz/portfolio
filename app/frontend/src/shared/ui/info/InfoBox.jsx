@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 const THEMES = {
     terminal: { border: 'border-accent-green' },
     philosophers: { border: 'border-punk-cyan' },
-    fractals: { border: 'border-punk-pink' }
+    fractals: { border: 'border-punk-pink' },
+    pong: { border: 'border-punk-cyan' }
 };
 
 const InfoBox = ({ theme = 'terminal', contentKey }) => {

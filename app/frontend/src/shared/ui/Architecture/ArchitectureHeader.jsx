@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 const THEMES = {
     terminal: { color: 'text-accent-green', bg: 'bg-accent-green/10', border: 'border-accent-green/20' },
     philosophers: { color: 'text-punk-cyan', bg: 'bg-punk-cyan/10', border: 'border-punk-cyan/20' },
-    fractals: { color: 'text-punk-pink', bg: 'bg-punk-pink/10', border: 'border-punk-pink/20' }
+    fractals: { color: 'text-punk-pink', bg: 'bg-punk-pink/10', border: 'border-punk-pink/20' },
+    pong: { color: 'text-punk-cyan', bg: 'bg-punk-cyan/10', border: 'border-punk-cyan/20' }
 };
 
 const ArchitectureHeader = ({ theme = 'terminal', subtitleKey }) => {
