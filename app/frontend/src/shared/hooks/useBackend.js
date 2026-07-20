@@ -10,6 +10,25 @@ import { useEffect, useRef, useState, useCallback } from 'react';
  * @param {boolean} options.autoConnect - Se deve conectar automaticamente no mount
  * @param {number} options.reconnectInterval - Intervalo para tentativa de reconexão em ms
  */
+// O token é emitido para a sessão (cookie). Se dois sockets pedirem ao mesmo
+// tempo antes de a sessão existir, cada request criaria uma sessão diferente e
+// só o último cookie sobreviveria — invalidando o outro token. Compartilhar a
+// requisição em voo garante uma sessão só.
+let tokenInFlight = null;
+
+const fetchToken = async (baseUrl) => {
+    if (!tokenInFlight) {
+        tokenInFlight = fetch(`${baseUrl}/api/token`, {
+            headers: { 'x-terminal-request': 'true' },
+            credentials: 'same-origin',
+        })
+            .then(res => res.json())
+            .then(data => data.token)
+            .finally(() => { tokenInFlight = null; });
+    }
+    return tokenInFlight;
+};
+
 export const useBackend = (endpoint, options = {}) => {
     const {
         useToken = false,
@@ -59,11 +78,7 @@ export const useBackend = (endpoint, options = {}) => {
 
             let token = null;
             if (useToken) {
-                const tokenResponse = await fetch(`${baseUrl}/api/token`, {
-                    headers: { 'x-terminal-request': 'true' }
-                });
-                const authData = await tokenResponse.json();
-                token = authData.token;
+                token = await fetchToken(baseUrl);
 
                 if (!token) throw new Error('Falha ao obter token de autenticação');
             }

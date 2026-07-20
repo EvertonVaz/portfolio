@@ -26,12 +26,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/token': 'http://localhost:4000',
-      '/minishell': {
-        target: 'http://localhost:4000',
-        ws: true,
-        changeOrigin: true
-      },
-      '/philosophers': {
+      '/api': 'http://localhost:4000',
+      // o backend expõe /ws/minishell e /ws/philosophers
+      '/ws': {
         target: 'http://localhost:4000',
         ws: true,
         changeOrigin: true

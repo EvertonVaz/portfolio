@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Socket } from 'phoenix';
 
-export function usePongChannel(roomId = 'lobby') {
+export function usePongChannel() {
     const socketRef = useRef(null);
     const channelRef = useRef(null);
     const gameStateRef = useRef(null);
@@ -11,38 +11,59 @@ export function usePongChannel(roomId = 'lobby') {
     const [models, setModelsState] = useState({ ai: 'ppo', player: 'ppo' });
 
     useEffect(() => {
-        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const socket = new Socket(`${wsProtocol}//${window.location.host}/socket`);
-        socket.connect();
+        let cancelled = false;
+        let socket = null;
+        let channel = null;
 
-        const channel = socket.channel(`game:${roomId}`, {});
-
-        channel.on('game_state', (state) => {
-            gameStateRef.current = state;
-            if (state.status === 'game_over') setGameOver(true);
-            if (state.mode) setModeState(state.mode);
-            if (state.ai_model) {
-                // evita re-render a 60fps: só troca o objeto quando o valor muda
-                setModelsState(prev =>
-                    prev.ai === state.ai_model && prev.player === state.player_model
-                        ? prev
-                        : { ai: state.ai_model, player: state.player_model }
-                );
+        (async () => {
+            // o backend emite o cookie HttpOnly com o room_id da sessão; sem ele
+            // o socket é recusado. O cookie viaja sozinho no handshake do WS.
+            let csrfToken;
+            try {
+                const res = await fetch('/api/pong/room', { credentials: 'include' });
+                ({ csrf_token: csrfToken } = await res.json());
+            } catch (err) {
+                console.error('[PongChannel] falha ao obter a sala:', err);
+                return;
             }
-        });
+            if (cancelled) return;
 
-        channel.join()
-            .receive('ok', () => setConnected(true))
-            .receive('error', (err) => console.error('[PongChannel] join error:', err));
+            const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            socket = new Socket(`${wsProtocol}//${window.location.host}/socket`, {
+                params: { _csrf_token: csrfToken },
+            });
+            socket.connect();
 
-        socketRef.current = socket;
-        channelRef.current = channel;
+            channel = socket.channel('game:pong', {});
+
+            channel.on('game_state', (state) => {
+                gameStateRef.current = state;
+                if (state.status === 'game_over') setGameOver(true);
+                if (state.mode) setModeState(state.mode);
+                if (state.ai_model) {
+                    // evita re-render a 60fps: só troca o objeto quando o valor muda
+                    setModelsState(prev =>
+                        prev.ai === state.ai_model && prev.player === state.player_model
+                            ? prev
+                            : { ai: state.ai_model, player: state.player_model }
+                    );
+                }
+            });
+
+            channel.join()
+                .receive('ok', () => setConnected(true))
+                .receive('error', (err) => console.error('[PongChannel] join error:', err));
+
+            socketRef.current = socket;
+            channelRef.current = channel;
+        })();
 
         return () => {
-            channel.leave();
-            socket.disconnect();
+            cancelled = true;
+            channel?.leave();
+            socket?.disconnect();
         };
-    }, [roomId]);
+    }, []);
 
     const movePlayer = useCallback((direction) => {
         channelRef.current?.push('player_move', { direction });

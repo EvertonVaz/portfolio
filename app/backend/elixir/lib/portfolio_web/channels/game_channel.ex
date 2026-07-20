@@ -1,8 +1,11 @@
 defmodule PortfolioWeb.GameChannel do
   use Phoenix.Channel
 
+  # O tópico é fixo; a sala real vem do cookie, resolvida no UserSocket.connect/3.
   @impl true
-  def join("game:" <> room_id, _params, socket) do
+  def join("game:" <> _topic, _params, socket) do
+    room_id = socket.assigns.room_id
+
     case Portfolio.Pong.GameSupervisor.start_game(room_id) do
       {:ok, _pid} -> :ok
       {:error, {:already_started, _pid}} -> :ok
@@ -10,7 +13,7 @@ defmodule PortfolioWeb.GameChannel do
     end
 
     Phoenix.PubSub.subscribe(Portfolio.PubSub, "game:#{room_id}")
-    socket = assign(socket, :room_id, room_id)
+    Portfolio.Pong.GameServer.viewer_joined(room_id, socket.channel_pid)
     send(self(), :push_initial_state)
     {:ok, socket}
   end

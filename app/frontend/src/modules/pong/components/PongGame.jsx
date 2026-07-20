@@ -28,7 +28,7 @@ function ModelSelect({ value, onChange }) {
 
 export function PongGame() {
     const canvasRef = useRef(null);
-    const { gameStateRef, connected, gameOver, mode, models, movePlayer, restart, setMode, setModels } = usePongChannel('lobby');
+    const { gameStateRef, connected, gameOver, mode, models, movePlayer, restart, setMode, setModels } = usePongChannel();
     const keysRef = useRef(new Set());
 
     // RAF render loop — bypasses React re-renders entirely for 60fps
@@ -83,8 +83,9 @@ export function PongGame() {
     }, [movePlayer]);
 
     return (
-        <div className="flex flex-col items-center gap-4 w-full">
-            <div className="flex flex-wrap items-center justify-between gap-3 w-full max-w-5xl px-2">
+        <div className="flex flex-col items-center justify-center w-full min-h-[calc(100dvh_-_3.5rem)]">
+          <div className="flex flex-col items-center gap-4 w-full max-w-5xl">
+            <div className="flex flex-wrap items-center justify-between gap-3 w-full px-2">
                 <div className="flex items-center gap-2">
                     <span className="font-mono text-xs uppercase tracking-widest text-punk-cyan">
                         {mode === 'aivai' ? 'IA' : 'PLAYER'}
@@ -117,14 +118,14 @@ export function PongGame() {
                 </div>
             </div>
 
-            <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-center gap-4 w-full max-w-5xl">
-                <div className="w-full max-w-2xl lg:max-w-none mx-auto lg:flex-1 min-w-0">
-                  <div className="relative mx-auto w-fit lg:w-full min-w-0">
+            <div className="flex flex-col lg:flex-row items-center lg:items-stretch justify-center gap-4">
+                <div className="w-full max-w-2xl lg:w-auto lg:max-w-none mx-auto min-w-0">
+                  <div className="relative mx-auto w-fit min-w-0">
                     <canvas
                         ref={canvasRef}
                         width={W}
                         height={H}
-                        className="block w-auto lg:w-full max-w-full max-h-[70vh] border border-white/10"
+                        className="block w-auto max-w-full max-h-[calc(100dvh_-_11rem)] border border-white/10"
                         style={{ background: '#080808', aspectRatio: `${W}/${H}` }}
                     />
 
@@ -157,6 +158,7 @@ export function PongGame() {
                     ↑ / W &nbsp;|&nbsp; ↓ / S &nbsp;—&nbsp; mover raquete
                 </div>
             )}
+          </div>
         </div>
     );
 }

@@ -1,8 +1,17 @@
 defmodule Portfolio.Pong.GameServer do
-  use GenServer
+  # :transient — um encerramento normal (sala vazia) não deve ser reiniciado
+  use GenServer, restart: :transient
 
   def start_link(room_id) do
     GenServer.start_link(__MODULE__, room_id, name: via(room_id))
+  end
+
+  @doc """
+  Registra um viewer (processo do channel) na sala. O servidor monitora o pid e
+  se encerra sozinho quando o último viewer sai.
+  """
+  def viewer_joined(room_id, pid) do
+    GenServer.cast(via(room_id), {:viewer_joined, pid})
   end
 
   def set_player_direction(room_id, direction) do
@@ -37,7 +46,13 @@ defmodule Portfolio.Pong.GameServer do
   def init(room_id) do
     cfg = Application.get_env(:portfolio, :pong) |> Map.new()
     Process.send_after(self(), :tick, cfg.tick_ms)
-    {:ok, initial_state(room_id, cfg)}
+    # cobre a sala órfã: criada mas sem nenhum viewer registrado
+    schedule_idle_check(cfg)
+    {:ok, initial_state(room_id, cfg) |> Map.put(:viewers, MapSet.new())}
+  end
+
+  defp schedule_idle_check(cfg) do
+    Process.send_after(self(), :idle_stop, cfg.idle_grace_ms)
   end
 
   @impl true
@@ -56,11 +71,22 @@ defmodule Portfolio.Pong.GameServer do
   end
 
   def handle_cast(:restart, state) do
-    {:noreply, initial_state(state.room_id, state.cfg, state.mode, state.ai_model, state.player_model)}
+    {:noreply,
+     state.room_id
+     |> initial_state(state.cfg, state.mode, state.ai_model, state.player_model)
+     |> Map.put(:viewers, state.viewers)}
+  end
+
+  def handle_cast({:viewer_joined, pid}, state) do
+    ref = Process.monitor(pid)
+    {:noreply, %{state | viewers: MapSet.put(state.viewers, ref)}}
   end
 
   def handle_cast({:set_mode, mode}, state) do
-    {:noreply, initial_state(state.room_id, state.cfg, mode, state.ai_model, state.player_model)}
+    {:noreply,
+     state.room_id
+     |> initial_state(state.cfg, mode, state.ai_model, state.player_model)
+     |> Map.put(:viewers, state.viewers)}
   end
 
   # Troca de modelo ao vivo — não reinicia a partida
@@ -80,6 +106,20 @@ defmodule Portfolio.Pong.GameServer do
   end
 
   @impl true
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, state) do
+    viewers = MapSet.delete(state.viewers, ref)
+    if MapSet.size(viewers) == 0, do: schedule_idle_check(state.cfg)
+    {:noreply, %{state | viewers: viewers}}
+  end
+
+  def handle_info(:idle_stop, state) do
+    if MapSet.size(state.viewers) == 0 do
+      {:stop, :normal, state}
+    else
+      {:noreply, state}
+    end
+  end
+
   def handle_info(:tick, %{status: :game_over} = state) do
     Phoenix.PubSub.broadcast(Portfolio.PubSub, "game:#{state.room_id}", {:game_state, state})
     Process.send_after(self(), :tick, state.cfg.tick_ms)
