@@ -55,6 +55,92 @@ function NetworkDiagram() {
     );
 }
 
+// ── diagrama do colapso: a rede trava numa saída só ───────────────────────────
+// três barras (subir / descer / parar); uma cravada no máximo, as outras mortas —
+// é o que "colapsar numa ação só" quer dizer, legível num segundo.
+const COLLAPSE_BARS = [
+    { label: '↑ subir',  value: 1.0,  dead: false },
+    { label: '↓ descer', value: 0.04, dead: true  },
+    { label: '· parar',  value: 0.02, dead: true  },
+];
+
+function CollapseDiagram() {
+    const W = 320, BAR_H = 26, GAP = 18, PAD_L = 68, TRACK = 180, TOP = 20;
+    const H = TOP + COLLAPSE_BARS.length * (BAR_H + GAP);
+    return (
+        <svg viewBox={`0 0 ${W} ${H}`} width="100%" className="block"
+             style={{ background: '#080808', border: '1px solid rgba(255,255,255,0.08)' }}>
+            {COLLAPSE_BARS.map((b, i) => {
+                const y = TOP + i * (BAR_H + GAP);
+                const w = Math.max(TRACK * b.value, 3);
+                const fill = b.dead ? 'rgba(255,255,255,0.12)' : '#ff2d78';
+                return (
+                    <g key={b.label}>
+                        <text x={PAD_L - 10} y={y + BAR_H / 2 + 3} textAnchor="end"
+                              fill="rgba(255,255,255,0.4)" fontSize="10" fontFamily="monospace">{b.label}</text>
+                        <rect x={PAD_L} y={y} width={TRACK} height={BAR_H} fill="rgba(255,255,255,0.04)" />
+                        <rect x={PAD_L} y={y} width={w} height={BAR_H} fill={fill}
+                              opacity={b.dead ? 1 : 0.85} />
+                    </g>
+                );
+            })}
+        </svg>
+    );
+}
+
+// ── diagrama da arquitetura: Browser ↔ Elixir ↔ Python ────────────────────────
+// o loop da arena ao vivo — cada caixa é um serviço, cada seta um fluxo.
+const ARCH_BOXES = [
+    { x: 12,  label: 'BROWSER', sub: 'canvas + teclado', color: '#00f0ff' },
+    { x: 214, label: 'ELIXIR',  sub: 'física · 60 fps',  color: '#ffffff' },
+    { x: 416, label: 'PYTHON',  sub: 'rede neural',       color: '#ff2d78' },
+];
+
+function ArchDiagram() {
+    const BW = 132, BH = 60, BY = 60;
+    return (
+        <svg viewBox="0 0 560 160" width="100%" className="block"
+             style={{ background: '#080808', border: '1px solid rgba(255,255,255,0.08)' }}>
+            <defs>
+                <marker id="arch-arr" viewBox="0 0 10 10" refX="8" refY="5"
+                        markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.4)" />
+                </marker>
+            </defs>
+
+            {/* browser ↔ elixir */}
+            <g fontFamily="monospace" fontSize="8" fill="rgba(255,255,255,0.4)">
+                <line x1={144} y1={78}  x2={214} y2={78}  stroke="rgba(255,255,255,0.22)" markerEnd="url(#arch-arr)" />
+                <line x1={214} y1={102} x2={144} y2={102} stroke="rgba(255,255,255,0.22)" markerEnd="url(#arch-arr)" />
+                <text x={179} y={42}  textAnchor="middle" fill="#00f0ff" opacity="0.7">WebSocket</text>
+                <text x={179} y={74}  textAnchor="middle">teclas</text>
+                <text x={179} y={116} textAnchor="middle">game_state</text>
+            </g>
+
+            {/* elixir ↔ python */}
+            <g fontFamily="monospace" fontSize="8" fill="rgba(255,255,255,0.4)">
+                <line x1={346} y1={78}  x2={416} y2={78}  stroke="rgba(255,255,255,0.22)" markerEnd="url(#arch-arr)" />
+                <line x1={416} y1={102} x2={346} y2={102} stroke="rgba(255,255,255,0.22)" markerEnd="url(#arch-arr)" />
+                <text x={381} y={42}  textAnchor="middle" fill="#ff2d78" opacity="0.7">RabbitMQ</text>
+                <text x={381} y={74}  textAnchor="middle">estado</text>
+                <text x={381} y={116} textAnchor="middle">ação</text>
+            </g>
+
+            {/* serviços */}
+            {ARCH_BOXES.map((b) => (
+                <g key={b.label}>
+                    <rect x={b.x} y={BY} width={BW} height={BH} fill="rgba(255,255,255,0.03)"
+                          stroke={b.color} strokeOpacity="0.4" />
+                    <text x={b.x + BW / 2} y={BY + 26} textAnchor="middle"
+                          fill={b.color} fontSize="13" fontFamily="monospace" fontWeight="bold">{b.label}</text>
+                    <text x={b.x + BW / 2} y={BY + 44} textAnchor="middle"
+                          fill="rgba(255,255,255,0.4)" fontSize="9" fontFamily="monospace">{b.sub}</text>
+                </g>
+            ))}
+        </svg>
+    );
+}
+
 // ── código real (ilustrativo, não traduzido) ──────────────────────────────────
 const NET_CODE = `class QNetwork(nn.Module):        # 6 → 16 → 16 → 3
     def __init__(self):
@@ -78,12 +164,17 @@ const GA_CODE = `def next_generation(genomes, fitness):
         new_pop.append(child)
     return new_pop`;
 
-const PIPE_CODE = `# main.py — para cada estado publicado pelo Elixir
-async def handle_state(msg):
-    state  = json.loads(msg.body)
-    obs    = state_to_obs(state)     # 6 números normalizados
-    action = agent.predict(obs)      # argmax da rede → 0/1/2
-    publish(DIRECTION[action])       # volta ao Elixir via RabbitMQ`;
+const PPO_CODE = `# treino PPO — um agente que se corrige a cada jogada
+for jogada in partida:
+    acao     = politica(estado)             # o "ator" decide
+    vantagem = retorno - critico(estado)    # o "crítico" julga
+
+    # passo curto: anda na direção da vantagem, mas
+    # sem mudar demais de uma vez (o "proximal" do PPO)
+    razao = nova_prob(acao) / prob_antiga(acao)
+    ganho = min(razao * vantagem,
+                clip(razao, 0.8, 1.2) * vantagem)
+    ajusta_pesos(para_maximizar=ganho)`;
 
 export default function PongDevlog() {
     const { t } = useTranslation();
@@ -99,7 +190,11 @@ export default function PongDevlog() {
                 </div>
             ),
         },
-        { title: t('pong.devlog_beat2_title'), body: t('pong.devlog_beat2_body') },
+        {
+            title: t('pong.devlog_beat2_title'),
+            body: t('pong.devlog_beat2_body'),
+            visual: <CollapseDiagram />,
+        },
         {
             title: t('pong.devlog_beat3_title'),
             body: t('pong.devlog_beat3_body'),
@@ -109,7 +204,12 @@ export default function PongDevlog() {
         {
             title: t('pong.devlog_beat5_title'),
             body: t('pong.devlog_beat5_body'),
-            visual: <CodeBlock file="main.py">{PIPE_CODE}</CodeBlock>,
+            visual: <CodeBlock file="train_ppo.py">{PPO_CODE}</CodeBlock>,
+        },
+        {
+            title: t('pong.devlog_beat6_title'),
+            body: t('pong.devlog_beat6_body'),
+            visual: <ArchDiagram />,
         },
     ];
 
