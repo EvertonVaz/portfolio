@@ -2,22 +2,27 @@ import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './shared/ui/layout/Layout'
 import ScrollSection from './shared/ui/ScrollSection'
+import ScrollToTop from './shared/ui/ScrollToTop'
+
+// Rotas de "/" carregam eager (renderizam no primeiro paint)
 import Home from './modules/home/pages/Home'
-import TerminalPage from './modules/terminal/pages/TerminalPage'
-import FractalPage from './modules/fractal/pages/FractalPage'
 import WorkPage from './modules/portfolio/pages/WorkPage'
 import ContactPage from './modules/portfolio/pages/ContactPage'
-import PhilosophersPage from './modules/philosophers/pages/PhilosophersPage'
-import PongPage from './modules/pong/pages/PongPage'
+
+// Rotas fora de "/" sob demanda (code splitting): cada uma vira um chunk
+// próprio, tirando phoenix e as árvores das demos do bundle inicial.
+const JourneyPage = lazy(() => import('./modules/journey/pages/JourneyPage'))
+const LabsPage = lazy(() => import('./modules/labs/pages/LabsPage'))
+const TerminalPage = lazy(() => import('./modules/terminal/pages/TerminalPage'))
+const FractalPage = lazy(() => import('./modules/fractal/pages/FractalPage'))
+const PhilosophersPage = lazy(() => import('./modules/philosophers/pages/PhilosophersPage'))
+const PongPage = lazy(() => import('./modules/pong/pages/PongPage'))
 
 // Página de treino só existe em dev (depende do make train-server);
 // fora do bundle de produção via dead-code elimination
 const PongTrainingPage = import.meta.env.DEV
   ? lazy(() => import('./modules/pong/pages/PongTrainingPage'))
   : null
-import JourneyPage from './modules/journey/pages/JourneyPage'
-import LabsPage from './modules/labs/pages/LabsPage'
-import ScrollToTop from './shared/ui/ScrollToTop'
 
 /**
  * Componente Principal da Aplicação.
@@ -28,6 +33,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <Layout>
+        <Suspense fallback={null}>
         <Routes>
           <Route path="/" element={
             <>
@@ -54,16 +60,10 @@ function App() {
           <Route path="/philosophers" element={<PhilosophersPage />} />
           <Route path="/pong" element={<PongPage />} />
           {import.meta.env.DEV && (
-            <Route
-              path="/pong/training"
-              element={
-                <Suspense fallback={null}>
-                  <PongTrainingPage />
-                </Suspense>
-              }
-            />
+            <Route path="/pong/training" element={<PongTrainingPage />} />
           )}
         </Routes>
+        </Suspense>
       </Layout>
     </Router>
   )
