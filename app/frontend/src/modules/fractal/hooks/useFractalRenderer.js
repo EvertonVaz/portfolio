@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef } from 'react';
 import { VERTEX_SHADER, FRAGMENT_SHADER } from '../utils/FractalShaders';
 
 /**

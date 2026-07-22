@@ -99,7 +99,7 @@ export const useBackend = (endpoint, options = {}) => {
                 try {
                     // Tenta fazer o parse automático se for JSON
                     payload = JSON.parse(event.data);
-                } catch (e) {
+                } catch {
                     // Mantém como string se não for JSON
                 }
                 emit('message', payload);

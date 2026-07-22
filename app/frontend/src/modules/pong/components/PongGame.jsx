@@ -28,7 +28,7 @@ function ModelSelect({ value, onChange }) {
 
 export function PongGame() {
     const canvasRef = useRef(null);
-    const { gameStateRef, connected, gameOver, mode, models, movePlayer, restart, setMode, setModels } = usePongChannel();
+    const { gameStateRef, connected, gameOver, finalScore, mode, models, movePlayer, restart, setMode, setModels } = usePongChannel();
     const keysRef = useRef(new Set());
 
     // RAF render loop — bypasses React re-renders entirely for 60fps
@@ -132,10 +132,10 @@ export function PongGame() {
                     {gameOver && (
                         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70">
                             <p className="font-mono text-4xl font-black uppercase text-white mb-2">
-                                {gameStateRef.current?.player?.score >= 7 ? 'VOCÊ GANHOU' : 'IA GANHOU'}
+                                {(finalScore?.player ?? 0) >= 7 ? 'VOCÊ GANHOU' : 'IA GANHOU'}
                             </p>
                             <p className="font-mono text-sm text-white/40 mb-8 uppercase tracking-widest">
-                                {gameStateRef.current?.player?.score} — {gameStateRef.current?.ai?.score}
+                                {finalScore?.player} — {finalScore?.ai}
                             </p>
                             <button
                                 onClick={restart}

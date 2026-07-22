@@ -1,9 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { useTranslation, Trans } from 'react-i18next';
+import { Trans } from 'react-i18next';
 
 const ProfileDescription = () => {
-    const { t } = useTranslation();
 
     return (
         <div className="max-w-2xl mx-auto mb-12 flex flex-col gap-6">

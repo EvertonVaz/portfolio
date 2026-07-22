@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useBackend } from '../../../shared/hooks/useBackend';
 
 export function usePhilosophersSocket() {
@@ -76,7 +76,7 @@ export function usePhilosophersSocket() {
                         // Ignore command echoing
                     }
                 }
-            } catch (e) {
+            } catch {
                 // Fallback for plain text messages (legacy or errors)
                 console.log("Received raw:", payload);
             }

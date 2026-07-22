@@ -21,7 +21,6 @@ const HeroProfileCard = ({
     titleColor,
     i18nKey,
     fallbackDesc,
-    glowGradient,
     badgeColor,
     borderHover,
     children

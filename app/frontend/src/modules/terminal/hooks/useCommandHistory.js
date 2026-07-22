@@ -18,7 +18,7 @@ export const useCommandHistory = () => {
         setCursor(-1); // Reseta o cursor após um novo comando
     }, []);
 
-    const navigateUp = useCallback((currentInput) => {
+    const navigateUp = useCallback(() => {
         if (history.length === 0) return null;
 
         let newCursor;

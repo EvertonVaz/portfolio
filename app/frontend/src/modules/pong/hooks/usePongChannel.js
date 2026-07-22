@@ -7,6 +7,7 @@ export function usePongChannel() {
     const gameStateRef = useRef(null);
     const [connected, setConnected] = useState(false);
     const [gameOver, setGameOver] = useState(false);
+    const [finalScore, setFinalScore] = useState(null);
     const [mode, setModeState] = useState('pvp');
     const [models, setModelsState] = useState({ ai: 'ppo', player: 'ppo' });
 
@@ -38,7 +39,10 @@ export function usePongChannel() {
 
             channel.on('game_state', (state) => {
                 gameStateRef.current = state;
-                if (state.status === 'game_over') setGameOver(true);
+                if (state.status === 'game_over') {
+                    setGameOver(true);
+                    setFinalScore({ player: state.player?.score ?? 0, ai: state.ai?.score ?? 0 });
+                }
                 if (state.mode) setModeState(state.mode);
                 if (state.ai_model) {
                     // evita re-render a 60fps: só troca o objeto quando o valor muda
@@ -72,6 +76,7 @@ export function usePongChannel() {
     const restart = useCallback(() => {
         channelRef.current?.push('restart', {});
         setGameOver(false);
+        setFinalScore(null);
     }, []);
 
     const setMode = useCallback((newMode) => {
@@ -83,5 +88,5 @@ export function usePongChannel() {
         channelRef.current?.push('set_models', { ai_model: aiModel, player_model: playerModel });
     }, []);
 
-    return { gameStateRef, connected, gameOver, mode, models, movePlayer, restart, setMode, setModels };
+    return { gameStateRef, connected, gameOver, finalScore, mode, models, movePlayer, restart, setMode, setModels };
 }

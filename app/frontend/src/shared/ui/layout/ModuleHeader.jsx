@@ -32,7 +32,7 @@ const THEMES = {
     }
 };
 
-const ModuleHeader = ({ theme = 'terminal', titleKey, introKey, obsKey }) => {
+const ModuleHeader = ({ theme = 'terminal', titleKey, introKey }) => {
     const { t } = useTranslation();
     const config = THEMES[theme] || THEMES.terminal;
 
