@@ -2,6 +2,7 @@ _old_assets/
 deploy/
 envs/*
 !envs/.env.pong
+.claude/settings.local.json
 
 
 # The directory Mix will write compiled artifacts to.
