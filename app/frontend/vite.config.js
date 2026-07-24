@@ -5,10 +5,7 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { execSync } from 'child_process'
 
-// Versão exibida em runtime (comando `version` do /terminal): "v<semver> (<sha>)".
-// O semver vem do package.json (viaja dentro do commit); o sha vem do SOURCE_COMMIT
-// que o Coolify injeta no build. Em dev local o sha cai no git; sem git nem env, some.
-// VITE_APP_VERSION sobrescreve tudo (escape hatch, igual PORTFOLIO_VERSION do backend).
+
 function appVersion() {
   if (process.env.VITE_APP_VERSION) return process.env.VITE_APP_VERSION
   const { version } = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'))

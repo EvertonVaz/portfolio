@@ -36,12 +36,6 @@ if [[ ! "$ok" =~ ^[Yy]$ ]]; then
   exit 1
 fi
 
-# npm version exige working tree limpo (ele cria commit).
-if [[ -n "$(git status --porcelain)" ]]; then
-  echo "✗ working tree sujo — commite seu trabalho antes de bumpar"
-  exit 1
-fi
-
 branch=$(git rev-parse --abbrev-ref HEAD)
 if [[ "$branch" != "main" ]]; then
   echo "⚠  você está em '$branch', não em 'main' — o Coolify deploya no push da main"
