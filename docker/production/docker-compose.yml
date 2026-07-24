@@ -53,6 +53,9 @@ services:
     build:
       context: ../..
       dockerfile: docker/production/frontend.Dockerfile
+      args:
+        # Coolify injeta SOURCE_COMMIT no build; fora dele cai em "dev"
+        SOURCE_COMMIT: ${SOURCE_COMMIT:-dev}
     restart: always
     expose:
       - "80"

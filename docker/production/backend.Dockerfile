@@ -11,7 +11,14 @@ RUN mix deps.get --only prod && mix deps.compile
 
 COPY app/backend/elixir/config ./config
 COPY app/backend/elixir/lib ./lib
-RUN mix release --overwrite
+
+# Versão unificada com o frontend: o package.json é a fonte única do número.
+# Lê daqui e passa pro mix via PORTFOLIO_VERSION (o mix.exs já usa essa env),
+# sem hardcode no mix.exs. O sha do commit fica por conta do Coolify em runtime.
+COPY app/frontend/package.json ./frontend-package.json
+RUN export PORTFOLIO_VERSION="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' frontend-package.json | head -1)" \
+    && echo "release version: ${PORTFOLIO_VERSION:-<vazio>}" \
+    && mix release --overwrite
 
 # Runtime: glibc (bookworm) — o ERTS e os binários C do 42 são linkados contra glibc
 FROM debian:12-slim

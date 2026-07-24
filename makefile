@@ -42,8 +42,8 @@ DOCKER_COMPOSE = docker compose
 COMPOSE_FILE = ./docker/production/docker-compose.yml
 COMPOSE_LOCAL = ./docker/production/docker-compose.local.yml
 
-deploy:
-	bash ./deploy/deploy.sh
+release:
+	bash ./scripts/release.sh
 
 docker-up: docker-down
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d --build

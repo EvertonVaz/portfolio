@@ -60,6 +60,16 @@ const Terminal = () => {
                 return;
             }
 
+            if (cmd.toLowerCase() === 'version') {
+                setHistoryLines(prev => [
+                    ...prev,
+                    { type: 'input', content: cmd },
+                    { type: 'output', content: `born2code portfolio ${import.meta.env.VITE_APP_VERSION ?? 'dev'}` }
+                ]);
+                setInput('');
+                return;
+            }
+
             if (cmd.toLowerCase() === 'help') {
                 setHistoryLines(prev => [
                     ...prev,
