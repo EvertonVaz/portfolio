@@ -49,7 +49,13 @@ if [[ "$branch" != "main" ]]; then
   [[ "${go:-n}" =~ ^[Yy]$ ]] || { echo "cancelado"; exit 1; }
 fi
 
-( cd "$FRONTEND" && npm version "$version" -m "Release v%s" )
+# npm version só bumpa os arquivos (--no-git-tag-version): quando o package.json
+# está num subdir e não na raiz do git, o npm PULA o commit/tag silenciosamente.
+# Por isso o commit e a tag são feitos aqui, explícitos, a partir da raiz.
+( cd "$FRONTEND" && npm version "$version" --no-git-tag-version )
+git add "$FRONTEND/package.json" "$FRONTEND/package-lock.json"
+git commit -m "Release v$version"
+git tag -a "v$version" -m "Release v$version"
 git push --follow-tags
 
 echo "✓ v$version publicado — o Coolify vai deployar o push da $branch"
