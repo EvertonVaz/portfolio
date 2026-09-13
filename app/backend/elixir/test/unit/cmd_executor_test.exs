@@ -20,5 +20,19 @@ defmodule Portfolio.Terminal.CmdExecutorTest do
     test "handles edge case with extra spaces" do
       assert {:ok, _} = CmdExecutor.execute("  echo   hello  ")
     end
+
+    test "does not let a single quote escape into the host shell" do
+      marker = Path.join(System.tmp_dir!(), "cmd_executor_pwned_#{System.unique_integer([:positive])}")
+      refute File.exists?(marker)
+
+      # A aspa simples fechava o `echo '...'` da implementação antiga e o `;`
+      # emendava um comando arbitrário rodando no shell do host.
+      CmdExecutor.execute("echo x'; touch #{marker}; echo '")
+
+      refute File.exists?(marker),
+             "injeção de comando alcançou o host: #{marker} foi criado"
+
+      File.rm(marker)
+    end
   end
 end
