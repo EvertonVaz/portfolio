@@ -14,7 +14,7 @@ defmodule Portfolio.Terminal.ProcessorTest do
       assert result =~ "Portfolio Backend v1.0"
     end
 
-    test "processes 'echo' command via CmdExecutor" do
+    test "processes 'echo' command in pure Elixir" do
       result = Processor.process("echo test")
       assert result =~ "test"
     end
