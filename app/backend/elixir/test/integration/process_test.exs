@@ -2,8 +2,9 @@ defmodule Portfolio.IntegrationTest do
   use ExUnit.Case
 
   test "full flow execution" do
-    # This is similar to unit test in this simple architecture,
-    # but could test more interacting parts if we had them.
-    assert Portfolio.Terminal.execute("whoami") =~ "root"
+    # Fluxo completo entrada -> Processor -> saída, tudo em Elixir (sem shell).
+    result = Portfolio.Terminal.execute("echo integração")
+    assert result =~ "integração"
+    refute result =~ "[ERROR]"
   end
 end

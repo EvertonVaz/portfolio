@@ -1,46 +1,28 @@
 defmodule Portfolio.Terminal.Processor do
   @moduledoc """
-  Processes terminal commands.
+  Processa os comandos da vitrine do terminal — inteiramente em Elixir.
+
+  Nenhuma entrada do visitante chega a um shell: `echo` só devolve texto e os
+  demais comandos são respostas fixas. O binário `minishell` segue no projeto
+  como vitrine, mas não é mais invocado com entrada livre.
   """
-  alias Portfolio.Terminal.Command
-  alias Portfolio.Terminal.CmdExecutor
-  alias Portfolio.Terminal.Sanitizer
 
   def process(input) do
-    %Command{input: input}
-    |> execute()
-    |> Sanitizer.sanitize_response()
-    |> format()
-    |> finalize()
-  end
-
-  defp execute(%Command{input: input} = command) do
-    parts = String.split(input)
-
-    case parts do
-      ["help"] ->
-        %{command | raw_output: help_text()}
-
-      ["about"] ->
-        %{command | raw_output: about_text()}
-
-      _ ->
-        case CmdExecutor.execute(input) do
-          {:ok, output} -> %{command | raw_output: output}
-          {:error, reason} -> %{command | error: reason}
-        end
+    case String.trim(input) do
+      "help" -> help_text()
+      "about" -> about_text()
+      "date" -> current_date()
+      "echo" -> ""
+      "echo " <> rest -> rest
+      other -> "[ERROR] Command not found: #{first_word(other)}"
     end
   end
 
-  defp format(%Command{error: nil, raw_output: output} = command) do
-    %{command | formatted_output: output}
-  end
+  defp first_word(input), do: input |> String.split() |> List.first() || ""
 
-  defp format(%Command{error: reason} = command) do
-    %{command | formatted_output: "[ERROR] #{reason}"}
+  defp current_date do
+    DateTime.utc_now() |> DateTime.to_string()
   end
-
-  defp finalize(%Command{formatted_output: formatted}), do: formatted
 
   defp help_text do
     """

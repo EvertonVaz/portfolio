@@ -4,25 +4,28 @@ defmodule Portfolio.TerminalTest do
   alias Portfolio.Terminal
 
   describe "execute/1" do
-    test "echo command returns matched input" do
-      result = Terminal.execute("echo hello")
-      assert result =~ "hello"
+    test "echo command returns the given text" do
+      assert Terminal.execute("echo hello") =~ "hello"
+    end
+
+    test "echo is pure Elixir and never runs a shell" do
+      # Metacaracteres de shell são só texto agora: nada é executado.
+      result = Terminal.execute("echo a && id")
+      assert result =~ "a && id"
+      refute result =~ "uid="
     end
 
     test "date command returns a date" do
-      result = Terminal.execute("date")
-      assert result =~ to_string(Date.utc_today().year)
+      assert Terminal.execute("date") =~ to_string(Date.utc_today().year)
     end
 
-    test "unknown/forbidden command returns error" do
+    test "unknown command returns error" do
       result = Terminal.execute("rm -rf /")
       assert result =~ "[ERROR]"
-      assert result =~ "Command not allowed"
     end
 
     test "help command returns help text" do
-      result = Terminal.execute("help")
-      assert result =~ "Available commands"
+      assert Terminal.execute("help") =~ "Available commands"
     end
   end
 end

@@ -36,6 +36,12 @@ COPY --from=build /build/_build/prod/rel/portfolio ./
 # O backend invoca ./minishell e ./philosophers relativos ao cwd (Path.expand)
 COPY app/backend/elixir/minishell app/backend/elixir/philosophers ./
 
+# Usuário sem privilégio: o minishell/philosophers (e qualquer coisa que escape)
+# não roda como root. Dono dos arquivos para o release conseguir ler o que precisa.
+RUN useradd --system --no-create-home --uid 10001 app \
+    && chown -R app:app /app
+USER app
+
 EXPOSE 4000
 
 CMD ["./bin/portfolio", "start"]
