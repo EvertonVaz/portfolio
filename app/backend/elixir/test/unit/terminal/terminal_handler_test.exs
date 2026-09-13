@@ -11,7 +11,7 @@ defmodule PortfolioWeb.TerminalHandlerTest do
   describe "handle_in/2" do
     test "handles text input and returns response" do
       assert {:push, {:text, response}, []} = TerminalHandler.handle_in({"help", :text}, [])
-      assert response =~ "Available commands"
+      assert response =~ "Comandos"
     end
   end
 
