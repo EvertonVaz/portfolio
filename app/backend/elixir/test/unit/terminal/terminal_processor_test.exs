@@ -3,20 +3,20 @@ defmodule Portfolio.Terminal.ProcessorTest do
 
   alias Portfolio.Terminal.Processor
 
-  describe "process/2" do
+  describe "process/1" do
     test "processes 'help' command" do
       result = Processor.process("help")
-      assert result =~ "Available commands"
-    end
-
-    test "processes 'about' command" do
-      result = Processor.process("about")
-      assert result =~ "Portfolio Backend v1.0"
+      assert result =~ "ls" and result =~ "cat"
     end
 
     test "processes 'echo' command in pure Elixir" do
       result = Processor.process("echo test")
       assert result =~ "test"
+    end
+
+    test "processes 'ls' command" do
+      result = Processor.process("ls")
+      assert result =~ "about.txt"
     end
 
     test "returns error for unknown command" do
