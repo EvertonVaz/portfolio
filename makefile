@@ -57,3 +57,8 @@ docker-down:
 
 docker-logs:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
+
+lint:
+	cd ./app/frontend && npm run lint
+# 	cd ./app/backend/elixir && mix format --check-formatted
+# 	cd ./app/backend/python && black --check .

@@ -2,7 +2,7 @@
 
 ## Deploy / Produção
 
-- [ ] Passar `PORTFOLIO_VERSION` como build arg no `backend.Dockerfile` — o `mix.exs` lê em build time; hoje a release sai como `0.1.0`
+- [ ]
 
 ## Segurança
 
@@ -12,8 +12,6 @@
 ## Frontend
 
 
-
 ## Conteúdo (pivot do portfolio)
 
-- [ ]
-
+- [ ] Considerar cards externos no `/work` (GitHub dos projetos da 42, por exemplo)
