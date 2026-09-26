@@ -58,6 +58,10 @@ docker-down:
 docker-logs:
 	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
 
+# Testes de segurança da jaula do minishell, no container real (read_only, capabilities e limites do compose)
+sandbox-test:
+	SECRET_KEY_BASE=teste $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) run --rm --build shell-sandbox /sandbox/test-jail.sh /sandbox/run-minishell
+
 lint:
 	cd ./app/frontend && npm run lint
 # 	cd ./app/backend/elixir && mix format --check-formatted

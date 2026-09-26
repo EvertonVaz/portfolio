@@ -1,0 +1,5 @@
+Everton Vaz — engenheiro de software full-stack (Python, TypeScript, Go).
+Formado pela 42 São Paulo (2023–2024). Antes do código, 13 anos à frente da Tribo Teen.
+
+Você está no minishell de verdade: o shell em C que escrevi em dupla na 42 (nota 116).
+Ele roda numa jaula sem rede e somente leitura; os únicos programas aqui são ls, cat, whoami, clear e help.

@@ -1,0 +1,6 @@
+minishell     shell em C: lexer, parser com AST, pipes, redirecionamentos e heredoc (nota 116)
+philosophers  jantar dos filósofos com threads e mutexes, sem deadlock (nota 125)
+fractol       fractais em C com MLX42 (nota 125)
+pong          IA treinada do zero com Algoritmo Genético e PPO, jogando ao vivo em Elixir
+juno          SaaS de microcrédito em FastAPI e React, com mais de 540 testes
+career-mcp    servidor MCP que mantém currículo, LinkedIn e este portfólio coerentes

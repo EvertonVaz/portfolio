@@ -30,6 +30,36 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    networks:
+      - default
+      - sandbox
+
+  # Minishell real numa jaula (docker/sandbox): sem segredos, sem saída para a internet,
+  # sistema de arquivos somente leitura. Só o backend alcança a porta 7000.
+  shell-sandbox:
+    build:
+      context: ../..
+      dockerfile: docker/sandbox/Dockerfile
+    restart: always
+    read_only: true
+    tmpfs:
+      # único lugar gravável: o heredoc do minishell escreve em /tmp
+      - /jail/tmp:size=1m,mode=1777,noexec,nosuid,nodev
+    cap_drop:
+      - ALL
+    cap_add:
+      # chroot + troca para o usuário sem privilégio, e o timeout matar a sessão depois dela
+      - SYS_CHROOT
+      - SETUID
+      - SETGID
+      - KILL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 256m
+    cpus: 0.5
+    networks:
+      - sandbox
 
   ai:
     build:
@@ -67,3 +97,9 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+
+networks:
+  default:
+  # internal: sem rota para fora; o sandbox só enxerga o backend
+  sandbox:
+    internal: true

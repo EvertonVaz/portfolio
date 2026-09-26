@@ -1,0 +1,12 @@
+#!/bin/sh
+# Uma sessão do minishell: dentro da jaula, sem privilégio, sem o ambiente de quem chamou
+# e com limites de recursos. Roda como root só até o chroot trocar de usuário.
+set -eu
+
+# Caminho resolvido antes do env -i, que troca o PATH pelo da jaula
+CHROOT="$(command -v chroot)"
+
+exec env -i PATH=/bin HOME=/ USER=born2code TERM=xterm-256color \
+    timeout --signal=KILL "${SESSION_TIMEOUT:-600}" \
+    prlimit --nproc=64 --as=268435456 --cpu=10 --fsize=262144 --nofile=32 --core=0 \
+    "$CHROOT" --userspec=65534:65534 "${JAIL:-/jail}" /bin/minishell

@@ -33,6 +33,34 @@ services:
       - ${HOME}/.ssh:/home/etovaz/.ssh
     env_file:
       - ./envs/.env.production
+    networks:
+      - default
+      - sandbox
+
+  # Mesmo sandbox da produção (docker/production/docker-compose.yml); o `make back`
+  # do container dev fala com ele em shell-sandbox:7000
+  shell-sandbox:
+    build:
+      context: .
+      dockerfile: docker/sandbox/Dockerfile
+    restart: always
+    read_only: true
+    tmpfs:
+      - /jail/tmp:size=1m,mode=1777,noexec,nosuid,nodev
+    cap_drop:
+      - ALL
+    cap_add:
+      - SYS_CHROOT
+      - SETUID
+      - SETGID
+      - KILL
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 256
+    mem_limit: 256m
+    cpus: 0.5
+    networks:
+      - sandbox
 
   nginx:
     restart: always
@@ -67,5 +95,11 @@ services:
     depends_on:
       rabbitmq:
         condition: service_healthy
+    networks:
+      - default
+      - sandbox
 
-
+networks:
+  default:
+  sandbox:
+    internal: true

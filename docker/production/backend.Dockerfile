@@ -33,10 +33,11 @@ ENV LANG=C.UTF-8 \
 WORKDIR /app
 
 COPY --from=build /build/_build/prod/rel/portfolio ./
-# O backend invoca ./minishell e ./philosophers relativos ao cwd (Path.expand)
-COPY app/backend/elixir/minishell app/backend/elixir/philosophers ./
+# O backend invoca ./philosophers relativo ao cwd (Path.expand).
+# O minishell não entra aqui: roda no shell-sandbox, longe dos segredos deste container.
+COPY app/backend/elixir/philosophers ./
 
-# Usuário sem privilégio: o minishell/philosophers (e qualquer coisa que escape)
+# Usuário sem privilégio: o philosophers (e qualquer coisa que escape)
 # não roda como root. Dono dos arquivos para o release conseguir ler o que precisa.
 RUN useradd --system --no-create-home --uid 10001 app \
     && chown -R app:app /app
