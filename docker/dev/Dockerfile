@@ -48,6 +48,7 @@ ENV PATH="/opt/mise/shims:$PATH"
 ENV ELIXIR_ERL_OPTIONS="+fnu"
 
 RUN mise use --global erlang@latest elixir@latest
+RUN mise use -g github:akitaonrails/ai-memory
 
 RUN mix local.hex --force && \
     mix local.rebar --force && \

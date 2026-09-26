@@ -31,6 +31,8 @@ services:
       - ${HOME}/.config/anthropic:/home/etovaz/.config/anthropic
       - ${HOME}/.config/gh:/home/etovaz/.config/gh
       - ${HOME}/.ssh:/home/etovaz/.ssh
+      - ${HOME}/.local/share/mise/shims/ai-memory:/home/etovaz/.local/share/mise/shims/ai-memory
+      - ${HOME}/.zshenv:/home/etovaz/.zshenv
     env_file:
       - ./envs/.env.production
     networks:
