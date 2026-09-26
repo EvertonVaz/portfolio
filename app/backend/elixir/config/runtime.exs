@@ -38,6 +38,11 @@ auth_token =
 
 config :portfolio, :auth_token, auth_token
 
+# Onde o terminal abre as sessões do minishell real (docker/sandbox)
+config :portfolio, :sandbox,
+  host: System.get_env("SANDBOX_HOST", "shell-sandbox"),
+  port: String.to_integer(System.get_env("SANDBOX_PORT", "7000"))
+
 config :portfolio, PortfolioWeb.Endpoint,
   http: [ip: {0, 0, 0, 0}, port: port],
   secret_key_base: secret_key_base

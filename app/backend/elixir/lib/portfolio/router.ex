@@ -77,7 +77,8 @@ defmodule Portfolio.Router do
       conn = if token, do: put_resp_header(conn, "sec-websocket-protocol", token), else: conn
 
       conn
-      |> WebSockAdapter.upgrade(PortfolioWeb.TerminalHandler, [], timeout: 60_000)
+      # Acima da ociosidade do handler (5 min): sem isso o Bandit fecha antes com 1002 e o frontend reconecta em loop
+      |> WebSockAdapter.upgrade(PortfolioWeb.TerminalHandler, [], timeout: 900_000)
       |> halt()
     else
       Logger.warning("[Router] Connection rejected for /minishell: Invalid token")
