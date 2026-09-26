@@ -6,13 +6,15 @@ import ReleaseEntry from '../components/ReleaseEntry';
 // Dados neutros de idioma; copy vive no i18n (journey.releases.*)
 // Ordem decrescente: release mais recente primeiro, como num changelog real
 const RELEASES = [
-    { id: 'v50', version: 'v5.0-beta', tags: ['pytorch', 'rl', 'elixir', 'websocket'], accent: 'cyan', current: true },
-    { id: 'v45', version: 'v4.5', tags: ['go', 'lti 1.3', 'sse', 'payments'] },
-    { id: 'v40', version: 'v4.0', tags: ['haxe', 'realtime', 'scorm'] },
-    { id: 'v35', version: 'v3.5', tags: ['c', 'unix', '42'] },
-    { id: 'v30', version: 'v3.0', tags: ['python', 'web scraping', 'bling api'] },
+    { id: 'v55', version: 'v5.5-beta', tags: ['n8n', 'postgres', 'metabase', 'fastapi', 'mcp'], accent: 'cyan', current: true },
+    { id: 'v50', version: 'v5.0', tags: ['pytorch', 'rl', 'elixir', 'websocket'] },
+    { id: 'v45', version: 'v4.5', tags: ['go', 'lti 1.3', 'stripe', 'sse', 'playwright'] },
+    { id: 'v40', version: 'v4.0', tags: ['haxe', 'realtime', 'metabase', 'tdd'] },
+    { id: 'v35', version: 'v3.5', tags: ['c', 'c++', 'unix', 'docker', '42'] },
+    { id: 'v30', version: 'v3.0', tags: ['python', 'fastapi', 'web scraping', 'bling api'] },
     { id: 'v25', version: 'v2.5', tags: ['python', 'postgres', 'cron', 'etl'] },
     { id: 'v20', version: 'v2.0', tags: ['power bi', 'm/dax', 'sql', 'python'] },
+    { id: 'v15', version: 'v1.5', tags: [] },
     { id: 'v1x', version: 'v1.x', tags: [] },
     { id: 'v10', version: 'v1.0', tags: [], accent: 'pink' },
     { id: 'v0x', version: 'v0.x', tags: [] },

@@ -11,11 +11,15 @@ const Work = () => {
 
     // Cases de mundo real; as demos interativas vivem em /labs
     const projects = [
-        { id: '01', title: t('work.cases.c01.title'), tag: 'Power BI/SQL', desc: t('work.cases.c01.desc'), path: '/journey#v20', type: 'internal' },
+        { id: '01', title: t('work.cases.c01.title'), tag: 'Power BI/DAX', desc: t('work.cases.c01.desc'), path: '/journey#v20', type: 'internal' },
         { id: '02', title: t('work.cases.c02.title'), tag: 'Python/Postgres', desc: t('work.cases.c02.desc'), path: '/journey#v25', type: 'internal' },
         { id: '03', title: t('work.cases.c03.title'), tag: 'Python/API', desc: t('work.cases.c03.desc'), path: '/journey#v30', type: 'internal' },
         { id: '04', title: t('work.cases.c04.title'), tag: 'Haxe/Realtime', desc: t('work.cases.c04.desc'), path: '/journey#v40', type: 'internal' },
         { id: '05', title: t('work.cases.c05.title'), tag: 'Go/SSE', desc: t('work.cases.c05.desc'), path: '/journey#v45', type: 'internal' },
+        { id: '06', title: t('work.cases.c06.title'), tag: 'n8n/Postgres', desc: t('work.cases.c06.desc'), path: '/journey#v55', type: 'internal' },
+        { id: '07', title: t('work.cases.c07.title'), tag: 'FastAPI/React', desc: t('work.cases.c07.desc'), path: '/journey#v55', type: 'internal' },
+        { id: '08', title: t('work.cases.c08.title'), tag: 'TypeScript/MCP', desc: t('work.cases.c08.desc'), path: '/journey#v55', type: 'internal' },
+        { id: '09', title: t('work.cases.c09.title'), tag: 'Elixir/PyTorch', desc: t('work.cases.c09.desc'), path: '/journey#v50', type: 'internal' },
     ];
 
     return (

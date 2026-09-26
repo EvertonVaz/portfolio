@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 
 // Últimas releases da jornada; copy vive no i18n (journey.releases.*)
 const RELEASES = [
-    { id: 'v50', version: 'v5.0-beta', color: 'text-punk-cyan' },
+    { id: 'v55', version: 'v5.5-beta', color: 'text-punk-cyan' },
+    { id: 'v50', version: 'v5.0', color: 'text-punk-green' },
     { id: 'v45', version: 'v4.5', color: 'text-punk-green' },
-    { id: 'v40', version: 'v4.0', color: 'text-punk-green' },
 ];
 
 // Demos ao vivo; títulos vivem no i18n (work.projects.*)

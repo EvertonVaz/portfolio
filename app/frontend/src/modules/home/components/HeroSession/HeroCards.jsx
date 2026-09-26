@@ -58,8 +58,8 @@ const HeroCards = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10 border-dashed">
             <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300">
-              <span className="block text-2xl font-black text-punk-green">7+</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">anos exp</span>
+              <span className="block text-2xl font-black text-punk-green">4+</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">{t('hero.stat_experience')}</span>
             </div>
             <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300 delay-75">
               <span className="block text-2xl font-black text-white">42</span>
@@ -67,7 +67,7 @@ const HeroCards = () => {
             </div>
             <div className="text-center group-hover:translate-y-[-2px] transition-transform duration-300 delay-100">
               <span className="block text-2xl font-black text-punk-cyan">∞</span>
-              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">curiosidade</span>
+              <span className="text-[10px] font-mono text-white/40 uppercase tracking-wider">{t('hero.stat_curiosity')}</span>
             </div>
           </div>
         </HeroProfileCard>

@@ -37,7 +37,9 @@ const resources = {
                 interest_1: 'Distributed systems and high-scale orchestration',
                 interest_2: 'The logic within the silence of bits',
                 interest_3: 'Indie culture and open source artifacts',
-                professional_desc: 'Software engineer with strong low-level fundamentals and 13 years running a business before going all-in on code. Built a real-time education platform for the <1>Despertar NGO</1>, LMS integrations in Go and certification systems at scale. Proud graduate of <3>42 São Paulo</3>.',
+                professional_desc: 'Full-stack software engineer — Python, TypeScript and Go — with 13 years running a business before going all-in on code. Built a real-time classroom for the <1>Despertar NGO</1>, LTI 1.3 integrations in Go and, today, turn WhatsApp conversations into a sales funnel and BI at <1>Rediplast</1>. Proud graduate of <3>42 São Paulo</3>.',
+                stat_experience: 'years exp',
+                stat_curiosity: 'curiosity',
                 stat_aesthetics: 'aesthetics',
                 stat_mindset: 'mindset',
                 stat_resonance: 'resonance',
@@ -55,7 +57,7 @@ const resources = {
             },
             journey: {
                 title: 'journey.log',
-                intro: 'The changelog of a career — from office boy to software engineer.',
+                intro: 'The changelog of a career — from entrepreneur to software engineer.',
                 releases: {
                     v0x: {
                         label: 'bootstrap',
@@ -64,13 +66,18 @@ const resources = {
                     },
                     v10: {
                         label: 'breaking change',
-                        period: 'at 19',
-                        body: "In the hardest year of my family's history, my sister and I took over my mother's business: a clothing store on the edge of bankruptcy, with a debt that looked unpayable. I took Sebrae's management courses, wrote a recovery plan and we restarted almost from zero.",
+                        period: '2009 · at 19',
+                        body: "In the hardest year of my family's history, my sister and I took over my mother's business: Tribo Teen, a clothing store on the edge of bankruptcy, with a debt that looked unpayable. I took Sebrae's management courses, wrote a recovery plan and we restarted almost from zero.",
                     },
                     v1x: {
                         label: 'recovery',
                         period: 'the years after',
-                        body: "We froze what couldn't be paid, built cash flow and, once the business was healthy, renegotiated and settled 100% of the debt. The company that almost went under now runs three profitable stores. I stayed for 13 years.",
+                        body: "We froze what couldn't be paid, built cash flow and, once the business was healthy, renegotiated and settled 100% of the debt. Tribo Teen, which almost went under, grew to three profitable stores. I stayed for 13 years.",
+                    },
+                    v15: {
+                        label: 'degree',
+                        period: '2013–2017',
+                        body: "While running Tribo Teen, I earned a bachelor's degree in Business Administration from Faculdade Pitágoras Votorantim. The management I had been learning the hard way got its theory.",
                     },
                     v20: {
                         label: 'hello world',
@@ -85,27 +92,32 @@ const resources = {
                     v30: {
                         label: 'fork',
                         period: '2022',
-                        body: "I left the company to go all-in on my developer career. As a freelancer I built, among other things, a price monitor that scrapes a competitor's website and updates my client's ERP (Bling) through its API, daily.",
+                        body: "I left Tribo Teen to go all-in on my developer career. As a freelancer I built for DentalBolt, a dental supplies store, a system that compares the competitor's prices with the Bling ERP every day and updates only what diverges, keeping the client 2% below the competition. Python scraper, FastAPI API and a scheduled GitHub Actions trigger — in production since 2022.",
                     },
                     v35: {
                         label: '42 são paulo',
                         period: '2023–2024',
-                        body: "The most incredible school I have ever attended. Everything in C, no libraries, everything by hand — that's where I truly understood what programming is. I graduated at the end of 2024 with almost every project delivered with bonus.",
+                        body: "The most incredible school I have ever attended. No ready-made libraries, everything by hand — that's where I truly understood what programming is. I started in C (a shell, philosophers with threads, fractals, a 3D raycaster), moved to C++ with an HTTP server that handled 255 concurrent users without a single failure, Docker, machine learning from scratch and a RAG chatbot. I graduated at the end of 2024 with almost every project delivered with bonus.",
                     },
                     v40: {
                         label: '42 labs / despertar ngo',
                         period: '2025',
-                        body: "An education platform built in Haxe — a language I had never seen and was proficient in within 15 days. A virtual classroom with students' answers reaching the teacher in real time, performance dashboards, a SCORM repository and an employability module. The 2019 backlog started to get paid.",
+                        body: "An LMS for the Despertar NGO, full-stack in Haxe — a language I had never seen and learned in 15 days to join the team. I built the real-time classroom, with students' answers reaching the educator as charts, the Metabase dashboards embedded with JWT, the integration that imports classes and enrollments from the Kaits API and much of the employability module. All with TDD and CI on every pull request. The 2019 backlog started to get paid.",
                     },
                     v45: {
                         label: 'empreendalab',
                         period: '2026',
-                        body: 'An LTI 1.3 integration in Go, designed to work with any LMS on the market — not just the Moodle I was asked for. Then a certification platform issuing 100k certificates in hours: I refactored it, shipped new features, integrated payments and replaced 5-second polling with SSE — real-time data, again. A 5-month contract, everything delivered on time.',
+                        body: 'An LTI 1.3 library written from scratch in Go, following the standard so it works with any LMS, not just the Moodle I was asked for — with grade passback via AGS. On the certificate platform, I integrated Stripe into a credit system that charges atomically and refunds when a job fails, refactored access control, set up E2E tests with Playwright and replaced 5-second polling with SSE over Redis pub/sub — real-time data, again. A 5-month contract, everything delivered on time.',
                     },
                     v50: {
+                        label: 'neural net',
+                        period: '2026',
+                        body: 'Deep dive into AI: neural networks trained from scratch with reinforcement learning — a Genetic Algorithm and PPO in PyTorch. This site — Elixir, WebSockets, an AI playing Pong in real time — was born in this release.',
+                    },
+                    v55: {
                         label: 'in development',
                         period: 'today',
-                        body: 'Deep dive into AI: neural networks trained from scratch with reinforcement learning — a Genetic Algorithm and PPO in PyTorch. This site — Elixir, WebSockets, an AI playing Pong in real time — is part of this release.',
+                        body: 'Freelancing for Rediplast, a Colombian packaging factory: a system that reads WhatsApp conversations and turns them into a sales funnel and BI in Metabase, without sending a single message to the end customer. Idempotent ingestion with n8n and PostgreSQL, built solo from the VPS to the deploy. Alongside it, two projects of my own: Juno, a microcredit SaaS in FastAPI and React with over 540 tests, and career-mcp, an open-source MCP server that keeps my resume, LinkedIn and this portfolio consistent from a single source.',
                     },
                 },
             },
@@ -121,7 +133,7 @@ const resources = {
                 cases: {
                     c01: {
                         title: 'Retail BI',
-                        desc: 'Full BI app for a retail company: data analysis for management and the sales floor, built with Power BI, Python and Postgres.',
+                        desc: "Tribo Teen's BI app in Power BI (M/DAX): data analysis for management and the sales team of a three-store chain.",
                     },
                     c02: {
                         title: 'Data Warehouse',
@@ -129,39 +141,55 @@ const resources = {
                     },
                     c03: {
                         title: 'Price Monitor',
-                        desc: "Scrapes a competitor's website daily — prices, images, descriptions — and updates the client's Bling ERP through its API.",
+                        desc: "Every day it compares the competitor's prices with DentalBolt's Bling ERP and updates only what diverges, 2% below the competition. In production since 2022.",
                     },
                     c04: {
                         title: 'Despertar Platform',
-                        desc: 'Education platform for an NGO: virtual classroom with real-time answers, performance dashboards, SCORM repository and an employability module.',
+                        desc: "An LMS in Haxe for an NGO: classroom with students' answers in real time, Metabase dashboards with JWT, Kaits API integration and an employability module.",
                     },
                     c05: {
                         title: 'LTI 1.3 + Certifier',
-                        desc: 'LMS-agnostic LTI 1.3 integration in Go, plus a certification platform issuing 100k certificates in hours — refactored, with payments and SSE.',
+                        desc: 'LMS-agnostic LTI 1.3 library in Go, with grade passback via AGS, plus a certificate platform with Stripe credits, E2E tests and SSE instead of polling.',
+                    },
+                    c06: {
+                        title: 'WhatsApp to BI',
+                        desc: 'For Rediplast, a Colombian packaging factory: WhatsApp conversations become a sales funnel and BI in Metabase. Idempotent ingestion with n8n and PostgreSQL, 58k messages imported in ~48s.',
+                    },
+                    c07: {
+                        title: 'Juno',
+                        desc: 'Microcredit SaaS: loans, installments, interest and late fees computed with Decimal. FastAPI with Clean Architecture and DDD, React, Stripe and over 540 tests.',
+                    },
+                    c08: {
+                        title: 'career-mcp',
+                        desc: 'Open-source MCP server that keeps a career in a versioned career.yml and generates resume, LinkedIn and portfolio from the same source. 32 tools in TypeScript and 352 tests.',
+                    },
+                    c09: {
+                        title: 'This Portfolio',
+                        desc: '60fps Pong on an Elixir GenServer against an AI trained from scratch with a Genetic Algorithm and PPO, wired through RabbitMQ. More interactive demos in /labs.',
                     },
                 },
                 projects: {
                     p01: {
                         title: 'Minishell',
-                        desc: 'A minimalist Unix shell implementation in C, exploring process management and parsing.',
+                        desc: 'A minimalist Unix shell in C, built as a pair at 42 (grade 116): AST parsing, pipes, redirections and signals.',
                         path: '/terminal',
                         type: 'internal'
                     },
                     p02: {
                         title: 'Fractal Explorer',
-                        desc: 'An interactive visualization tool for Mandelbrot and Julia sets, built with HTML5 Canvas and React.',
+                        desc: 'An interactive explorer for the Mandelbrot and Julia sets, built with React and WebGL shaders — born from the fractol I wrote in C at 42 (grade 125/100).',
                         path: '/fractals',
                         type: 'internal'
                     },
                     p03: {
                         title: 'Dining Philosophers',
-                        desc: 'A multithreading simulation in C and Elixir, solving the classic deadlock problem with GenServers.',
+                        desc: 'The classic dining philosophers in C, with POSIX threads, mutexes and odd/even fork ordering against deadlock (grade 125/100 at 42), supervised live by an Elixir GenServer.',
                         path: '/philosophers',
                         type: 'internal'
                     },
                     p04: {
                         title: 'Pong AI',
-                        desc: 'Real-time Pong on an Elixir GenServer at 60fps, against a DQN model trained with PyTorch — including an AI vs AI mode.',
+                        desc: 'Real-time Pong on an Elixir GenServer at 60fps, against neural networks trained from scratch in PyTorch with a Genetic Algorithm and PPO — including an AI vs AI mode.',
                         path: '/pong',
                         type: 'internal'
                     }
@@ -193,7 +221,7 @@ const resources = {
                 architecture_desc_engine: 'GLSL core with emulated FP64 precision for massive deep zoom (10^15).',
                 architecture_core: 'Pure C Prototype',
                 architecture_desc_core: 'The original C implementation exploring software rendering and math.',
-                architecture_info_footer: '[PROJECT_NOTE]: I also built a complete fractal project in pure C (linked below), utilizing the MiniLibX library to explore low-level graphics and performance before migrating to the web GPU context.',
+                architecture_info_footer: '[PROJECT_NOTE]: I also built a complete fractal project in pure C (linked below, grade 125/100 at 42), using the MLX42 library to explore low-level graphics and performance before migrating to the web GPU context.',
             },
             terminal: {
                 title: 'terminal_lab',
@@ -221,7 +249,7 @@ const resources = {
             },
             pong: {
                 title: 'pong.ai',
-                intro: 'Real-time Pong running on an Elixir GenServer at 60fps. State is computed server-side every 16ms and broadcast to the browser via Phoenix Channels. The opponent is a neural network trained with a Genetic Algorithm — no backpropagation, just selection pressure over generations.',
+                intro: 'Real-time Pong running on an Elixir GenServer at 60fps. State is computed server-side every 16ms and broadcast to the browser via Phoenix Channels. The opponent is a neural network trained from scratch in PyTorch in two ways: a Genetic Algorithm — no backpropagation, just selection pressure over generations — and PPO with self-play.',
                 training_title: 'training.lab',
                 training_intro: 'Watch the neural network learn to play in real time: fitness per generation, live matches of the current candidate, and full control over the training loop. Models trained here are the same ones that play in the arena.',
                 training_link: 'training lab',
@@ -326,7 +354,9 @@ const resources = {
                 interest_1: 'Sistemas distribuídos e orquestração em alta escala',
                 interest_2: 'A lógica dentro do silêncio dos bits',
                 interest_3: 'Cultura indie e artefatos open source',
-                professional_desc: 'Engenheiro de software com fortes fundamentos de baixo nível e 13 anos à frente de um negócio antes de mergulhar de vez no código. Construí uma plataforma de educação em tempo real para a <1>ONG Despertar</1>, integrações LMS em Go e certificação em escala. Formado pela <3>42 São Paulo</3>.',
+                professional_desc: 'Engenheiro de software full-stack — Python, TypeScript e Go — com 13 anos à frente de um negócio antes de mergulhar de vez no código. Construí sala de aula em tempo real para a <1>ONG Despertar</1>, integrações LTI 1.3 em Go e, hoje, transformo conversas de WhatsApp em funil de vendas e BI na <1>Rediplast</1>. Formado pela <3>42 São Paulo</3>.',
+                stat_experience: 'anos exp',
+                stat_curiosity: 'curiosidade',
                 stat_aesthetics: 'estética',
                 stat_mindset: 'cultura',
                 stat_resonance: 'ressonância',
@@ -344,7 +374,7 @@ const resources = {
             },
             journey: {
                 title: 'jornada.log',
-                intro: 'Changelog de uma carreira — de office boy a engenheiro de software.',
+                intro: 'Changelog de uma carreira — de empreendedor a engenheiro de software.',
                 releases: {
                     v0x: {
                         label: 'bootstrap',
@@ -353,13 +383,18 @@ const resources = {
                     },
                     v10: {
                         label: 'breaking change',
-                        period: 'aos 19',
-                        body: 'No ano mais difícil da história da minha família, assumi com minha irmã o negócio da minha mãe: uma loja de roupas à beira da falência, com uma dívida que parecia impagável. Fiz os cursos de gestão do Sebrae, escrevi um plano de recuperação e recomeçamos praticamente do zero.',
+                        period: '2009 · aos 19',
+                        body: 'No ano mais difícil da história da minha família, assumi com minha irmã o negócio da minha mãe: a Tribo Teen, uma loja de roupas à beira da falência, com uma dívida que parecia impagável. Fiz os cursos de gestão do Sebrae, escrevi um plano de recuperação e recomeçamos praticamente do zero.',
                     },
                     v1x: {
                         label: 'recovery',
                         period: 'anos seguintes',
-                        body: 'Congelamos o que não podia ser pago, construímos fluxo de caixa e, quando o negócio ficou saudável, renegociamos e quitamos 100% da dívida. A empresa que quase quebrou hoje tem três lojas lucrativas. Fiquei 13 anos nela.',
+                        body: 'Congelamos o que não podia ser pago, construímos fluxo de caixa e, quando o negócio ficou saudável, renegociamos e quitamos 100% da dívida. A Tribo Teen, que quase quebrou, chegou a três lojas lucrativas. Fiquei 13 anos nela.',
+                    },
+                    v15: {
+                        label: 'bacharelado',
+                        period: '2013–2017',
+                        body: 'Enquanto tocava a Tribo Teen, fiz o bacharelado em Administração de Empresas na Faculdade Pitágoras Votorantim. A gestão que eu vinha aprendendo na marra ganhou teoria.',
                     },
                     v20: {
                         label: 'hello world',
@@ -374,27 +409,32 @@ const resources = {
                     v30: {
                         label: 'fork',
                         period: '2022',
-                        body: 'Saí da empresa pra me dedicar por inteiro à carreira de dev. Como freelancer, construí entre outros um monitor de preços que varre o site do concorrente do cliente e atualiza o ERP dele (Bling) via API, diariamente.',
+                        body: 'Saí da Tribo Teen pra me dedicar por inteiro à carreira de dev. Como freelancer, construí para a DentalBolt, loja de produtos odontológicos, um sistema que todo dia compara os preços do concorrente com os do ERP Bling e atualiza só o que diverge, deixando o cliente 2% abaixo da concorrência. Scraper em Python, API em FastAPI e disparo agendado no GitHub Actions — em produção desde 2022.',
                     },
                     v35: {
                         label: '42 são paulo',
                         period: '2023–2024',
-                        body: 'A escola mais incrível que já estudei. Tudo em C, sem bibliotecas, tudo à mão — foi ali que eu entendi de verdade o que é programar. Me formei no fim de 2024 com quase todos os projetos entregues com bônus.',
+                        body: 'A escola mais incrível que já estudei. Nada de biblioteca pronta, tudo à mão — foi ali que eu entendi de verdade o que é programar. Comecei em C (um shell, filósofos com threads, fractais, um raycaster 3D), passei por C++ com um servidor HTTP que aguentou 255 usuários simultâneos sem nenhuma falha, Docker, machine learning do zero e um chatbot RAG. Me formei no fim de 2024 com quase todos os projetos entregues com bônus.',
                     },
                     v40: {
                         label: '42 labs / ong despertar',
                         period: '2025',
-                        body: 'Plataforma de educação construída em Haxe — linguagem que eu nunca tinha visto e em 15 dias estava dominando. Sala de aula virtual com respostas dos alunos chegando ao professor em tempo real, dashboards de desempenho, repositório SCORM e módulo de empregabilidade. O backlog de 2019 começou a ser pago.',
+                        body: 'LMS para a ONG Despertar, full-stack em Haxe — linguagem que eu nunca tinha visto e aprendi em 15 dias pra entrar na equipe. Construí a sala de aula em tempo real, com as respostas dos alunos chegando ao educador em gráficos, os dashboards do Metabase embutidos com JWT, a integração que importa turmas e matrículas da API Kaits e boa parte do módulo de empregabilidade. Tudo com TDD e CI a cada pull request. O backlog de 2019 começou a ser pago.',
                     },
                     v45: {
                         label: 'empreendalab',
                         period: '2026',
-                        body: 'Integração LTI 1.3 em Go, desenhada pra funcionar com qualquer LMS do mercado, não só o Moodle que foi pedido. Depois, uma certificadora que emite 100 mil certificados em horas: refatorei, criei features, integrei pagamento e troquei o polling de 5 em 5 segundos por SSE — dados em tempo real, de novo. Contrato de 5 meses, tudo entregue no prazo.',
+                        body: 'Uma biblioteca LTI 1.3 escrita do zero em Go, seguindo o padrão pra funcionar com qualquer LMS, não só o Moodle que foi pedido — com devolução de notas via AGS. Na plataforma de certificados, integrei o Stripe a um sistema de créditos que cobra de forma atômica e estorna quando o job falha, refatorei o controle de acesso, montei os testes E2E com Playwright e troquei o polling de 5 em 5 segundos por SSE com Redis pub/sub — dados em tempo real, de novo. Contrato de 5 meses, tudo entregue no prazo.',
                     },
                     v50: {
+                        label: 'rede neural',
+                        period: '2026',
+                        body: 'Mergulho em IA: redes neurais treinadas do zero com reinforcement learning — um Algoritmo Genético e PPO em PyTorch. Este site — Elixir, WebSockets, uma IA jogando Pong em tempo real — nasceu dessa versão.',
+                    },
+                    v55: {
                         label: 'em desenvolvimento',
                         period: 'hoje',
-                        body: 'Mergulho em IA: redes neurais treinadas do zero com reinforcement learning — um Algoritmo Genético e PPO em PyTorch. Este site — Elixir, WebSockets, uma IA jogando Pong em tempo real — é parte dessa versão.',
+                        body: 'Freelance na Rediplast, fábrica colombiana de embalagens: um sistema que lê as conversas do WhatsApp e as transforma em funil de vendas e BI no Metabase, sem mandar uma mensagem sequer ao cliente final. Ingestão idempotente com n8n e PostgreSQL, tocado sozinho da VPS ao deploy. Em paralelo, dois projetos meus: o Juno, SaaS de microcrédito em FastAPI e React com mais de 540 testes, e o career-mcp, servidor MCP open-source que mantém currículo, LinkedIn e este portfólio coerentes a partir de uma única fonte.',
                     },
                 },
             },
@@ -410,7 +450,7 @@ const resources = {
                 cases: {
                     c01: {
                         title: 'BI de Varejo',
-                        desc: 'App de BI completo para uma rede de varejo: análise de dados pra gestão e pro time de vendas, construído com Power BI, Python e Postgres.',
+                        desc: 'App de BI da Tribo Teen em Power BI (M/DAX): análise de dados para a gestão e para o time de vendas de uma rede de três lojas.',
                     },
                     c02: {
                         title: 'Data Warehouse',
@@ -418,39 +458,55 @@ const resources = {
                     },
                     c03: {
                         title: 'Monitor de Preços',
-                        desc: 'Varre o site do concorrente diariamente — preços, imagens, descrições — e atualiza o ERP Bling do cliente via API.',
+                        desc: 'Todo dia compara os preços do concorrente com os do ERP Bling da DentalBolt e atualiza só o que diverge, 2% abaixo da concorrência. Em produção desde 2022.',
                     },
                     c04: {
                         title: 'Plataforma Despertar',
-                        desc: 'Plataforma de educação para uma ONG: sala de aula virtual com respostas em tempo real, dashboards de desempenho, repositório SCORM e módulo de empregabilidade.',
+                        desc: 'LMS em Haxe para uma ONG: sala de aula com respostas dos alunos em tempo real, dashboards do Metabase com JWT, integração com a API Kaits e módulo de empregabilidade.',
                     },
                     c05: {
                         title: 'LTI 1.3 + Certificadora',
-                        desc: 'Integração LTI 1.3 em Go agnóstica de LMS, mais uma certificadora que emite 100 mil certificados em horas — refatorada, com pagamentos e SSE.',
+                        desc: 'Biblioteca LTI 1.3 em Go agnóstica de LMS, com notas via AGS, mais uma plataforma de certificados com créditos no Stripe, testes E2E e SSE no lugar de polling.',
+                    },
+                    c06: {
+                        title: 'WhatsApp em BI',
+                        desc: 'Para a Rediplast, fábrica colombiana de embalagens: conversas do WhatsApp viram funil de vendas e BI no Metabase. Ingestão idempotente com n8n e PostgreSQL, 58 mil mensagens importadas em ~48s.',
+                    },
+                    c07: {
+                        title: 'Juno',
+                        desc: 'SaaS de microcrédito: empréstimos, parcelas, juros e mora calculados com Decimal. FastAPI com Clean Architecture e DDD, React, Stripe e mais de 540 testes.',
+                    },
+                    c08: {
+                        title: 'career-mcp',
+                        desc: 'Servidor MCP open-source que guarda a carreira num career.yml versionado e gera currículo, LinkedIn e portfólio da mesma fonte. 32 tools em TypeScript e 352 testes.',
+                    },
+                    c09: {
+                        title: 'Este Portfólio',
+                        desc: 'Pong a 60fps num GenServer Elixir contra uma IA treinada do zero com Algoritmo Genético e PPO, ligada por RabbitMQ. Mais demos interativas no /labs.',
                     },
                 },
                 projects: {
                     p01: {
                         title: 'Minishell',
-                        desc: 'Uma implementação minimalista de um shell Unix em C, explorando gerenciamento de processos e parsing.',
+                        desc: 'Shell Unix minimalista em C, feito em dupla na 42 (nota 116): parsing com AST, pipes, redirecionamentos e sinais.',
                         path: '/terminal',
                         type: 'internal'
                     },
                     p02: {
                         title: 'Fractal Explorer',
-                        desc: 'Uma ferramenta de visualização interativa para os conjuntos de Mandelbrot e Julia, construída com HTML5 Canvas e React.',
+                        desc: 'Explorador interativo dos conjuntos de Mandelbrot e Julia, construído com React e shaders WebGL — nascido do fractol que escrevi em C na 42 (nota 125/100).',
                         path: '/fractals',
                         type: 'internal'
                     },
                     p03: {
                         title: 'Dining Philosophers',
-                        desc: 'Uma simulação de multithreading em C e Elixir, resolvendo o clássico problema de deadlock com GenServers.',
+                        desc: 'O clássico jantar dos filósofos em C, com threads POSIX, mutexes e ordem par/ímpar dos garfos contra deadlock (nota 125/100 na 42), supervisionado ao vivo por um GenServer Elixir.',
                         path: '/philosophers',
                         type: 'internal'
                     },
                     p04: {
                         title: 'Pong AI',
-                        desc: 'Pong em tempo real rodando em um GenServer Elixir a 60fps, contra um modelo DQN treinado com PyTorch — incluindo modo IA vs IA.',
+                        desc: 'Pong em tempo real rodando em um GenServer Elixir a 60fps, contra redes neurais treinadas do zero em PyTorch com Algoritmo Genético e PPO — incluindo modo IA vs IA.',
                         path: '/pong',
                         type: 'internal'
                     }
@@ -482,7 +538,7 @@ const resources = {
                 architecture_desc_engine: 'Núcleo GLSL com precisão FP64 emulada para zoom profundo massivo (10^15).',
                 architecture_core: 'Protótipo em C Puro',
                 architecture_desc_core: 'A implementação original em C explorando renderização via software e matemática.',
-                architecture_info_footer: '[NOTA_DO_PROJETO]: Eu também construí um projeto completo de fractais em C puro (link abaixo), utilizando a biblioteca MiniLibX para explorar computação gráfica de baixo nível e performance antes de migrar para a web.',
+                architecture_info_footer: '[NOTA_DO_PROJETO]: Eu também construí um projeto completo de fractais em C puro (link abaixo, nota 125/100 na 42), utilizando a biblioteca MLX42 para explorar computação gráfica de baixo nível e performance antes de migrar para a web.',
             },
             terminal: {
                 title: 'terminal_lab',
@@ -510,7 +566,7 @@ const resources = {
             },
             pong: {
                 title: 'pong.ai',
-                intro: 'Pong em tempo real rodando num GenServer Elixir a 60fps. O estado é computado no servidor a cada 16ms e transmitido ao browser via Phoenix Channels. O adversário é uma rede neural treinada com um Algoritmo Genético — sem backpropagation, só pressão seletiva ao longo das gerações.',
+                intro: 'Pong em tempo real rodando num GenServer Elixir a 60fps. O estado é computado no servidor a cada 16ms e transmitido ao browser via Phoenix Channels. O adversário é uma rede neural treinada do zero em PyTorch por dois caminhos: um Algoritmo Genético — sem backpropagation, só pressão seletiva ao longo das gerações — e PPO com self-play.',
                 training_title: 'training.lab',
                 training_intro: 'Acompanhe a rede neural aprendendo a jogar em tempo real: fitness por geração, partidas ao vivo do candidato atual e controle total sobre o loop de treino. Os modelos treinados aqui são os mesmos que jogam na arena.',
                 training_link: 'laboratório de treino',
