@@ -9,6 +9,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
  * @param {boolean} options.useToken - Se deve buscar um token de autenticação
  * @param {boolean} options.autoConnect - Se deve conectar automaticamente no mount
  * @param {number} options.reconnectInterval - Intervalo para tentativa de reconexão em ms
+ * @param {boolean} options.parseJson - Se deve tentar JSON.parse nas mensagens (false para texto puro, ex: saída de shell)
  */
 // O token é emitido para a sessão (cookie). Se dois sockets pedirem ao mesmo
 // tempo antes de a sessão existir, cada request criaria uma sessão diferente e
@@ -33,7 +34,8 @@ export const useBackend = (endpoint, options = {}) => {
     const {
         useToken = false,
         autoConnect = true,
-        reconnectInterval = 5000
+        reconnectInterval = 5000,
+        parseJson = true
     } = options;
 
     const socketRef = useRef(null);
@@ -87,6 +89,8 @@ export const useBackend = (endpoint, options = {}) => {
             console.log(`[useBackend] Conectando a ${url}${token ? ' (com token)' : ''}`);
 
             const socket = token ? new WebSocket(url, token) : new WebSocket(url);
+            // Frames binários chegam como ArrayBuffer (ex: bytes crus do PTY do terminal)
+            socket.binaryType = 'arraybuffer';
 
             socket.onopen = () => {
                 setConnected(true);
@@ -96,11 +100,13 @@ export const useBackend = (endpoint, options = {}) => {
 
             socket.onmessage = (event) => {
                 let payload = event.data;
-                try {
-                    // Tenta fazer o parse automático se for JSON
-                    payload = JSON.parse(event.data);
-                } catch {
-                    // Mantém como string se não for JSON
+                if (parseJson) {
+                    try {
+                        // Tenta fazer o parse automático se for JSON
+                        payload = JSON.parse(event.data);
+                    } catch {
+                        // Mantém como string se não for JSON
+                    }
                 }
                 emit('message', payload);
             };
@@ -129,7 +135,7 @@ export const useBackend = (endpoint, options = {}) => {
             emit('error', err);
             setTimeout(connect, reconnectInterval);
         }
-    }, [endpoint, useToken, reconnectInterval, emit]);
+    }, [endpoint, useToken, reconnectInterval, parseJson, emit]);
 
     useEffect(() => {
         if (autoConnect) {
@@ -147,9 +153,10 @@ export const useBackend = (endpoint, options = {}) => {
         if (socketRef.current?.readyState === WebSocket.OPEN) {
             const message = typeof data === 'string' ? data : JSON.stringify(data);
             socketRef.current.send(message);
-        } else {
-            console.warn(`[useBackend] Tentativa de envio sem conexão ativa em ${endpoint}`);
+            return true;
         }
+        console.warn(`[useBackend] Tentativa de envio sem conexão ativa em ${endpoint}`);
+        return false;
     }, [endpoint]);
 
     return { connected, send, on, off, connect };

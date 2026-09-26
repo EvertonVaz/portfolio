@@ -13,7 +13,8 @@ import BackToWorks from '../../../shared/ui/navigation/BackToWorks';
  * SRP: Apenas orquestra o Cabeçalho, o Terminal e o CTA.
  */
 const TerminalPage = () => {
-  const { isConnected } = useTerminalSocket();
+  // Um socket só por página: cada conexão é uma sessão do minishell na jaula
+  const socket = useTerminalSocket();
   const { t } = useTranslation();
 
   return (
@@ -30,10 +31,10 @@ const TerminalPage = () => {
           <p className="font-mono justify-center text-[10px] text-white/60 leading-relaxed uppercase mr-6">
             {t('terminal.lab_obs')}
           </p>
-          <ConnectionStatus isConnected={isConnected} />
+          <ConnectionStatus isConnected={socket.isConnected} />
         </div>
 
-        <Terminal />
+        <Terminal socket={socket} />
         <MinishellArchitecture />
         <GithubCTA url="https://github.com/evertonvaz/minishell" />
 
