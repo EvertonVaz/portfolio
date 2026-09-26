@@ -22,9 +22,9 @@ defmodule Portfolio.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:bandit, "~> 1.6"},
-      {:phoenix, "~> 1.7"},
-      {:phoenix_pubsub, "~> 2.1"},
+      {:bandit, "~> 1.12"},
+      {:phoenix, "~> 1.8"},
+      {:phoenix_pubsub, "~> 2.3"},
       {:websock_adapter, "~> 0.5"},
       {:joken, "~> 2.6"},
       {:jason, "~> 1.4"},
