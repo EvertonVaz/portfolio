@@ -3,6 +3,12 @@ export
 
 all: build
 
+deps:
+	cd ./app/frontend && npm install
+	cd ./app/backend/elixir && mix deps.get
+	cd ./app/backend/python && uv sync
+
+
 build: front-build back-build
 
 front-build:
