@@ -55,7 +55,7 @@ Toda mudança de copy vale para `pt` **e** `en` no `src/i18n.js`.
 - [x] **→P** c03 "Monitor de Preços": mesma correção da v30
 - [x] **→P** c04 e c05: mesmas correções de v40 e v45
 - [x] ~~**?** Projetos da 42 sem demo~~ → **não entram por enquanto** (webserv, cub3d, inception, ft_linear_regression, chatbot RAG, Amparo) viram card? Resolve junto o item "cards externos" acima
-- [ ] Dívida: `ProjectCard` com `type: 'external'` renderiza `<button>` sem link — card não consegue apontar pra repo externo
+- [x] Dívida: `ProjectCard` com `type: 'external'` renderiza `<button>` sem link — card não consegue apontar pra repo externo
 
 ### Parte 4 — Labs e demos (`work.projects.*`, páginas das demos)
 
@@ -68,7 +68,7 @@ Toda mudança de copy vale para `pt` **e** `en` no `src/i18n.js`.
 - [x] Fractal: rodapé citava MiniLibX; o career diz MLX42
 - [x] Terminal refeito após o restore `bd87bb5`: comandos remotos voltam a ser `ls`, `pwd`, `echo`, `cat`, `exit`, `whoami` (emulados em Elixir, filesystem virtual)
 - [x] Filesystem virtual do terminal: `about.txt` diz "estudante da 42" (formado em 2024); `projects.txt` e `contact.txt` não refletem o career → resolvido no home da jaula (S1)
-- [ ] Dívida: `mix test` sobe o endpoint na porta 4000, a mesma do `make back` — com o dev rodando, a suíte falha com `:eaddrinuse` (contorno: `PORT=4099 mix test`)
+- [x] Dívida: `mix test` sobe o endpoint na porta 4000, a mesma do `make back` — com o dev rodando, a suíte falha com `:eaddrinuse` (contorno: `PORT=4099 mix test`)
 
 ### Parte 5 — career.yml (via career-mcp)
 
