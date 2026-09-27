@@ -49,6 +49,7 @@ ENV ELIXIR_ERL_OPTIONS="+fnu"
 
 RUN mise use --global erlang@latest elixir@latest
 RUN mise use -g github:akitaonrails/ai-memory
+RUN mise use -g jq@latest
 
 RUN mix local.hex --force && \
     mix local.rebar --force && \
