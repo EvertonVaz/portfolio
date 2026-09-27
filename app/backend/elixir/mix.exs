@@ -26,7 +26,6 @@ defmodule Portfolio.MixProject do
       {:phoenix, "~> 1.8"},
       {:phoenix_pubsub, "~> 2.3"},
       {:websock_adapter, "~> 0.5"},
-      {:joken, "~> 2.6"},
       {:jason, "~> 1.4"},
       {:corsica, "~> 2.1"},
       {:amqp, "~> 4.1"}
