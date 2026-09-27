@@ -46,9 +46,9 @@ const ProjectCard = ({ id, title, tag, desc, path, type, linkLabel }) => {
                         {label} &gt;
                     </HashLink>
                 ) : (
-                    <button className="self-start relative px-6 py-3 bg-white/5 border border-white/20 text-xs font-bold uppercase tracking-widest hover:bg-punk-pink hover:text-black hover:border-punk-pink transition-all group-hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
+                    <a href={path} target="_blank" rel="noopener noreferrer" className="self-start relative px-6 py-3 bg-white/5 border border-white/20 text-xs font-bold uppercase tracking-widest hover:bg-punk-pink hover:text-black hover:border-punk-pink transition-all group-hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,0.2)]">
                         {label} &gt;
-                    </button>
+                    </a>
                 )}
             </div>
         </div>
