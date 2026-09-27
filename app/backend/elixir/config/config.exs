@@ -3,7 +3,9 @@ import Config
 config :portfolio, PortfolioWeb.Endpoint,
   adapter: Bandit.PhoenixAdapter,
   url: [host: "localhost"],
-  server: true,
+  # Os testes não fazem HTTP de verdade; sem servidor, a suíte não disputa
+  # a porta com o `make back`
+  server: config_env() != :test,
   check_origin: false,
   pubsub_server: Portfolio.PubSub
 
