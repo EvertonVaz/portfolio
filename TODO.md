@@ -6,7 +6,7 @@
 
 ## Segurança
 
-- [ ] Decidir destino do `{:joken, "~> 2.6"}` no `mix.exs` — dependência sem uso desde o refactor `30ed25e`; reusar na tarefa acima ou remover
+- [x] Decidir destino do `{:joken, "~> 2.6"}` no `mix.exs` — dependência sem uso desde o refactor `30ed25e`; removida
 - [ ] verificar se exsiste algum alguma divida tecnica no projeto
 
 ## Frontend
@@ -15,6 +15,8 @@
 ## Conteúdo (pivot do portfolio)
 
 - [ ] Considerar cards externos no `/work` (GitHub dos projetos da 42, por exemplo)
+- [ ] Criar um devlog para todos os projetos do labs.playground
+- [ ] Criar um projeto para o portfolio que valide minhas skills de RAG / LLMs
 
 ## Sincronização career-mcp ↔ portfolio
 
@@ -81,57 +83,3 @@ Toda mudança de copy vale para `pt` **e** `en` no `src/i18n.js`.
 - [x] Rodar `validate_all` e `diff_channels` no career-mcp (resume, LinkedIn e portfolio `current`)
 - [ ] Revisão visual do site em PT e EN, página por página
 
-## Minishell real em sandbox
-
-Rodar o binário do minishell de verdade, sem que o visitante alcance nada fora de uma jaula descartável.
-A segurança vem do isolamento, não de parsear a entrada (lição do `7ee4aff`).
-Decisões: estado **por sessão** · `/tmp` em **tmpfs ~1MB noexec** (heredoc funciona) · builtins do minishell **permitidos**.
-
-### S1 — Jaula (`docker/sandbox/`)
-
-- [x] Script que monta `/jail`: `minishell`, `ls`, `cat`, `whoami` + libs (via `ldd`), `/etc/passwd` e `/etc/group` com `born2code` (uid 65534), home com `about.txt`, `projects.txt` e `contact.txt` alinhados ao career
-- [x] Relay: `socat` TCP por conexão → `env -i` + `timeout` + `prlimit` (nproc, as, cpu, fsize, nofile) + `chroot --userspec`
-- [x] Dockerfile do sandbox (debian:12-slim, mesma glibc do binário)
-- [x] Testes de segurança da jaula, escritos antes: `ls /` só mostra a jaula; `>` fora do `/tmp` falha; `/bin/sh`, `rm` e `/proc` não existem; `env` limpo; excesso de processos barrado; timeout encerra a sessão
-
-### S2 — Compose (dev e produção)
-
-- [x] Serviço `shell-sandbox`: `read_only`, `cap_drop: ALL` + `SYS_CHROOT`/`SETUID`/`SETGID`, `no-new-privileges`, `pids_limit`, `mem_limit`, `cpus`, tmpfs em `/jail/tmp`, rede interna só com o backend, sem `env_file`
-- [x] Backend de produção não copia mais o binário do minishell
-- [x] `make sandbox-test`: roda os testes da jaula no container real
-- [x] `make sandbox-test` no host: 16/16 no container real
-
-### S3 — Backend
-
-- [x] Sanitizador de saída: remove ANSI, prompt e eco do readline; limita bytes (testes unitários primeiro)
-- [x] Sessão: um `:gen_tcp` por WebSocket, fecha junto (ociosidade: o timeout de 60s do WebSocket já fecha; teto de 20 sessões no `socat`)
-- [x] `TerminalHandler` usa a sessão; sai a emulação (`Processor` + `@files`)
-- [x] Testes de integração contra o sandbox (tag `:sandbox`)
-
-### S4 — Frontend e copy
-
-- [x] `parseResponse` divide a saída por vírgula e junta com espaço — `echo a,b` vira `a b`; saída real precisa passar intacta, multilinha
-- [x] Copy do terminal: volta a rodar o minishell real, em sandbox; `help` lista o que existe
-- [x] `useBackend` ganhou `parseJson`: com JSON.parse, `echo 42` virava número e quebrava o terminal
-- [x] Página abria dois WebSockets (página + terminal) = duas sessões na jaula por visitante; agora é um só
-- [x] Sessão encerrada (exit/timeout): o próximo comando abre uma sessão nova (sem reconexão automática, que prenderia vagas do sandbox)
-- [x] Ociosidade: o Bandit fechava com 1002 após 60s e o frontend reconectava em loop (sessão nova a cada ~65s); agora o handler fecha com 1000 após 5 min parado e o upgrade do terminal vai a 15 min
-- [ ] Testar no navegador: `docker compose up -d --build shell-sandbox dev` no host (o dev precisa entrar na rede `sandbox`), reiniciar o `make back`
-
-### S5 — Fechamento
-
-- [x] Parte 5 (career.yml): descrição do projeto `portfolio` passa a citar o sandbox
-
-### S6 — Terminal de verdade (PTY + xterm.js)
-
-Tab, setas, Ctrl+C e Ctrl+D do readline/minishell de verdade. A segurança continua sendo a jaula.
-
-- [x] Testes da jaula passam a rodar pelo mesmo caminho da produção: `socat` com PTY
-- [x] Novos testes: Tab completa nome de arquivo; Ctrl+C interrompe o `cat` e o shell segue vivo; timeout com PTY não deixa processo
-- [x] Sandbox: `socat` com `pty,setsid,ctty`; tamanho fixo 80x24; terminfo do `xterm-256color` dentro da jaula
-- [x] Backend: repassa bytes crus nos dois sentidos (frames binários na saída); sai o sanitizador `Output`
-- [x] Frontend: xterm.js no lugar do input por linha; tecla por tecla; mensagens de status traduzidas; sessão nova ao digitar depois de encerrada
-- [x] Copy: `help`/`lab_obs` citam Tab, setas e Ctrl+C
-- [x] Checado no PTY real: histórico com ↑ e Ctrl+L funcionam (a dica na tela promete os dois)
-- [ ] Testar no navegador: rebuild do `shell-sandbox` (imagem nova, com PTY) + `make back` + `/terminal`
-- [x] `help` (binário de `help.c`, compilado num estágio à parte do Dockerfile — a jaula não tem shell para rodar script) e `clear` na jaula
