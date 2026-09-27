@@ -1,7 +1,7 @@
 import React from 'react';
 import ModuleHeader from '../../../shared/ui/layout/ModuleHeader';
 import ScrollSection from '../../../shared/ui/ScrollSection';
-import BackToWorks from '../../../shared/ui/navigation/BackToWorks';
+import BackToLabs from '../../../shared/ui/navigation/BackToLabs';
 import { PongGame } from '../components/PongGame';
 import PongDevlog from '../components/PongDevlog';
 import PongArchitecture from '../components/PongArchitecture';
@@ -28,7 +28,7 @@ export default function PongPage() {
                 <GithubCTA url="https://github.com/EvertonVaz/portfolio/tree/main/app/backend/python/pong_ai" />
 
                 <div className="flex justify-center mt-12">
-                    <BackToWorks theme="cyan" />
+                    <BackToLabs theme="cyan" />
                 </div>
             </div>
         </ScrollSection>

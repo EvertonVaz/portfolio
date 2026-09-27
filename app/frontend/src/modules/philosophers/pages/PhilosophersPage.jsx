@@ -8,7 +8,7 @@ import PhilosophersArchitecture from '../components/PhilosophersArchitecture';
 import { GithubCTA } from '../../../shared/ui/social/GithubCTA';
 import ConnectionStatus from '../../../shared/ui/status/ConnectionStatus';
 import ScrollSection from '../../../shared/ui/ScrollSection';
-import BackToWorks from '../../../shared/ui/navigation/BackToWorks';
+import BackToLabs from '../../../shared/ui/navigation/BackToLabs';
 
 export default function PhilosophersPage() {
     const { t } = useTranslation();
@@ -88,7 +88,7 @@ export default function PhilosophersPage() {
                 <GithubCTA url="https://github.com/evertonvaz/philosophers" />
 
                 <div className="flex justify-center mt-12">
-                    <BackToWorks theme="cyan" />
+                    <BackToLabs theme="cyan" />
                 </div>
             </div>
         </ScrollSection>

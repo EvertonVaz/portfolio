@@ -43,11 +43,11 @@ const MinishellArchitecture = () => {
                     hexIndex="0x02"
                     theme="green"
                     highlight={true}
-                    tags={['ELIXIR', 'PHOENIX_CHANNELS']}
+                    tags={['ELIXIR', 'WEBSOCK', 'TCP_SOCKET']}
                 />
 
                 <ArchitectureConnector
-                    label="process_pipe_spawn"
+                    label="tcp_pty_session"
                     gradient="green-white"
                 />
 

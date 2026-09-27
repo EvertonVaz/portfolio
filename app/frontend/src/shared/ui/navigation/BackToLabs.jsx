@@ -1,11 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 /**
- * BackToWorks - Botão de navegação para voltar à seção Works.
- * Usa âncora para scroll suave até a seção #work.
+ * BackToLabs - Botão de navegação das demos de volta ao /labs, de onde o visitante veio.
  */
-const BackToWorks = ({ theme = 'pink' }) => {
+const BackToLabs = ({ theme = 'pink' }) => {
     const { t } = useTranslation();
 
     const themeColors = {
@@ -14,27 +14,15 @@ const BackToWorks = ({ theme = 'pink' }) => {
         cyan: 'hover:text-punk-cyan hover:border-punk-cyan',
     };
 
-    const handleClick = (e) => {
-        e.preventDefault();
-
-        window.location.href = '/#work'
-
-        const worksSection = document.getElementById('work');
-        if (worksSection) {
-            worksSection.scrollIntoView({ behavior: 'smooth' });
-        } 
-    };
-
     return (
-        <a
-            href="/#work"
-            onClick={handleClick}
+        <Link
+            to="/labs"
             className={`group inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-white/50 ${themeColors[theme]} transition-colors border border-white/10 px-4 py-2 cursor-pointer`}
         >
             <span className="group-hover:-translate-x-1 transition-transform">&lt;</span>
-            {t('shared.back_to_works')}
-        </a>
+            {t('shared.back_to_labs')}
+        </Link>
     );
 };
 
-export default BackToWorks;
+export default BackToLabs;

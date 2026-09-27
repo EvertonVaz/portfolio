@@ -10,10 +10,10 @@ const LabsPage = () => {
     const { t } = useTranslation();
 
     const demos = [
-        { id: '01', title: t('work.projects.p01.title'), tag: 'C/C++', desc: t('work.projects.p01.desc'), path: t('work.projects.p01.path'), type: t('work.projects.p01.type') },
+        { id: '01', title: t('work.projects.p01.title'), tag: 'C/Unix', desc: t('work.projects.p01.desc'), path: t('work.projects.p01.path'), type: t('work.projects.p01.type') },
         { id: '02', title: t('work.projects.p02.title'), tag: 'JSX/Math', desc: t('work.projects.p02.desc'), path: t('work.projects.p02.path'), type: t('work.projects.p02.type') },
         { id: '03', title: t('work.projects.p03.title'), tag: 'Elixir/C', desc: t('work.projects.p03.desc'), path: t('work.projects.p03.path'), type: t('work.projects.p03.type') },
-        { id: '04', title: t('work.projects.p04.title'), tag: 'Elixir/DQN', desc: t('work.projects.p04.desc'), path: t('work.projects.p04.path'), type: t('work.projects.p04.type') },
+        { id: '04', title: t('work.projects.p04.title'), tag: 'Elixir/PyTorch', desc: t('work.projects.p04.desc'), path: t('work.projects.p04.path'), type: t('work.projects.p04.type') },
     ];
 
     return (

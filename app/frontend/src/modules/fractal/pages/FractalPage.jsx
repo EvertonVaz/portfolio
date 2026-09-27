@@ -7,7 +7,7 @@ import FractalArchitecture from '../components/subcomponents/FractalArchitecture
 import { GithubCTA } from '../../../shared/ui/social/GithubCTA';
 import ModuleHeader from '../../../shared/ui/layout/ModuleHeader';
 import { useFractalRenderer } from '../hooks/useFractalRenderer';
-import BackToWorks from '../../../shared/ui/navigation/BackToWorks';
+import BackToLabs from '../../../shared/ui/navigation/BackToLabs';
 
 const FractalPage = () => {
     const { t } = useTranslation();
@@ -110,7 +110,7 @@ const FractalPage = () => {
                 <GithubCTA url="https://github.com/EvertonVaz/fractol" />
 
                 <div className="flex justify-center mt-12">
-                    <BackToWorks theme="pink" />
+                    <BackToLabs theme="pink" />
                 </div>
             </div>
         </ScrollSection>
