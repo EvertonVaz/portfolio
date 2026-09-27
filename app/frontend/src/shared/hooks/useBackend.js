@@ -39,6 +39,9 @@ export const useBackend = (endpoint, options = {}) => {
     } = options;
 
     const socketRef = useRef(null);
+    // Enquanto o token é buscado ainda não há socket no ref; sem esta trava,
+    // cada connect() nesse intervalo (ex: uma por tecla) abriria outra conexão
+    const connectingRef = useRef(false);
     const [connected, setConnected] = useState(false);
     const listenersRef = useRef(new Map());
 
@@ -68,10 +71,12 @@ export const useBackend = (endpoint, options = {}) => {
 
     const connect = useCallback(async () => {
         // Evita duplicidade de conexão
-        if (socketRef.current?.readyState === WebSocket.OPEN ||
+        if (connectingRef.current ||
+            socketRef.current?.readyState === WebSocket.OPEN ||
             socketRef.current?.readyState === WebSocket.CONNECTING) {
             return;
         }
+        connectingRef.current = true;
 
         try {
             const baseUrl = window.location.origin;
@@ -134,6 +139,8 @@ export const useBackend = (endpoint, options = {}) => {
             console.error(`[useBackend] Falha ao iniciar conexão para ${endpoint}:`, err);
             emit('error', err);
             setTimeout(connect, reconnectInterval);
+        } finally {
+            connectingRef.current = false;
         }
     }, [endpoint, useToken, reconnectInterval, parseJson, emit]);
 
