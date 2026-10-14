@@ -1,9 +1,9 @@
 # Contexto de build dos Dockerfiles de produção (context = raiz do repo)
 .git
 .claude
+.env
 envs
 docker/dev
-docker/rabbitmq
 
 # Frontend
 app/frontend/node_modules

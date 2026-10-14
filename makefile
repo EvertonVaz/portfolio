@@ -1,74 +1,116 @@
--include envs/.env.pong
+SHELL := /bin/bash
+.DEFAULT_GOAL := help
+
+ifneq (,$(wildcard .env))
+include .env
+endif
+
+ifneq (,$(wildcard envs/.env.pong))
+include envs/.env.pong
+endif
+
 export
 
-all: build
+COMPOSE := docker compose
 
-deps:
-	cd ./app/frontend && npm install
-	cd ./app/backend/elixir && mix deps.get
-	cd ./app/backend/python && uv sync
+.PHONY: help all env deps build front-build back-build test front back ai \
+	train-ppo train-ga train-ga-fresh train-server rabbitmq up-dev \
+	release docker-up docker-down docker-logs sandbox-test lint
 
+help: ## Lista os comandos disponíveis
+	@echo "Comandos:"
+	@grep -hE '^[a-z][a-zA-Z0-9_-]*:.*##' $(MAKEFILE_LIST) \
+	  | sed -E 's/:.*## /|/' \
+	  | awk -F'|' '{printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
 
-build: front-build back-build
+all: help
 
-front-build:
-	cd ./app/frontend && npm run build
+# ── ambiente ─────────────────────────────────────────────────────────────────
 
-back-build:
-	cd ./app/backend/elixir && MIX_ENV=prod mix release --overwrite
+env:
+	@test -f .env || { \
+	  echo ".env não existe. Local: cp .env.example .env && echo \"PROJECT_DIR=$$PWD\" >> .env"; \
+	  echo "Servidor (Coolify): as variáveis vêm do painel, não de .env."; \
+	  exit 1; }
 
-test:
-	cd ./app/backend/elixir && mix test --cover
+# O compose do dev só funciona empilhado no da raiz: sozinho, a pasta do
+# projeto vira .devcontainer/ e o .env e os caminhos relativos somem.
+up-dev: env ## Sobe o container de desenvolvimento
+	@$(COMPOSE) -f docker-compose.yml -f .devcontainer/docker-compose.yml up -d dev
 
-front:
-	clear && cd ./app/frontend && npm run dev -- --host
+# ── dependências e build ─────────────────────────────────────────────────────
 
-back:
-	clear && cd ./app/backend/elixir && mix run --no-halt
+deps: ## Instala as dependências do front, Elixir e Python
+	@cd ./app/frontend && npm install
+	@cd ./app/backend/elixir && mix deps.get
+	@cd ./app/backend/python && uv sync
 
-ai:
-	clear && cd ./app/backend/python && uv run python main.py
+build: front-build back-build ## Compila front e back
 
-train-ppo:
-	clear && cd ./app/backend/python && uv run python -m pong_ai.train_ppo
+front-build: ## Compila o frontend
+	@cd ./app/frontend && npm run build
 
-train-ga:
-	clear && cd ./app/backend/python && uv run python -m pong_ai.train_ga
+back-build: ## Gera o release Elixir de produção
+	@cd ./app/backend/elixir && MIX_ENV=prod mix release --overwrite
 
-train-ga-fresh:
-	clear && cd ./app/backend/python && uv run python -m pong_ai.train_ga --fresh
+# ── desenvolvimento ──────────────────────────────────────────────────────────
 
-train-server:
-	clear && cd ./app/backend/python && uv run python -m pong_ai.train_server
+test: ## Roda os testes do backend Elixir com cobertura
+	@cd ./app/backend/elixir && mix test --cover
 
-rabbitmq:
-	docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
+front: ## Sobe o frontend em modo dev, exposto na rede
+	@clear && cd ./app/frontend && npm run dev -- --host
 
-DOCKER_COMPOSE = docker compose
-COMPOSE_FILE = ./docker/production/docker-compose.yml
-COMPOSE_LOCAL = ./docker/production/docker-compose.local.yml
+back: ## Sobe o backend Elixir
+	@clear && cd ./app/backend/elixir && mix run --no-halt
 
-release:
-	bash ./scripts/release.sh
+ai: ## Sobe o serviço de IA em Python
+	@clear && cd ./app/backend/python && uv run python main.py
 
-docker-up: docker-down
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) up -d --build
+rabbitmq: ## Sobe o RabbitMQ em container (portas 5672 e 15672)
+	@docker run -d --rm --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:4-management
 
-# Stack de produção com a porta do frontend publicada em localhost:9999
-prod-local:
-	SECRET_KEY_BASE=teste $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) -f $(COMPOSE_LOCAL) up -d --build
+# ── treino da IA ─────────────────────────────────────────────────────────────
+# Treinos são longos e custam CPU; ficam fora de build e test de propósito.
 
-docker-down:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) down --rmi all -v
+train-ppo: ## Treina a IA com PPO
+	@clear && cd ./app/backend/python && uv run python -m pong_ai.train_ppo
 
-docker-logs:
-	$(DOCKER_COMPOSE) -f $(COMPOSE_FILE) logs -f
+train-ga: ## Treina a IA com algoritmo genético, retomando o último estado
+	@clear && cd ./app/backend/python && uv run python -m pong_ai.train_ga
 
-# Testes de segurança da jaula do minishell, no container real (read_only, capabilities e limites do compose)
-sandbox-test:
-	SECRET_KEY_BASE=teste $(DOCKER_COMPOSE) -f $(COMPOSE_FILE) run --rm --build shell-sandbox /sandbox/test-jail.sh /sandbox/run-minishell
+train-ga-fresh: ## Treina com algoritmo genético do zero
+	@clear && cd ./app/backend/python && uv run python -m pong_ai.train_ga --fresh
 
-lint:
-	cd ./app/frontend && npm run lint
+train-server: ## Sobe o servidor de treino
+	@clear && cd ./app/backend/python && uv run python -m pong_ai.train_server
+
+# ── produção (docker) ────────────────────────────────────────────────────────
+
+release: ## Executa o script de release
+	@bash ./scripts/release.sh
+
+# O compose recria só o que mudou; derrubar tudo antes custaria imagens e volumes a cada subida.
+docker-up: env ## Sobe a stack de produção com build (frontend em localhost:FRONTEND_PORT)
+	@$(COMPOSE) up -d --build
+
+docker-down: ## Derruba a stack e apaga imagens e volumes (exige CONFIRM=sim)
+	@test "$(CONFIRM)" = "sim" || { \
+	  echo "isto remove as imagens e os volumes da stack de produção."; \
+	  echo "se é isso mesmo: make docker-down CONFIRM=sim"; \
+	  exit 1; }
+	@$(COMPOSE) down --rmi all -v
+
+docker-logs: ## Acompanha os logs da stack
+	@$(COMPOSE) logs -f
+
+# Roda no container real para validar read_only, capabilities e limites do compose.
+sandbox-test: env ## Testa a segurança da jaula do minishell
+	@$(COMPOSE) run --rm --build shell-sandbox /sandbox/test-jail.sh /sandbox/run-minishell
+
+# ── qualidade ────────────────────────────────────────────────────────────────
+
+lint: ## Roda o lint do frontend
+	@cd ./app/frontend && npm run lint
 # 	cd ./app/backend/elixir && mix format --check-formatted
 # 	cd ./app/backend/python && black --check .

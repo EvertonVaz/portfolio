@@ -32,6 +32,9 @@ plugins=(
   zsh-syntax-highlighting
 )
 
+export ZSH="$HOME/.oh-my-zsh"
+source $ZSH/oh-my-zsh.sh
+
 bindkey "^[[1;5D" backward-word
 bindkey "^[[1;5C" forward-word
 
@@ -40,3 +43,9 @@ bindkey "^[[1;5C" forward-word
 export EDITOR=nano
 export VISUAL=nano
 export PATH="$HOME/.local/bin:$HOME/.claude/local/bin:$PATH"
+
+
+# Inicializar tmux apenas se não estiver dentro de uma sessão tmux
+if [[ -z "$TMUX" ]]; then
+  tmux
+fi

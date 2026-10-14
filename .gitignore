@@ -240,3 +240,4 @@ evals/
 **subject**
 model.json
 plot.png
+.env

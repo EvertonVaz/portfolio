@@ -1,46 +1,50 @@
+name: portfolio
+
+# Compose do deploy (Coolify). Convenções:
+# - Porta publicada só no loopback: "127.0.0.1:${X_PORT:-n}:n".
+# - Todo serviço que entra num depends_on tem healthcheck, e o depends_on usa
+#   {condition: service_healthy}. Exceção: shell-sandbox (sem porta de checagem
+#   dentro da jaula), que o dev espera só com service_started.
+# - Variável obrigatória com ${VAR:?}; ela falha na hora, não em produção.
+# - Nada de dev aqui: o serviço dev mora em .devcontainer/docker-compose.yml.
 services:
   rabbitmq:
-    build:
-      context: ./docker/rabbitmq
-      dockerfile: Dockerfile
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+    image: rabbitmq:4-alpine
+    restart: always
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-guest}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS:-guest}
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  dev:
-    restart: always
-    user: etovaz
+  backend:
     build:
-      context: ./docker/dev
-      dockerfile: Dockerfile
-      args:
-        USER_NAME: etovaz
-        USER_UID: ${UID:-1000}
-        USER_GID: ${GID:-1000}
-    volumes:
-      - ${HOME}/.p10k.zsh:/home/etovaz/.p10k.zsh
-      - ${HOME}/.zsh_history:/home/etovaz/.zsh_history
-      - ./:/src
-      - ${HOME}/.claude:/home/etovaz/.claude
-      - ${HOME}/.claude.json:/home/etovaz/.claude.json
-      - ${HOME}/.config/anthropic:/home/etovaz/.config/anthropic
-      - ${HOME}/.config/gh:/home/etovaz/.config/gh
-      - ${HOME}/.ssh:/home/etovaz/.ssh
-      - ${HOME}/.local/share/mise/shims/ai-memory:/home/etovaz/.local/share/mise/shims/ai-memory
-      - ${HOME}/.zshenv:/home/etovaz/.zshenv
-    env_file:
-      - ./envs/.env.production
+      context: .
+      dockerfile: docker/production/backend.Dockerfile
+    restart: always
+    environment:
+      - SECRET_KEY_BASE=${SECRET_KEY_BASE:?defina SECRET_KEY_BASE no ambiente}
+      # Sem "/" no final: "amqp://host/" significa vhost vazio na spec AMQP, não o default
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq
+    healthcheck:
+      # Porta 4000 aberta = Bandit no ar (sem curl/wget na imagem; bash nativo do debian-slim)
+      test: ["CMD", "bash", "-c", "</dev/tcp/127.0.0.1/4000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
     networks:
       - default
       - sandbox
 
-  # Mesmo sandbox da produção (docker/production/docker-compose.yml); o `make back`
-  # do container dev fala com ele em shell-sandbox:7000
+  # Minishell real numa jaula (docker/sandbox): sem segredos, sem saída para a internet,
+  # sistema de arquivos somente leitura. Só o backend alcança a porta 7000.
   shell-sandbox:
     build:
       context: .
@@ -48,10 +52,12 @@ services:
     restart: always
     read_only: true
     tmpfs:
+      # único lugar gravável: o heredoc do minishell escreve em /tmp
       - /jail/tmp:size=1m,mode=1777,noexec,nosuid,nodev
     cap_drop:
       - ALL
     cap_add:
+      # chroot + troca para o usuário sem privilégio, e o timeout matar a sessão depois dela
       - SYS_CHROOT
       - SETUID
       - SETGID
@@ -64,44 +70,46 @@ services:
     networks:
       - sandbox
 
-  nginx:
-    restart: always
+  ai:
     build:
-      context: ./docker/nginx
-      dockerfile: Dockerfile
-    volumes:
-      - ./app/frontend/dist:/build/front/dist
-    ports:
-      - "8888:80"
-    env_file:
-      - ./envs/.env.production
-    depends_on:
-      - backend
-
-  backend:
+      context: .
+      dockerfile: docker/production/ai.Dockerfile
     restart: always
-    build:
-      context: ./docker/backend
-      dockerfile: Dockerfile
-    volumes:
-      - ./app/backend/elixir/_build/prod:/src
-    develop:
-      watch:
-        - action: restart
-          path: ./
-    env_file:
-      - ./envs/.env.production
-      - ./envs/.env.pong
     environment:
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq/
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-guest}:${RABBITMQ_PASS:-guest}@rabbitmq
+    healthcheck:
+      # Worker sem porta: valida a idade do heartbeat gravado pelo main.py (10s de intervalo)
+      test: ["CMD", "python", "-c", "import os,sys,time; sys.exit(0 if time.time()-os.path.getmtime('/tmp/ai-heartbeat')<30 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     depends_on:
       rabbitmq:
         condition: service_healthy
-    networks:
-      - default
-      - sandbox
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/production/frontend.Dockerfile
+      args:
+        # Coolify injeta SOURCE_COMMIT no build; fora dele cai em "dev"
+        SOURCE_COMMIT: ${SOURCE_COMMIT:-dev}
+    restart: always
+    ports:
+      # Só loopback: o Traefik do Coolify roteia pela rede do compose, esta porta é para teste local
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      backend:
+        condition: service_healthy
 
 networks:
   default:
+  # internal: sem rota para fora; o sandbox só enxerga o backend
   sandbox:
     internal: true

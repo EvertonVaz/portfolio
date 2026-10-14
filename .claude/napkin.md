@@ -9,24 +9,24 @@
 ## Execução & Validação (Maior Prioridade)
 
 1. **[2026-06-26] Build do frontend antes de subir nginx**
-   Do instead: rodar `make front-build` antes de `docker-up`; o nginx serve de `app/frontend/dist`, que só existe após o build.
+   Do instead: o frontend de produção é buildado dentro da imagem (`docker/production/frontend.Dockerfile`); `docker-up` não depende de `make front-build`.
 
-2. **[2026-06-26] Variáveis de ambiente vêm de `envs/.env.production`**
-   Do instead: verificar/editar `envs/.env.production` antes de subir qualquer serviço Docker; ambos os containers (dev e nginx) carregam esse arquivo.
+2. **[2026-06-26] Variáveis de ambiente vêm de `.env` (modelo: `.env.example`)**
+   Do instead: `make env` falha se `.env` não existe; o dev lê `.env` via env_file. Constantes do jogo ficam em `envs/.env.pong` (versionado).
 
 3. **[2026-06-26] Backend Elixir não usa Phoenix — usa Bandit direto**
    Do instead: ao criar rotas/controllers, seguir o padrão Bandit + WebSock; não procurar `router.ex` do Phoenix nem usar `Phoenix.Router`.
 
-4. **[2026-07-16] Produção: compose em `docker/production/`, envs via Coolify**
-   Do instead: `make docker-up` usa `docker/production/docker-compose.yml`; exige `SECRET_KEY_BASE` no ambiente. Backend roda em debian-slim (nunca alpine: `minishell`/`philosophers` são binários glibc pré-compilados). AI instala torch CPU-only via índice do PyTorch antes das deps (evita ~5GB de wheels CUDA do uv.lock). Pendências: `pong_ai/models/dqn.pt` não existe (AI cai em rule-based) e auth do terminal é token estático (JWT antigo no commit 5f62285).
+4. **[2026-07-16] Produção: compose na raiz, envs via Coolify**
+   Do instead: `make docker-up` usa `docker-compose.yml` da raiz (Dockerfiles em `docker/production/`); dev em `.devcontainer/docker-compose.yml` (`make up-dev`); exige `SECRET_KEY_BASE` no ambiente. Backend roda em debian-slim (nunca alpine: `minishell`/`philosophers` são binários glibc pré-compilados). AI instala torch CPU-only via índice do PyTorch antes das deps (evita ~5GB de wheels CUDA do uv.lock). Pendências: `pong_ai/models/dqn.pt` não existe (AI cai em rule-based) e auth do terminal é token estático (JWT antigo no commit 5f62285).
 
 ## Shell & Comandos Úteis
 
 1. **[2026-06-26] Makefile como ponto de entrada**
    Do instead: usar `make front` (Vite dev), `make back` (Elixir), `make build` (prod), `make test` (mix test), `make docker-up/down/logs`.
 
-2. **[2026-06-26] Dev container monta volume em `/src`**
-   Do instead: dentro do container dev, o projeto fica em `/src`; usar esse path ao executar comandos via `docker compose exec dev`.
+2. **[2026-06-26] Dev container monta o projeto em `$PROJECT_DIR` (mesmo caminho do host)**
+   Do instead: dentro do container dev, o projeto fica no mesmo caminho do host (`PROJECT_DIR` do `.env`); usar esse path ao executar comandos via `docker compose exec dev`.
 
 ## Arquitetura do Frontend
 
