@@ -3,8 +3,7 @@ name: portfolio
 # Compose do deploy (Coolify). Convenções:
 # - Porta publicada só no loopback: "127.0.0.1:${X_PORT:-n}:n".
 # - Todo serviço que entra num depends_on tem healthcheck, e o depends_on usa
-#   {condition: service_healthy}. Exceção: shell-sandbox (sem porta de checagem
-#   dentro da jaula), que o dev espera só com service_started.
+#   {condition: service_healthy}.
 # - Variável obrigatória com ${VAR:?}; ela falha na hora, não em produção.
 # - Nada de dev aqui: o serviço dev mora em .devcontainer/docker-compose.yml.
 services:
@@ -67,6 +66,14 @@ services:
     pids_limit: 256
     mem_limit: 256m
     cpus: 0.5
+    healthcheck:
+      # Lê a tabela de sockets em vez de conectar: cada conexão na 7000 abriria uma sessão
+      # de minishell. 1B58 = porta 7000 em hex; 0A = LISTEN.
+      test: ["CMD-SHELL", "cat /proc/net/tcp /proc/net/tcp6 | grep -qE ':1B58 [0-9A-F:]+ 0A '"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     networks:
       - sandbox
 

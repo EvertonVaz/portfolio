@@ -18,12 +18,6 @@ services:
         USER_UID: ${DEV_UID:-1000}
         USER_GID: ${DEV_GID:-1000}
         PROJECT_DIR: ${PROJECT_DIR:?defina PROJECT_DIR no .env com o caminho do repo no host}
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
-      # Sem healthcheck (jaula somente leitura): basta estar de pé para o `make back`
-      shell-sandbox:
-        condition: service_started
     env_file: .env
     # O `make back` do dev fala com shell-sandbox:7000, que só existe na rede sandbox
     networks:
